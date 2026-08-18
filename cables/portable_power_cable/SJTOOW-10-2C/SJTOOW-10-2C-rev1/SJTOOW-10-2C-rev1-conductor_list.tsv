@@ -1,0 +1,3 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	104x30	10AWG	pvc	copper	0.192in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	104x30	10AWG	pvc	copper	0.192in	True

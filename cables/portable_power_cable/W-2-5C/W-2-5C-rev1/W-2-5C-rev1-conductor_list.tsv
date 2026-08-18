@@ -1,0 +1,6 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	665x30	2AWG	epdm	copper	0.378in
+jacket	white	{'base_color':'white','outline_color':'black'}	665x30	2AWG	epdm	copper	0.378in
+jacket	red	{'base_color':'red'}	665x30	2AWG	epdm	copper	0.378in
+jacket	orange	{'base_color':'orange'}	665x30	2AWG	epdm	copper	0.378in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	665x30	2AWG	epdm	copper	0.378in

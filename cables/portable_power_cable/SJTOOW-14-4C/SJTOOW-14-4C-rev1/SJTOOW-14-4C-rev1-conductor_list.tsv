@@ -1,0 +1,5 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	41x30	14AWG	pvc	copper	0.124in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	41x30	14AWG	pvc	copper	0.124in	True
+jacket	red	{'base_color':'red'}	41x30	14AWG	pvc	copper	0.124in	True
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	41x30	14AWG	pvc	copper	0.124in	True

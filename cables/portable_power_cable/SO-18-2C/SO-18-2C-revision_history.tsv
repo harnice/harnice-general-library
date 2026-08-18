@@ -1,0 +1,2 @@
+product	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances
+cable	McMaster-Carr	SO-18-2C	PORTABLE POWER CABLE, SO, 18 AWG, 2 CONDUCTOR, 600 V AC	1			https://github.com/harnice/harness-accessories-and-general-standards	portable_power_cable/SO-18-2C	8/18/26	8/18/26		82df2cd6b02f9ed13ba2db8476ff9b972ceb0a70	K SHUTT		INITIAL RELEASE	

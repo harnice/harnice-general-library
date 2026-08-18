@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	19x30	17AWG	pvc	copper	0.075in
+jacket	white	{'base_color':'white','outline_color':'black'}	19x30	17AWG	pvc	copper	0.075in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	19x30	17AWG	pvc	copper	0.075in

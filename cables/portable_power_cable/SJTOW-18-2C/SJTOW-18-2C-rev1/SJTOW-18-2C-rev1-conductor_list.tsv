@@ -1,0 +1,3 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	16x30	18AWG	pvc	copper	0.100in
+jacket	white	{'base_color':'white','outline_color':'black'}	16x30	18AWG	pvc	copper	0.100in

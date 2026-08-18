@@ -1,0 +1,3 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	2109x30	4/0AWG	epdm	copper	0.620in
+jacket	white	{'base_color':'white','outline_color':'black'}	2109x30	4/0AWG	epdm	copper	0.620in

@@ -1,0 +1,6 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	266x30	6AWG	epdm	copper	0.282in
+jacket	white	{'base_color':'white','outline_color':'black'}	266x30	6AWG	epdm	copper	0.282in
+jacket	red	{'base_color':'red'}	266x30	6AWG	epdm	copper	0.282in
+jacket	orange	{'base_color':'orange'}	266x30	6AWG	epdm	copper	0.282in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	266x30	6AWG	epdm	copper	0.282in

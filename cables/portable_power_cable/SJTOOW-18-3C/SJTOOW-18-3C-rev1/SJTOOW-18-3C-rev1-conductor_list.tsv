@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	16x30	18AWG	pvc	copper	0.100in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	16x30	18AWG	pvc	copper	0.100in	True
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	16x30	18AWG	pvc	copper	0.100in	True

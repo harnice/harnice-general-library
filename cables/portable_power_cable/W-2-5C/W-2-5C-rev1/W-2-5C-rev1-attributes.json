@@ -1,0 +1,84 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "2000 V AC",
+            "usage": "Extra Hard Usage Outdoors",
+            "type": "W",
+            "jacketed": true,
+            "material": "super vu-tron",
+            "color": "yellow",
+            "thickness": "0.170in",
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.378in",
+                "gauge": "2AWG",
+                "construction": "665x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.378in",
+                "gauge": "2AWG",
+                "construction": "665x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.378in",
+                "gauge": "2AWG",
+                "construction": "665x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "orange": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.378in",
+                "gauge": "2AWG",
+                "construction": "665x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "orange"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.378in",
+                "gauge": "2AWG",
+                "construction": "665x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

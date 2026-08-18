@@ -1,0 +1,5 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	26x30	16AWG	rubber	copper	0.111in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	26x30	16AWG	rubber	copper	0.111in	True
+jacket	red	{'base_color':'red'}	26x30	16AWG	rubber	copper	0.111in	True
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	26x30	16AWG	rubber	copper	0.111in	True

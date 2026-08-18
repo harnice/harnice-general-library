@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	65x30	12AWG	pvc	copper	0.201in
+jacket	white	{'base_color':'white','outline_color':'black'}	65x30	12AWG	pvc	copper	0.201in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	65x30	12AWG	pvc	copper	0.201in

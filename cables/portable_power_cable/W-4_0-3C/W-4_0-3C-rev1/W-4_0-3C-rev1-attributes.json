@@ -1,0 +1,58 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "2000 V AC",
+            "usage": "Extra Hard Usage Outdoors",
+            "type": "W",
+            "jacketed": true,
+            "material": "super vu-tron",
+            "color": "yellow",
+            "thickness": "0.230in",
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.620in",
+                "gauge": "4/0AWG",
+                "construction": "2109x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.620in",
+                "gauge": "4/0AWG",
+                "construction": "2109x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.620in",
+                "gauge": "4/0AWG",
+                "construction": "2109x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

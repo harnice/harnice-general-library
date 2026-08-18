@@ -1,0 +1,65 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "600 V AC",
+            "usage": "Extra Hard Usage Indoors",
+            "type": "SOO",
+            "jacketed": true,
+            "material": "neoprene",
+            "color": "black",
+            "thickness": "0.080in",
+            "oil resistant jacket": true,
+            "oil resistant insulation": true,
+            "mcmaster pn": "7081K23",
+            "mcmaster designation": "SOOW",
+            "mcmaster url": "https://www.mcmaster.com/7081K23/"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.154in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper",
+                "oil resistant": true
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.154in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper",
+                "oil resistant": true
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.154in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper",
+                "oil resistant": true
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "300 V AC",
+            "usage": "Hard Usage Indoors",
+            "type": "SJTO",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.030in",
+            "oil resistant jacket": true,
+            "mcmaster pn": "7422K24",
+            "mcmaster designation": "SJOOW",
+            "mcmaster url": "https://www.mcmaster.com/7422K24/"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.124in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.124in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.124in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

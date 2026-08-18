@@ -1,0 +1,5 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	65x30	12AWG	pvc	copper	0.141in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	65x30	12AWG	pvc	copper	0.141in	True
+jacket	red	{'base_color':'red'}	65x30	12AWG	pvc	copper	0.141in	True
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	65x30	12AWG	pvc	copper	0.141in	True

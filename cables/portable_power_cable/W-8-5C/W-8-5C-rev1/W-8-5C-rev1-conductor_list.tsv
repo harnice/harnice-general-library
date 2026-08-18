@@ -1,0 +1,6 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	168x30	8AWG	epdm	copper	0.248in
+jacket	white	{'base_color':'white','outline_color':'black'}	168x30	8AWG	epdm	copper	0.248in
+jacket	red	{'base_color':'red'}	168x30	8AWG	epdm	copper	0.248in
+jacket	orange	{'base_color':'orange'}	168x30	8AWG	epdm	copper	0.248in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	168x30	8AWG	epdm	copper	0.248in

@@ -1,0 +1,44 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "600 V AC",
+            "usage": "Extra Hard Usage Indoors",
+            "type": "ST",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.080in",
+            "mcmaster pn": "7081K15",
+            "mcmaster designation": "SOOW",
+            "mcmaster url": "https://www.mcmaster.com/7081K15/"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.154in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.154in",
+                "gauge": "14AWG",
+                "construction": "41x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        }
+    }
+}

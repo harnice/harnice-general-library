@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od	oil resistant
+jacket	black	{'base_color':'black'}	168x30	8AWG	rubber	copper	0.248in	True
+jacket	white	{'base_color':'white','outline_color':'black'}	168x30	8AWG	rubber	copper	0.248in	True
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	168x30	8AWG	rubber	copper	0.248in	True

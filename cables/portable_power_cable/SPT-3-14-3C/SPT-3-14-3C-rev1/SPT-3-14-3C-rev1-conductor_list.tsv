@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	41x30	14AWG	pvc	copper	0.184in
+jacket	white	{'base_color':'white','outline_color':'black'}	41x30	14AWG	pvc	copper	0.184in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	41x30	14AWG	pvc	copper	0.184in

@@ -1,0 +1,60 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "600 V AC",
+            "usage": "Extra Hard Usage Indoors",
+            "type": "S",
+            "jacketed": true,
+            "material": "rubber",
+            "color": "black",
+            "thickness": "0.095in",
+            "mcmaster pn": "7081K41",
+            "mcmaster designation": "SOOW",
+            "mcmaster url": "https://www.mcmaster.com/7081K41/"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

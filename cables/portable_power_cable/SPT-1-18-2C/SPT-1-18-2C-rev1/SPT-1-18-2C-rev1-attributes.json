@@ -1,0 +1,41 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "parallel",
+            "voltage": "300 V AC",
+            "usage": "Indoor Use Only",
+            "type": "SPT-1",
+            "jacketed": false,
+            "mcmaster pn": "7870T21",
+            "mcmaster designation": "SPT-1",
+            "mcmaster url": "https://www.mcmaster.com/7870T21/"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.100in",
+                "gauge": "18AWG",
+                "construction": "16x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.100in",
+                "gauge": "18AWG",
+                "construction": "16x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+container	identifier	appearance	construction	gauge	insulation material	material	od
+jacket	black	{'base_color':'black'}	104x30	10AWG	rubber	copper	0.192in
+jacket	white	{'base_color':'white','outline_color':'black'}	104x30	10AWG	rubber	copper	0.192in
+jacket	green	{'base_color':'green','parallelstripe':['yellow']}	104x30	10AWG	rubber	copper	0.192in

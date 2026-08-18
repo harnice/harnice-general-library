@@ -1,0 +1,54 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "parallel",
+            "voltage": "300 V AC",
+            "usage": "Indoor Use Only",
+            "type": "SPT-3",
+            "jacketed": false
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

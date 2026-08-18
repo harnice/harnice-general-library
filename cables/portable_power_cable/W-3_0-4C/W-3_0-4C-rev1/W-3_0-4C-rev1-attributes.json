@@ -1,0 +1,71 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "2000 V AC",
+            "usage": "Extra Hard Usage Outdoors",
+            "type": "W",
+            "jacketed": true,
+            "material": "super vu-tron",
+            "color": "yellow",
+            "thickness": "0.215in",
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.570in",
+                "gauge": "3/0AWG",
+                "construction": "1672x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.570in",
+                "gauge": "3/0AWG",
+                "construction": "1672x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.570in",
+                "gauge": "3/0AWG",
+                "construction": "1672x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "epdm",
+                "od": "0.570in",
+                "gauge": "3/0AWG",
+                "construction": "1672x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

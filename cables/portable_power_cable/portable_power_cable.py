@@ -627,6 +627,83 @@ def compile_cable_attributes(cfg: dict) -> dict:
     return {"jacket": {**{"properties": jacket_properties}, **conductors}}
 
 
+CSV_COLUMNS = [
+    "pn",
+    "type",
+    "name",
+    "description",
+    "gauge_awg",
+    "conductors",
+    "conductor_colors",
+    "voltage",
+    "usage",
+    "construction",
+    "jacketed",
+    "jacket_material",
+    "jacket_color",
+    "jacket_thickness",
+    "insulation_material",
+    "insulation_thickness",
+    "conductor_od",
+    "stranding",
+    "conductor_material",
+    "oil_resistant_jacket",
+    "oil_resistant_insulation",
+    "weather_resistant",
+    "mcmaster_pn",
+    "mcmaster_designation",
+    "mcmaster_url",
+    "mfg",
+    "library_subpath",
+]
+
+
+def csv_row_from_cfg(cfg: dict) -> dict:
+    spec = cfg["spec"]
+    gauge = cfg["gauge"]
+    n = cfg["n_conductors"]
+    pn = part_number_from_cfg(cfg)
+    mcmaster = mcmaster_part(spec["code"], gauge, n) or {}
+    insulation_in = spec["insulation_in"](gauge)
+    jacket_in = spec["jacket_in"](gauge)
+    return {
+        "pn": pn,
+        "type": spec["code"],
+        "name": spec["name"],
+        "description": description_from_cfg(cfg),
+        "gauge_awg": gauge,
+        "conductors": n,
+        "conductor_colors": ", ".join(CONDUCTOR_COLORS[n]),
+        "voltage": spec["voltage"],
+        "usage": spec["usage"],
+        "construction": spec["construction"],
+        "jacketed": spec["jacketed"],
+        "jacket_material": spec["jacket_material"] or "",
+        "jacket_color": spec["jacket_color"] or "",
+        "jacket_thickness": fmt_in(jacket_in) if jacket_in else "",
+        "insulation_material": spec["insulation_material"],
+        "insulation_thickness": fmt_in(insulation_in),
+        "conductor_od": insulated_od(gauge, insulation_in),
+        "stranding": CLASS_K_STRANDING[gauge],
+        "conductor_material": "copper",
+        "oil_resistant_jacket": bool(spec.get("oil_resistant_jacket")),
+        "oil_resistant_insulation": bool(spec.get("oil_resistant_insulation")),
+        "weather_resistant": bool(spec.get("weather_resistant")),
+        "mcmaster_pn": mcmaster.get("pn", ""),
+        "mcmaster_designation": mcmaster.get("designation", ""),
+        "mcmaster_url": mcmaster.get("url", ""),
+        "mfg": "McMaster-Carr" if mcmaster else "",
+        "library_subpath": f"portable_power_cable/{pn}",
+    }
+
+
+def write_family_csv(configs: list[dict], path: str) -> None:
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(csv_row_from_cfg(cfg) for cfg in configs)
+
+
 def write_conductor_list(attrs: dict, path: str) -> int:
     """Walk the attributes tree the same way harnice.products.cable.build does."""
     rows = []
@@ -730,10 +807,14 @@ def main():
         tsv_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-conductor_list.tsv")
         write_conductor_list(attributes, tsv_path)
 
+    csv_path = os.path.join(family_dir, "portable_power_cable.csv")
+    write_family_csv(configs, csv_path)
+
     print(
         f"Finished building {len(configs)} portable power cables "
         f"({with_mcmaster} with McMaster-Carr part numbers)."
     )
+    print(f"Wrote family catalog: {csv_path}")
 
 
 if __name__ == "__main__":

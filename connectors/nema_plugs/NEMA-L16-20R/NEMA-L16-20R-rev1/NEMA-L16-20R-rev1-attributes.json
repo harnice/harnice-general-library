@@ -1,0 +1,168 @@
+{
+  "tools": [
+    "flathead screwdriver"
+  ],
+  "build_notes": [],
+  "csys_children": {
+    "flagnote-1": {
+      "angle": 0,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-1-leader_dest": {
+      "angle": 0,
+      "distance": 2.75,
+      "rotation": 0
+    },
+    "flagnote-2": {
+      "angle": 15,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-2-leader_dest": {
+      "angle": 15,
+      "distance": 2.847,
+      "rotation": 0
+    },
+    "flagnote-3": {
+      "angle": -15,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-3-leader_dest": {
+      "angle": -15,
+      "distance": 2.847,
+      "rotation": 0
+    },
+    "flagnote-4": {
+      "angle": 30,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-4-leader_dest": {
+      "angle": 30,
+      "distance": 2.0988,
+      "rotation": 0
+    },
+    "flagnote-5": {
+      "angle": -30,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-5-leader_dest": {
+      "angle": -30,
+      "distance": 2.0988,
+      "rotation": 0
+    },
+    "flagnote-6": {
+      "angle": 45,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-6-leader_dest": {
+      "angle": 45,
+      "distance": 1.6476,
+      "rotation": 0
+    },
+    "flagnote-7": {
+      "angle": -45,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-7-leader_dest": {
+      "angle": -45,
+      "distance": 1.6476,
+      "rotation": 0
+    },
+    "flagnote-8": {
+      "angle": 60,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-8-leader_dest": {
+      "angle": 60,
+      "distance": 1.3452,
+      "rotation": 0
+    },
+    "flagnote-9": {
+      "angle": -60,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-9-leader_dest": {
+      "angle": -60,
+      "distance": 1.3452,
+      "rotation": 0
+    },
+    "flagnote-10": {
+      "angle": 75,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-10-leader_dest": {
+      "angle": 75,
+      "distance": 1.2061,
+      "rotation": 0
+    },
+    "flagnote-11": {
+      "angle": -75,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-11-leader_dest": {
+      "angle": -75,
+      "distance": 1.2061,
+      "rotation": 0
+    },
+    "flagnote-12": {
+      "angle": 90,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-12-leader_dest": {
+      "angle": 90,
+      "distance": 1.165,
+      "rotation": 0
+    },
+    "flagnote-13": {
+      "angle": -90,
+      "distance": 3.25,
+      "rotation": 0
+    },
+    "flagnote-13-leader_dest": {
+      "angle": -90,
+      "distance": 1.165,
+      "rotation": 0
+    }
+  },
+  "contacts": [
+    {
+      "name": "X",
+      "size": "12"
+    },
+    {
+      "name": "Y",
+      "size": "12"
+    },
+    {
+      "name": "Z",
+      "size": "12"
+    },
+    {
+      "name": "G",
+      "size": "12"
+    }
+  ],
+  "nema_config": "L16-20",
+  "gender": "R",
+  "voltage": "480 V AC 3\u03a6",
+  "current_a": 20,
+  "locking": true,
+  "poles": 3,
+  "wires": 4,
+  "grounded": true,
+  "system": "3-phase delta hot-hot-hot-ground",
+  "hubbell pn": "HBL2433",
+  "mcmaster pn": "7164K53",
+  "mcmaster url": "https://www.mcmaster.com/7164K53/"
+}

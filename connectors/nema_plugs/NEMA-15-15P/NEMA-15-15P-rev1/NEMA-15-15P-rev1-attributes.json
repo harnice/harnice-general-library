@@ -1,0 +1,165 @@
+{
+  "tools": [
+    "flathead screwdriver"
+  ],
+  "build_notes": [],
+  "csys_children": {
+    "flagnote-1": {
+      "angle": 0,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-1-leader_dest": {
+      "angle": 0,
+      "distance": 2.813,
+      "rotation": 0
+    },
+    "flagnote-2": {
+      "angle": 15,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-2-leader_dest": {
+      "angle": 15,
+      "distance": 2.0395,
+      "rotation": 0
+    },
+    "flagnote-3": {
+      "angle": -15,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-3-leader_dest": {
+      "angle": -15,
+      "distance": 2.0395,
+      "rotation": 0
+    },
+    "flagnote-4": {
+      "angle": 30,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-4-leader_dest": {
+      "angle": 30,
+      "distance": 1.531,
+      "rotation": 0
+    },
+    "flagnote-5": {
+      "angle": -30,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-5-leader_dest": {
+      "angle": -30,
+      "distance": 1.531,
+      "rotation": 0
+    },
+    "flagnote-6": {
+      "angle": 45,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-6-leader_dest": {
+      "angle": 45,
+      "distance": 1.0826,
+      "rotation": 0
+    },
+    "flagnote-7": {
+      "angle": -45,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-7-leader_dest": {
+      "angle": -45,
+      "distance": 1.0826,
+      "rotation": 0
+    },
+    "flagnote-8": {
+      "angle": 60,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-8-leader_dest": {
+      "angle": 60,
+      "distance": 0.8839,
+      "rotation": 0
+    },
+    "flagnote-9": {
+      "angle": -60,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-9-leader_dest": {
+      "angle": -60,
+      "distance": 0.8839,
+      "rotation": 0
+    },
+    "flagnote-10": {
+      "angle": 75,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-10-leader_dest": {
+      "angle": 75,
+      "distance": 0.7925,
+      "rotation": 0
+    },
+    "flagnote-11": {
+      "angle": -75,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-11-leader_dest": {
+      "angle": -75,
+      "distance": 0.7925,
+      "rotation": 0
+    },
+    "flagnote-12": {
+      "angle": 90,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-12-leader_dest": {
+      "angle": 90,
+      "distance": 0.7655,
+      "rotation": 0
+    },
+    "flagnote-13": {
+      "angle": -90,
+      "distance": 3.3129999999999997,
+      "rotation": 0
+    },
+    "flagnote-13-leader_dest": {
+      "angle": -90,
+      "distance": 0.7655,
+      "rotation": 0
+    }
+  },
+  "contacts": [
+    {
+      "name": "X",
+      "size": "14"
+    },
+    {
+      "name": "Y",
+      "size": "14"
+    },
+    {
+      "name": "Z",
+      "size": "14"
+    },
+    {
+      "name": "G",
+      "size": "14"
+    }
+  ],
+  "nema_config": "15-15",
+  "gender": "P",
+  "voltage": "250 V AC 3\u03a6",
+  "current_a": 15,
+  "locking": false,
+  "poles": 3,
+  "wires": 4,
+  "grounded": true,
+  "system": "3-phase delta hot-hot-hot-ground"
+}

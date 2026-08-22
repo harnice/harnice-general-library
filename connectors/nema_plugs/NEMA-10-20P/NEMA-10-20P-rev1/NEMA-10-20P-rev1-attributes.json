@@ -4,6 +4,14 @@
   ],
   "build_notes": [],
   "csys_children": {
+    "3d-mate": {
+      "x": 2.887,
+      "y": 0.0,
+      "z": 0.0,
+      "rx": 0.0,
+      "ry": 0.0,
+      "rz": 0.0
+    },
     "flagnote-1": {
       "angle": 0,
       "distance": 3.3870000000000005,

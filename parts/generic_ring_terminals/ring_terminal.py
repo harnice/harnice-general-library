@@ -516,6 +516,9 @@ def main(skip_render=False, attributes_only=False):
         # ---- render ----
         if not skip_render:
             subprocess.run(["harnice", "-r"], cwd=rev_dir, check=True)
+            for item in os.listdir(rev_dir):
+                if item.endswith(".png"):
+                    os.remove(os.path.join(rev_dir, item))
 
     print("Finished rendering all parts in family.")
 

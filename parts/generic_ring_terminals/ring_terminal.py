@@ -418,7 +418,7 @@ def part_number_from_cfg(cfg: dict) -> str:
 
 def main():
     state.set_rev(REVISION)
-    state.set_product("part")
+    state.set_project_type("part")
 
     for cfg in build_part_configurations():
         pn = part_number_from_cfg(cfg)
@@ -440,7 +440,7 @@ def main():
         # ---- revision history ----
         rev_history.part_family_append(
             {
-                "product": state.product,
+                "project_type": state.project_type,
                 "mfg": "mil spec",
                 "pn": pn,
                 "rev": REVISION,

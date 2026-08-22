@@ -40,7 +40,7 @@ import sys
 
 from harnice import fileio, state
 from harnice.lists import rev_history
-import harnice.products.part as part
+import harnice.project_types.part as part
 
 import nema_geometry
 import nema_plugs
@@ -618,7 +618,7 @@ def make_part(cfg, render=True):
 
     rev_history.part_family_append(
         {
-            "product": state.product,
+            "project_type": state.project_type,
             "mfg": "NEMA",
             "pn": part_number,
             "rev": REVISION,
@@ -664,7 +664,7 @@ def make_part(cfg, render=True):
 
 def main(csv_only=False, skip_render=False):
     state.set_rev(REVISION)
-    state.set_product("part")
+    state.set_project_type("part")
 
     csv_path = write_catalog_csv()
     print(f"Wrote catalog: {csv_path}")

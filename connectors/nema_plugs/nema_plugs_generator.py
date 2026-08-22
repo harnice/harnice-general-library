@@ -15,11 +15,13 @@ PRIMARY SOURCES
 
 WHAT IS MODELLED
 ----------------
-    Drawing: side elevation like D38999. Origin at the cable end, +X
+    Drawing and STEP share a cable-side origin (same convention as the
+    aerospace library): x = 0 is the strain-relief / cable face, +X
     toward the mating face. Body is the Hubbell envelope; plug blades
     are the WD-6 contacts projected onto the XZ plane (G at the top).
     STEP: cylindrical housing + WD-6 face cylinder, then (plugs) blades
-    extruded +X from the face — same Harnice convention as D38999.
+    extruded +X from the face. csys_children["3d-mate"] sits on that
+    mating face (blade tips on P, face on R).
 
 LIMITATIONS
 -----------
@@ -183,6 +185,27 @@ def _ray_perimeter_exit_distance(origin, angle_deg, perimeter):
     if not hits:
         return None
     return max(hits)
+
+
+def csys_6dof(x, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0):
+    """Child csys pose in inches/degrees relative to the STEP (part) origin."""
+    return {
+        "x": round(float(x), 4),
+        "y": round(float(y), 4),
+        "z": round(float(z), 4),
+        "rx": round(float(rx), 4),
+        "ry": round(float(ry), 4),
+        "rz": round(float(rz), 4),
+    }
+
+
+def mate_csys_3d(spec: dict, gender: str):
+    """Mating face in the STEP frame (inches), identity orientation.
+
+    Origin is the cable-side strain relief; this output sits on the
+    mating face (blade tips on a plug, nylon face on a connector).
+    """
+    return csys_6dof(nema_geometry.overall_length(spec, gender))
 
 
 def flagnote_csys_children(spec: dict, gender: str):
@@ -492,7 +515,10 @@ def compile_part_attributes(cfg: dict) -> dict:
     attrs = {
         "tools": ["flathead screwdriver"],
         "build_notes": [],
-        "csys_children": flagnote_csys_children(spec, gender),
+        "csys_children": {
+            "3d-mate": mate_csys_3d(spec, gender),
+            **flagnote_csys_children(spec, gender),
+        },
         "contacts": contacts,
         "nema_config": spec["config"],
         "gender": gender,
@@ -606,7 +632,7 @@ def build_part(part_number, rev_dir):
         os.chdir(cwd)
 
 
-def make_part(cfg, render=True):
+def make_part(cfg, render=True, attributes_only=False):
     spec = cfg["spec"]
     gender = cfg["gender"]
     part_number = nema_plugs.make_part_number(cfg["config"], gender)
@@ -615,6 +641,15 @@ def make_part(cfg, render=True):
     family_dir = os.path.dirname(os.path.abspath(__file__))
     part_dir = os.path.join(family_dir, part_number)
     os.makedirs(part_dir, exist_ok=True)
+
+    rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
+    if attributes_only:
+        os.makedirs(rev_dir, exist_ok=True)
+        json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(compile_part_attributes(cfg), f, indent=2)
+            f.write("\n")
+        return part_number
 
     rev_history.part_family_append(
         {
@@ -662,23 +697,24 @@ def make_part(cfg, render=True):
     return part_number
 
 
-def main(csv_only=False, skip_render=False):
+def main(csv_only=False, skip_render=False, attributes_only=False):
     state.set_rev(REVISION)
     state.set_project_type("part")
 
-    csv_path = write_catalog_csv()
-    print(f"Wrote catalog: {csv_path}")
-    if csv_only:
-        return
+    if not attributes_only:
+        csv_path = write_catalog_csv()
+        print(f"Wrote catalog: {csv_path}")
+        if csv_only:
+            return
 
-    if not skip_render:
+    if not skip_render and not attributes_only:
         cache_run_constant_lookups()
 
     configs = list(nema_plugs.iter_part_configurations())
     total = len(configs)
     print(f"Building {total} NEMA plugs in {os.path.dirname(os.path.abspath(__file__))}")
     for i, cfg in enumerate(configs, start=1):
-        make_part(cfg, render=not skip_render)
+        make_part(cfg, render=not skip_render, attributes_only=attributes_only)
         print(_progress_bar(i, total))
 
     print(f"Finished rendering {total} parts in family.")
@@ -688,4 +724,5 @@ if __name__ == "__main__":
     main(
         csv_only="--csv-only" in sys.argv,
         skip_render="--skip-render" in sys.argv,
+        attributes_only="--attributes-only" in sys.argv,
     )

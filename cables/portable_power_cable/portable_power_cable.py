@@ -705,7 +705,7 @@ def write_family_csv(configs: list[dict], path: str) -> None:
 
 
 def write_conductor_list(attrs: dict, path: str) -> int:
-    """Walk the attributes tree the same way harnice.products.cable.build does."""
+    """Walk the attributes tree the same way harnice.project_types.cable.build does."""
     rows = []
     all_headers = {"appearance"}
 
@@ -754,7 +754,7 @@ def write_conductor_list(attrs: dict, path: str) -> int:
 
 def main():
     state.set_rev(REVISION)
-    state.set_product("cable")
+    state.set_project_type("cable")
 
     family_dir = os.path.dirname(os.path.abspath(__file__))
     configs = build_configurations()
@@ -784,7 +784,7 @@ def main():
 
         rev_history.part_family_append(
             {
-                "product": state.product,
+                "project_type": state.project_type,
                 "mfg": "McMaster-Carr" if mcmaster else "",
                 "pn": pn,
                 "rev": REVISION,

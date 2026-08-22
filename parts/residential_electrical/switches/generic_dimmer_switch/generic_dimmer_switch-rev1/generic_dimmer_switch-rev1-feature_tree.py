@@ -1,5 +1,5 @@
 from harnice.lists import signals_list
-from harnice.products import chtype
+from harnice.project_types import chtype
 
 american_outlet = {"live": "live", "neutral": "neutral", "earth": "earth"}
 

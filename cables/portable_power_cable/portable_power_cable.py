@@ -1,20 +1,51 @@
-import csv
-import json
-import os
+"""Portable-power-cable chooser (UL letter-code service cord).
 
-from harnice import state
-from harnice.lists import rev_history
+Legal SKUs are the UL 62 type / AWG / conductor-count combinations that
+are commonly sold as bulk portable cord. McMaster-Carr bulk PNs are
+recorded when they exist; types they do not stock are still emitted if
+the UL designation is commercially real. Harness build instructions
+import this module, not the generator.
 
-REVISION = "1"
-DATE_STARTED = "8/18/26"
-LIBRARY_REPO = (
-    "https://github.com/harnice/harness-accessories-and-general-standards"
-)
+    import os
+    import sys
 
-# ---------------------------------------------------------------------------
-# Reference data
-# ---------------------------------------------------------------------------
+    from harnice.lists import instances_list
+    from harnice.utils import library_utils
 
+    LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+    LIBRARY_SUBPATH = "cables/portable_power_cable"
+    sys.path.append(
+        os.path.join(library_utils.get_local_path(LIBRARY_REPO), LIBRARY_SUBPATH)
+    )
+    import portable_power_cable
+
+    for instance in instances_list.read():
+        if instance.get("item_type") != "cable":
+            continue
+        code = instance.get("cable_type")
+        gauge = instance.get("gauge_awg")
+        n = instance.get("conductors")
+        if not code or not gauge or not n:
+            continue
+        instances_list.modify(
+            instance.get("instance_name"),
+            {
+                "mpn": portable_power_cable.choose_part(code, gauge, n),
+                "lib_repo": LIBRARY_REPO,
+                "lib_subpath": LIBRARY_SUBPATH,
+            },
+        )
+"""
+
+from __future__ import annotations
+
+import re
+
+LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+LIBRARY_SUBPATH = "cables/portable_power_cable"
+MANUFACTURER = ""
+
+# Bare-copper conductor OD, inches (AWG).
 AWG_OD = {
     "4/0": 0.460000,
     "3/0": 0.409642,
@@ -73,6 +104,7 @@ CONDUCTOR_COLORS = {
 
 # McMaster-Carr bulk (by-the-foot) catalog numbers, black jacket unless noted.
 # Sourced from mcmaster.com power-cable tables. Sizes they do not sell are omitted.
+# https://www.mcmaster.com/products/portable-cord/
 MCMASTER_SOOW = {
     ("18", 2): "7081K11",
     ("18", 3): "7081K12",
@@ -194,6 +226,8 @@ def conductor_appearance(color: str) -> dict:
     return {"base_color": color}
 
 
+# Insulation / jacket wall, inches. estimate: typical UL 62 portable-cord
+# walls by AWG class, not a single manufacturer table.
 def sj_insulation_in(gauge: str) -> float:
     return 0.045 if awg_numeric(gauge) <= 10 else 0.030
 
@@ -254,10 +288,8 @@ def w_jacket_in(gauge: str) -> float:
     return 0.230
 
 
-# ---------------------------------------------------------------------------
-# Cable types called out in the article
-# ---------------------------------------------------------------------------
-
+# UL 62 letter-code families commonly sold as portable cord.
+# https://www.mcmaster.com/products/portable-cord/
 CABLE_TYPES = [
     {
         "code": "SPT-1",
@@ -547,88 +579,123 @@ CABLE_TYPES = [
     },
 ]
 
+_TYPES_BY_CODE = {spec["code"]: spec for spec in CABLE_TYPES}
 
-# ---------------------------------------------------------------------------
-# Attribute compilation
-# ---------------------------------------------------------------------------
+_PN_RE = re.compile(
+    r"^(?P<code>[A-Z]+(?:-\d+)?)"
+    r"[-_ ]"
+    r"(?P<gauge>\d+(?:[_/]\d+)?)"
+    r"[-_ ]"
+    r"(?P<n>\d+)\s*C?$",
+    re.IGNORECASE,
+)
 
-def build_configurations() -> list[dict]:
-    configs = []
+
+def iter_part_configurations():
     for spec in CABLE_TYPES:
         for gauge in spec["gauges"]:
             for n in spec["conductors"]:
-                configs.append({"spec": spec, "gauge": gauge, "n_conductors": n})
-    return configs
+                yield {"spec": spec, "gauge": gauge, "n_conductors": n}
 
 
-def part_number_from_cfg(cfg: dict) -> str:
+def make_part_number(cfg: dict) -> str:
     gauge = cfg["gauge"].replace("/", "_")
     return f"{cfg['spec']['code']}-{gauge}-{cfg['n_conductors']}C"
+
+
+def official_pin(cfg: dict) -> str:
+    return make_part_number(cfg)
 
 
 def description_from_cfg(cfg: dict) -> str:
     spec = cfg["spec"]
     return (
-        f"PORTABLE POWER CABLE, {spec['code']}, "
+        f"CABLE, PORTABLE POWER, {spec['code']}, "
         f"{cfg['gauge']} AWG, {cfg['n_conductors']} CONDUCTOR, {spec['voltage']}"
-    ).upper()
+    )
 
 
-def compile_cable_attributes(cfg: dict) -> dict:
-    spec = cfg["spec"]
-    gauge = cfg["gauge"]
-    n = cfg["n_conductors"]
-    insulation_in = spec["insulation_in"](gauge)
-    jacket_in = spec["jacket_in"](gauge)
+def choose_part(cable_type, gauge=None, conductors=None, n_conductors=None):
+    """
+    Choose a portable-power-cable SKU that exists in this library.
 
-    conductors = {}
-    for color in CONDUCTOR_COLORS[n]:
-        conductors[color] = {
-            "conductor": True,
-            "properties": {
-                "insulation material": spec["insulation_material"],
-                "od": insulated_od(gauge, insulation_in),
-                "gauge": f"{gauge}AWG",
-                "construction": CLASS_K_STRANDING[gauge],
-                "material": "copper",
-            },
-            "appearance": conductor_appearance(color),
-        }
-        if spec.get("oil_resistant_insulation"):
-            conductors[color]["properties"]["oil resistant"] = True
+    cable_type:
+      UL letter code (SOOW, SJT, SPT-1, W, …) or a full library PN.
+    gauge:
+      AWG as 14, "14", "1/0", "1_0". Ignored when cable_type is a full PN.
+    conductors / n_conductors:
+      2..5. Ignored when cable_type is a full PN.
 
-    jacket_properties = {
-        "construction": spec["construction"],
-        "voltage": spec["voltage"],
-        "usage": spec["usage"],
-        "type": spec["code"],
-        "jacketed": spec["jacketed"],
-    }
-    if spec["jacket_material"]:
-        jacket_properties["material"] = spec["jacket_material"]
-    if spec["jacket_color"]:
-        jacket_properties["color"] = spec["jacket_color"]
-    if jacket_in:
-        jacket_properties["thickness"] = fmt_in(jacket_in)
-    for flag in (
-        "oil_resistant_jacket",
-        "oil_resistant_insulation",
-        "weather_resistant",
-    ):
-        if spec.get(flag):
-            jacket_properties[flag.replace("_", " ")] = True
-
-    mcmaster = mcmaster_part(spec["code"], gauge, n)
-    if mcmaster:
-        jacket_properties["mcmaster pn"] = mcmaster["pn"]
-        jacket_properties["mcmaster designation"] = mcmaster["designation"]
-        jacket_properties["mcmaster url"] = mcmaster["url"]
-
-    return {"jacket": {**{"properties": jacket_properties}, **conductors}}
+    Returns the library PN. Raises ValueError if that combo is not sold here.
+    """
+    text = str(cable_type).strip()
+    if _looks_like_pn(text) and gauge is None and conductors is None and n_conductors is None:
+        return parse_portable_power_cable(text)["mpn"]
+    if conductors is None:
+        conductors = n_conductors
+    if _looks_like_pn(text) and gauge is not None and conductors is not None:
+        parsed = parse_portable_power_cable(text)
+        gauge = parsed["gauge"]
+        conductors = parsed["n_conductors"]
+        text = parsed["spec"]["code"]
+    if gauge is None or conductors is None:
+        raise ValueError(
+            "choose_part requires cable_type, gauge, and conductors "
+            "(or a full PN like SOOW-14-3C)."
+        )
+    code = _normalize_code(text)
+    gauge = _normalize_gauge(gauge)
+    n = int(conductors)
+    spec = _TYPES_BY_CODE[code]
+    if gauge not in spec["gauges"] or n not in spec["conductors"]:
+        raise ValueError(
+            f"No {code} cable for {gauge} AWG / {n} conductor in this library. "
+            f"Legal gauges: {', '.join(spec['gauges'])}. "
+            f"Legal conductor counts: {', '.join(str(c) for c in spec['conductors'])}."
+        )
+    return make_part_number({"spec": spec, "gauge": gauge, "n_conductors": n})
 
 
-CSV_COLUMNS = [
-    "pn",
+def parse_portable_power_cable(part_number):
+    """Parse a library PN into spec / gauge / conductor count."""
+    text = str(part_number).strip()
+    match = _PN_RE.match(text.replace(" ", ""))
+    if not match:
+        raise ValueError(
+            f"Could not parse {part_number!r} as portable power cable. "
+            "Expected SOOW-14-3C or SPT-1-18-2C."
+        )
+    code = _normalize_code(match.group("code"))
+    gauge = _normalize_gauge(match.group("gauge"))
+    n = int(match.group("n"))
+    spec = _TYPES_BY_CODE[code]
+    if gauge not in spec["gauges"] or n not in spec["conductors"]:
+        raise ValueError(
+            f"{part_number!r} is not a SKU in this library. "
+            f"Legal {code} PNs: {', '.join(list_parts(code))}."
+        )
+    cfg = {"spec": spec, "gauge": gauge, "n_conductors": n}
+    cfg["mpn"] = make_part_number(cfg)
+    return cfg
+
+
+def list_parts(cable_type=None):
+    """Library PNs, optionally filtered by UL letter code."""
+    code = _normalize_code(cable_type) if cable_type is not None else None
+    out = []
+    for cfg in iter_part_configurations():
+        if code is not None and cfg["spec"]["code"] != code:
+            continue
+        out.append(make_part_number(cfg))
+    return out
+
+
+def list_types():
+    return [spec["code"] for spec in CABLE_TYPES]
+
+
+CATALOG_COLUMNS = (
+    "library_pn",
     "type",
     "name",
     "description",
@@ -655,19 +722,19 @@ CSV_COLUMNS = [
     "mcmaster_url",
     "mfg",
     "library_subpath",
-]
+)
 
 
-def csv_row_from_cfg(cfg: dict) -> dict:
+def catalog_row(cfg: dict) -> dict:
     spec = cfg["spec"]
     gauge = cfg["gauge"]
     n = cfg["n_conductors"]
-    pn = part_number_from_cfg(cfg)
+    pn = make_part_number(cfg)
     mcmaster = mcmaster_part(spec["code"], gauge, n) or {}
     insulation_in = spec["insulation_in"](gauge)
     jacket_in = spec["jacket_in"](gauge)
     return {
-        "pn": pn,
+        "library_pn": pn,
         "type": spec["code"],
         "name": spec["name"],
         "description": description_from_cfg(cfg),
@@ -693,129 +760,30 @@ def csv_row_from_cfg(cfg: dict) -> dict:
         "mcmaster_designation": mcmaster.get("designation", ""),
         "mcmaster_url": mcmaster.get("url", ""),
         "mfg": "McMaster-Carr" if mcmaster else "",
-        "library_subpath": f"portable_power_cable/{pn}",
+        "library_subpath": LIBRARY_SUBPATH,
     }
 
 
-def write_family_csv(configs: list[dict], path: str) -> None:
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(csv_row_from_cfg(cfg) for cfg in configs)
+def _looks_like_pn(value: str) -> bool:
+    return bool(_PN_RE.match(str(value).strip().replace(" ", "")))
 
 
-def write_conductor_list(attrs: dict, path: str) -> int:
-    """Walk the attributes tree the same way harnice.project_types.cable.build does."""
-    rows = []
-    all_headers = {"appearance"}
-
-    def recurse(obj, parent_chain=None):
-        if parent_chain is None:
-            parent_chain = []
-        if isinstance(obj, dict):
-            if obj.get("conductor") is True:
-                props = obj.get("properties", {})
-                appearance = obj.get("appearance", {})
-                container = parent_chain[-2] if len(parent_chain) >= 2 else ""
-                identifier = parent_chain[-1] if len(parent_chain) >= 1 else ""
-                row = {"container": container, "identifier": identifier}
-                for k, v in props.items():
-                    row[k] = v
-                    all_headers.add(k)
-                row["appearance"] = (
-                    json.dumps(
-                        appearance, separators=(",", ":"), ensure_ascii=False
-                    ).replace('"', "'")
-                    if appearance
-                    else ""
-                )
-                rows.append(row)
-            for k, v in obj.items():
-                if isinstance(v, (dict, list)):
-                    recurse(v, parent_chain + [k])
-        elif isinstance(obj, list):
-            for item in obj:
-                recurse(item, parent_chain)
-
-    recurse(attrs)
-    headers = ["container", "identifier"] + sorted(all_headers)
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f, fieldnames=headers, delimiter="\t", lineterminator="\n"
+def _normalize_code(value: str) -> str:
+    text = str(value).strip().upper().replace("_", "-")
+    if text not in _TYPES_BY_CODE:
+        raise ValueError(
+            f"Unknown portable-cord type {value!r}. "
+            f"This library has: {', '.join(list_types())}."
         )
-        writer.writeheader()
-        writer.writerows(rows)
-    return len(rows)
+    return text
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-def main():
-    state.set_rev(REVISION)
-    state.set_project_type("cable")
-
-    family_dir = os.path.dirname(os.path.abspath(__file__))
-    configs = build_configurations()
-    print(f"Building {len(configs)} portable power cables in {family_dir}")
-    with_mcmaster = 0
-
-    for cfg in configs:
-        pn = part_number_from_cfg(cfg)
-        mcmaster = mcmaster_part(
-            cfg["spec"]["code"], cfg["gauge"], cfg["n_conductors"]
-        )
-        print(f"Preparing cable: {pn}" + (f" ({mcmaster['pn']})" if mcmaster else ""))
-        if mcmaster:
-            with_mcmaster += 1
-
-        part_dir = os.path.join(family_dir, pn)
-        os.makedirs(part_dir, exist_ok=True)
-
-        rev_dir = os.path.join(part_dir, f"{pn}-rev{REVISION}")
-        if os.path.exists(rev_dir):
-            for item in os.listdir(rev_dir):
-                p = os.path.join(rev_dir, item)
-                if os.path.isfile(p):
-                    os.remove(p)
-        else:
-            os.makedirs(rev_dir)
-
-        rev_history.part_family_append(
-            {
-                "project_type": state.project_type,
-                "mfg": "McMaster-Carr" if mcmaster else "",
-                "pn": pn,
-                "rev": REVISION,
-                "desc": description_from_cfg(cfg),
-                "status": "",
-                "datestarted": DATE_STARTED,
-                "library_repo": LIBRARY_REPO,
-                "library_subpath": f"portable_power_cable/{pn}",
-                "revisionupdates": "INITIAL RELEASE",
-            },
-            os.path.join(part_dir, f"{pn}-revision_history.tsv"),
-        )
-
-        attributes = compile_cable_attributes(cfg)
-        json_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-attributes.json")
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(attributes, f, indent=4)
-            f.write("\n")
-
-        tsv_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-conductor_list.tsv")
-        write_conductor_list(attributes, tsv_path)
-
-    csv_path = os.path.join(family_dir, "portable_power_cable.csv")
-    write_family_csv(configs, csv_path)
-
-    print(
-        f"Finished building {len(configs)} portable power cables "
-        f"({with_mcmaster} with McMaster-Carr part numbers)."
-    )
-    print(f"Wrote family catalog: {csv_path}")
-
-
-if __name__ == "__main__":
-    main()
+def _normalize_gauge(value) -> str:
+    text = str(value).strip().upper().replace("_", "/")
+    if text.endswith("AWG"):
+        text = text[:-3].strip()
+    if text.isdigit():
+        text = str(int(text))
+    if text not in AWG_OD:
+        raise ValueError(f"Unknown wire gauge {value!r}.")
+    return text

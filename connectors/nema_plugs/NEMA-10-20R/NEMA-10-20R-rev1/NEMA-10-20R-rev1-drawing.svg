@@ -10,6 +10,13 @@
 <g id="NEMA-10-20R-drawing-contents-end">
   </g>
   <g id="output csys locations">
+    <g id="3d-mate">
+      <circle cx="278.40" cy="-0.00" r="4" fill="black"/>
+      <line x1="278.40" y1="-0.00" x2="302.40" y2="-0.00" stroke="red" stroke-width="2"/>
+      <polygon points="302.40,-0.00 296.40,-3.00 296.40,3.00" fill="red"/>
+      <line x1="278.40" y1="-0.00" x2="278.40" y2="-24.00" stroke="green" stroke-width="2"/>
+      <polygon points="278.40,-24.00 275.40,-18.00 281.40,-18.00" fill="green"/>
+    </g>
     <g id="flagnote-1">
       <circle cx="326.40" cy="-0.00" r="4" fill="black"/>
       <line x1="326.40" y1="-0.00" x2="350.40" y2="-0.00" stroke="red" stroke-width="2"/>

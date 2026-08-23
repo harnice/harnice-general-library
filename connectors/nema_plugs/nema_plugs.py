@@ -7,11 +7,46 @@ L21–L26.
 
 Library PNs: NEMA-5-15P, NEMA-L14-30R, NEMA-TT-30P.
 Official WD-6 names drop the NEMA- prefix (5-15P, L14-30R, TT-30P).
+Harness build instructions import this module, not the generator.
+
+    import os
+    import sys
+
+    from harnice.lists import instances_list
+    from harnice.utils import library_utils
+
+    LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+    LIBRARY_SUBPATH = "connectors/nema_plugs"
+    sys.path.append(
+        os.path.join(library_utils.get_local_path(LIBRARY_REPO), LIBRARY_SUBPATH)
+    )
+    import nema_plugs
+
+    for instance in instances_list.read():
+        if instance.get("item_type") != "harness_connector":
+            continue
+        device_mpn = instance.get("device_side_connector_mpn") or ""
+        try:
+            mate = nema_plugs.find_mating_connector(device_mpn)
+        except ValueError:
+            continue
+        instances_list.modify(
+            instance.get("instance_name"),
+            {
+                "mpn": mate,
+                "lib_repo": LIBRARY_REPO,
+                "lib_subpath": LIBRARY_SUBPATH,
+            },
+        )
 """
 
 from __future__ import annotations
 
 import re
+
+LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+LIBRARY_SUBPATH = "connectors/nema_plugs"
+MANUFACTURER = "NEMA"
 
 # ---------------------------------------------------------------------------
 # Families
@@ -522,3 +557,57 @@ def _format_pn(config, gender, return_divider):
     if return_divider is None:
         return make_part_number(config, gender)
     return f"NEMA{return_divider}{config}{gender}"
+
+
+CATALOG_COLUMNS = (
+    "library_pn",
+    "official_pin",
+    "spec",
+    "common_name",
+    "config",
+    "series",
+    "gender",
+    "contacts_type",
+    "locking",
+    "voltage",
+    "current_a",
+    "poles",
+    "wires",
+    "grounded",
+    "system",
+    "contact_letters",
+    "pin_count",
+    "max_wire_awg",
+    "mates",
+    "library_subpath",
+)
+
+
+def catalog_row(cfg: dict) -> dict:
+    spec = cfg["spec"]
+    gender = cfg["gender"]
+    g = GENDERS[gender]
+    pn = make_part_number(cfg["config"], gender)
+    mates = compatible_mates(pn)
+    return {
+        "library_pn": pn,
+        "official_pin": official_name(cfg["config"], gender),
+        "spec": "ANSI/NEMA WD 6",
+        "common_name": f"{spec['common_name']}, {g['name'].lower()}",
+        "config": spec["config"],
+        "series": spec["series"],
+        "gender": g["name"],
+        "contacts_type": g["contacts"],
+        "locking": spec["locking"],
+        "voltage": spec["voltage"],
+        "current_a": spec["amps"],
+        "poles": spec["poles"],
+        "wires": spec["wires"],
+        "grounded": spec["grounded"],
+        "system": spec["system"],
+        "contact_letters": " ".join(spec["contacts"]),
+        "pin_count": len(spec["contacts"]),
+        "max_wire_awg": spec["max_wire_awg"],
+        "mates": ", ".join(mates),
+        "library_subpath": LIBRARY_SUBPATH,
+    }

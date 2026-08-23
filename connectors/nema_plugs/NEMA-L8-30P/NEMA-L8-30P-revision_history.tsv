@@ -1,2 +1,2 @@
 project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances
-part	NEMA	NEMA-L8-30P	CONNECTOR, NEMA L8-30P, LOCKING, 480 V AC, 30 A, PLUG	1			https://github.com/harnice/harness-accessories-and-general-standards	nema_plugs/NEMA-L8-30P	8/18/26	8/18/26		1ab728225c2912cd922463850ba1e777db70896f	K SHUTT		INITIAL RELEASE	
+part	NEMA	NEMA-L8-30P	CONNECTOR, NEMA L8-30P, LOCKING, 480 V AC, 30 A, PLUG	1			https://github.com/harnice/harnice-general-library	connectors/nema_plugs	8/18/26	8/23/26		16b50a857700741e1ad559af003ea9db6d36a4d6	K SHUTT		INITIAL RELEASE	

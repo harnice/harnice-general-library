@@ -1,16 +1,7 @@
 {
-  "wire_gauge_awg": "4/0",
-  "stud_size": "1",
-  "insulation_color": null,
-  "insulated": false,
-  "stud_hole_id": 1.031,
-  "ring_od": 1.4436,
-  "barrel_od": 0.61,
-  "overall_length": 2.6636,
-  "barrel_material": "copper",
-  "plating": "tin",
-  "insulation_material": null,
-  "tools": null,
+  "tools": [
+    "crimp tool"
+  ],
   "build_notes": [],
   "csys_children": {
     "3d-mate": {
@@ -23,7 +14,7 @@
     },
     "flagnote-1": {
       "angle": 0,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-1-leader_dest": {
@@ -33,7 +24,7 @@
     },
     "flagnote-2": {
       "angle": 15,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-2-leader_dest": {
@@ -43,7 +34,7 @@
     },
     "flagnote-3": {
       "angle": -15,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-3-leader_dest": {
@@ -53,7 +44,7 @@
     },
     "flagnote-4": {
       "angle": 30,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-4-leader_dest": {
@@ -63,7 +54,7 @@
     },
     "flagnote-5": {
       "angle": -30,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-5-leader_dest": {
@@ -73,7 +64,7 @@
     },
     "flagnote-6": {
       "angle": 45,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-6-leader_dest": {
@@ -83,7 +74,7 @@
     },
     "flagnote-7": {
       "angle": -45,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-7-leader_dest": {
@@ -93,7 +84,7 @@
     },
     "flagnote-8": {
       "angle": 60,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-8-leader_dest": {
@@ -103,7 +94,7 @@
     },
     "flagnote-9": {
       "angle": -60,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-9-leader_dest": {
@@ -113,7 +104,7 @@
     },
     "flagnote-10": {
       "angle": 75,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-10-leader_dest": {
@@ -123,7 +114,7 @@
     },
     "flagnote-11": {
       "angle": -75,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-11-leader_dest": {
@@ -133,7 +124,7 @@
     },
     "flagnote-12": {
       "angle": 90,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-12-leader_dest": {
@@ -143,7 +134,7 @@
     },
     "flagnote-13": {
       "angle": -90,
-      "distance": 3.0,
+      "distance": 3.1636,
       "rotation": 0
     },
     "flagnote-13-leader_dest": {
@@ -151,5 +142,16 @@
       "distance": 0.345,
       "rotation": 0
     }
-  }
+  },
+  "wire_gauge_awg": "4/0",
+  "stud_size": "1",
+  "insulation_color": null,
+  "insulated": false,
+  "stud_hole_id": 1.031,
+  "ring_od": 1.4436,
+  "barrel_od": 0.61,
+  "overall_length": 2.6636,
+  "barrel_material": "copper",
+  "plating": "tin",
+  "insulation_material": null
 }

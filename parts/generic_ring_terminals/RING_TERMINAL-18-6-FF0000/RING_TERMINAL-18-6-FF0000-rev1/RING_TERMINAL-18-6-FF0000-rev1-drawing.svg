@@ -12,6 +12,13 @@
 <g id="RING_TERMINAL-18-6-FF0000-drawing-contents-end">
   </g>
   <g id="output csys locations">
+    <g id="3d-mate">
+      <circle cx="70.06" cy="-0.00" r="4" fill="black"/>
+      <line x1="70.06" y1="-0.00" x2="94.06" y2="-0.00" stroke="red" stroke-width="2"/>
+      <polygon points="94.06,-0.00 88.06,-3.00 88.06,3.00" fill="red"/>
+      <line x1="70.06" y1="-0.00" x2="70.06" y2="-24.00" stroke="green" stroke-width="2"/>
+      <polygon points="70.06,-24.00 67.06,-18.00 73.06,-18.00" fill="green"/>
+    </g>
     <g id="flagnote-1">
       <circle cx="288.00" cy="-0.00" r="4" fill="black"/>
       <line x1="288.00" y1="-0.00" x2="312.00" y2="-0.00" stroke="red" stroke-width="2"/>
@@ -34,11 +41,11 @@
       <polygon points="278.19,-98.54 275.19,-92.54 281.19,-92.54" fill="green"/>
     </g>
     <g id="flagnote-2-leader_dest">
-      <circle cx="62.64" cy="-16.78" r="4" fill="black"/>
-      <line x1="62.64" y1="-16.78" x2="86.64" y2="-16.78" stroke="red" stroke-width="2"/>
-      <polygon points="86.64,-16.78 80.64,-19.78 80.64,-13.78" fill="red"/>
-      <line x1="62.64" y1="-16.78" x2="62.64" y2="-40.78" stroke="green" stroke-width="2"/>
-      <polygon points="62.64,-40.78 59.64,-34.78 65.64,-34.78" fill="green"/>
+      <circle cx="62.35" cy="-16.71" r="4" fill="black"/>
+      <line x1="62.35" y1="-16.71" x2="86.35" y2="-16.71" stroke="red" stroke-width="2"/>
+      <polygon points="86.35,-16.71 80.35,-19.71 80.35,-13.71" fill="red"/>
+      <line x1="62.35" y1="-16.71" x2="62.35" y2="-40.71" stroke="green" stroke-width="2"/>
+      <polygon points="62.35,-40.71 59.35,-34.71 65.35,-34.71" fill="green"/>
     </g>
     <g id="flagnote-3">
       <circle cx="278.19" cy="74.54" r="4" fill="black"/>
@@ -48,11 +55,11 @@
       <polygon points="278.19,50.54 275.19,56.54 281.19,56.54" fill="green"/>
     </g>
     <g id="flagnote-3-leader_dest">
-      <circle cx="62.64" cy="16.78" r="4" fill="black"/>
-      <line x1="62.64" y1="16.78" x2="86.64" y2="16.78" stroke="red" stroke-width="2"/>
-      <polygon points="86.64,16.78 80.64,13.78 80.64,19.78" fill="red"/>
-      <line x1="62.64" y1="16.78" x2="62.64" y2="-7.22" stroke="green" stroke-width="2"/>
-      <polygon points="62.64,-7.22 59.64,-1.22 65.64,-1.22" fill="green"/>
+      <circle cx="62.35" cy="16.71" r="4" fill="black"/>
+      <line x1="62.35" y1="16.71" x2="86.35" y2="16.71" stroke="red" stroke-width="2"/>
+      <polygon points="86.35,16.71 80.35,13.71 80.35,19.71" fill="red"/>
+      <line x1="62.35" y1="16.71" x2="62.35" y2="-7.29" stroke="green" stroke-width="2"/>
+      <polygon points="62.35,-7.29 59.35,-1.29 65.35,-1.29" fill="green"/>
     </g>
     <g id="flagnote-4">
       <circle cx="249.42" cy="-144.00" r="4" fill="black"/>
@@ -62,11 +69,11 @@
       <polygon points="249.42,-168.00 246.42,-162.00 252.42,-162.00" fill="green"/>
     </g>
     <g id="flagnote-4-leader_dest">
-      <circle cx="32.36" cy="-18.68" r="4" fill="black"/>
-      <line x1="32.36" y1="-18.68" x2="56.36" y2="-18.68" stroke="red" stroke-width="2"/>
-      <polygon points="56.36,-18.68 50.36,-21.68 50.36,-15.68" fill="red"/>
-      <line x1="32.36" y1="-18.68" x2="32.36" y2="-42.68" stroke="green" stroke-width="2"/>
-      <polygon points="32.36,-42.68 29.36,-36.68 35.36,-36.68" fill="green"/>
+      <circle cx="19.15" cy="-11.05" r="4" fill="black"/>
+      <line x1="19.15" y1="-11.05" x2="43.15" y2="-11.05" stroke="red" stroke-width="2"/>
+      <polygon points="43.15,-11.05 37.15,-14.05 37.15,-8.05" fill="red"/>
+      <line x1="19.15" y1="-11.05" x2="19.15" y2="-35.05" stroke="green" stroke-width="2"/>
+      <polygon points="19.15,-35.05 16.15,-29.05 22.15,-29.05" fill="green"/>
     </g>
     <g id="flagnote-5">
       <circle cx="249.42" cy="144.00" r="4" fill="black"/>
@@ -76,11 +83,11 @@
       <polygon points="249.42,120.00 246.42,126.00 252.42,126.00" fill="green"/>
     </g>
     <g id="flagnote-5-leader_dest">
-      <circle cx="32.36" cy="18.68" r="4" fill="black"/>
-      <line x1="32.36" y1="18.68" x2="56.36" y2="18.68" stroke="red" stroke-width="2"/>
-      <polygon points="56.36,18.68 50.36,15.68 50.36,21.68" fill="red"/>
-      <line x1="32.36" y1="18.68" x2="32.36" y2="-5.32" stroke="green" stroke-width="2"/>
-      <polygon points="32.36,-5.32 29.36,0.68 35.36,0.68" fill="green"/>
+      <circle cx="19.15" cy="11.05" r="4" fill="black"/>
+      <line x1="19.15" y1="11.05" x2="43.15" y2="11.05" stroke="red" stroke-width="2"/>
+      <polygon points="43.15,11.05 37.15,8.05 37.15,14.05" fill="red"/>
+      <line x1="19.15" y1="11.05" x2="19.15" y2="-12.95" stroke="green" stroke-width="2"/>
+      <polygon points="19.15,-12.95 16.15,-6.95 22.15,-6.95" fill="green"/>
     </g>
     <g id="flagnote-6">
       <circle cx="203.65" cy="-203.65" r="4" fill="black"/>
@@ -90,11 +97,11 @@
       <polygon points="203.65,-227.65 200.65,-221.65 206.65,-221.65" fill="green"/>
     </g>
     <g id="flagnote-6-leader_dest">
-      <circle cx="19.48" cy="-19.48" r="4" fill="black"/>
-      <line x1="19.48" y1="-19.48" x2="43.48" y2="-19.48" stroke="red" stroke-width="2"/>
-      <polygon points="43.48,-19.48 37.48,-22.48 37.48,-16.48" fill="red"/>
-      <line x1="19.48" y1="-19.48" x2="19.48" y2="-43.48" stroke="green" stroke-width="2"/>
-      <polygon points="19.48,-43.48 16.48,-37.48 22.48,-37.48" fill="green"/>
+      <circle cx="11.85" cy="-11.85" r="4" fill="black"/>
+      <line x1="11.85" y1="-11.85" x2="35.85" y2="-11.85" stroke="red" stroke-width="2"/>
+      <polygon points="35.85,-11.85 29.85,-14.85 29.85,-8.85" fill="red"/>
+      <line x1="11.85" y1="-11.85" x2="11.85" y2="-35.85" stroke="green" stroke-width="2"/>
+      <polygon points="11.85,-35.85 8.85,-29.85 14.85,-29.85" fill="green"/>
     </g>
     <g id="flagnote-7">
       <circle cx="203.65" cy="203.65" r="4" fill="black"/>
@@ -104,11 +111,11 @@
       <polygon points="203.65,179.65 200.65,185.65 206.65,185.65" fill="green"/>
     </g>
     <g id="flagnote-7-leader_dest">
-      <circle cx="19.48" cy="19.48" r="4" fill="black"/>
-      <line x1="19.48" y1="19.48" x2="43.48" y2="19.48" stroke="red" stroke-width="2"/>
-      <polygon points="43.48,19.48 37.48,16.48 37.48,22.48" fill="red"/>
-      <line x1="19.48" y1="19.48" x2="19.48" y2="-4.52" stroke="green" stroke-width="2"/>
-      <polygon points="19.48,-4.52 16.48,1.48 22.48,1.48" fill="green"/>
+      <circle cx="11.85" cy="11.85" r="4" fill="black"/>
+      <line x1="11.85" y1="11.85" x2="35.85" y2="11.85" stroke="red" stroke-width="2"/>
+      <polygon points="35.85,11.85 29.85,8.85 29.85,14.85" fill="red"/>
+      <line x1="11.85" y1="11.85" x2="11.85" y2="-12.15" stroke="green" stroke-width="2"/>
+      <polygon points="11.85,-12.15 8.85,-6.15 14.85,-6.15" fill="green"/>
     </g>
     <g id="flagnote-8">
       <circle cx="144.00" cy="-249.42" r="4" fill="black"/>
@@ -118,11 +125,11 @@
       <polygon points="144.00,-273.42 141.00,-267.42 147.00,-267.42" fill="green"/>
     </g>
     <g id="flagnote-8-leader_dest">
-      <circle cx="11.60" cy="-20.09" r="4" fill="black"/>
-      <line x1="11.60" y1="-20.09" x2="35.60" y2="-20.09" stroke="red" stroke-width="2"/>
-      <polygon points="35.60,-20.09 29.60,-23.09 29.60,-17.09" fill="red"/>
-      <line x1="11.60" y1="-20.09" x2="11.60" y2="-44.09" stroke="green" stroke-width="2"/>
-      <polygon points="11.60,-44.09 8.60,-38.09 14.60,-38.09" fill="green"/>
+      <circle cx="7.20" cy="-12.46" r="4" fill="black"/>
+      <line x1="7.20" y1="-12.46" x2="31.20" y2="-12.46" stroke="red" stroke-width="2"/>
+      <polygon points="31.20,-12.46 25.20,-15.46 25.20,-9.46" fill="red"/>
+      <line x1="7.20" y1="-12.46" x2="7.20" y2="-36.46" stroke="green" stroke-width="2"/>
+      <polygon points="7.20,-36.46 4.20,-30.46 10.20,-30.46" fill="green"/>
     </g>
     <g id="flagnote-9">
       <circle cx="144.00" cy="249.42" r="4" fill="black"/>
@@ -132,11 +139,11 @@
       <polygon points="144.00,225.42 141.00,231.42 147.00,231.42" fill="green"/>
     </g>
     <g id="flagnote-9-leader_dest">
-      <circle cx="11.60" cy="20.09" r="4" fill="black"/>
-      <line x1="11.60" y1="20.09" x2="35.60" y2="20.09" stroke="red" stroke-width="2"/>
-      <polygon points="35.60,20.09 29.60,17.09 29.60,23.09" fill="red"/>
-      <line x1="11.60" y1="20.09" x2="11.60" y2="-3.91" stroke="green" stroke-width="2"/>
-      <polygon points="11.60,-3.91 8.60,2.09 14.60,2.09" fill="green"/>
+      <circle cx="7.20" cy="12.46" r="4" fill="black"/>
+      <line x1="7.20" y1="12.46" x2="31.20" y2="12.46" stroke="red" stroke-width="2"/>
+      <polygon points="31.20,12.46 25.20,9.46 25.20,15.46" fill="red"/>
+      <line x1="7.20" y1="12.46" x2="7.20" y2="-11.54" stroke="green" stroke-width="2"/>
+      <polygon points="7.20,-11.54 4.20,-5.54 10.20,-5.54" fill="green"/>
     </g>
     <g id="flagnote-10">
       <circle cx="74.54" cy="-278.19" r="4" fill="black"/>
@@ -146,11 +153,11 @@
       <polygon points="74.54,-302.19 71.54,-296.19 77.54,-296.19" fill="green"/>
     </g>
     <g id="flagnote-10-leader_dest">
-      <circle cx="5.49" cy="-20.47" r="4" fill="black"/>
-      <line x1="5.49" y1="-20.47" x2="29.49" y2="-20.47" stroke="red" stroke-width="2"/>
-      <polygon points="29.49,-20.47 23.49,-23.47 23.49,-17.47" fill="red"/>
-      <line x1="5.49" y1="-20.47" x2="5.49" y2="-44.47" stroke="green" stroke-width="2"/>
-      <polygon points="5.49,-44.47 2.49,-38.47 8.49,-38.47" fill="green"/>
+      <circle cx="3.44" cy="-12.84" r="4" fill="black"/>
+      <line x1="3.44" y1="-12.84" x2="27.44" y2="-12.84" stroke="red" stroke-width="2"/>
+      <polygon points="27.44,-12.84 21.44,-15.84 21.44,-9.84" fill="red"/>
+      <line x1="3.44" y1="-12.84" x2="3.44" y2="-36.84" stroke="green" stroke-width="2"/>
+      <polygon points="3.44,-36.84 0.44,-30.84 6.44,-30.84" fill="green"/>
     </g>
     <g id="flagnote-11">
       <circle cx="74.54" cy="278.19" r="4" fill="black"/>
@@ -160,11 +167,11 @@
       <polygon points="74.54,254.19 71.54,260.19 77.54,260.19" fill="green"/>
     </g>
     <g id="flagnote-11-leader_dest">
-      <circle cx="5.49" cy="20.47" r="4" fill="black"/>
-      <line x1="5.49" y1="20.47" x2="29.49" y2="20.47" stroke="red" stroke-width="2"/>
-      <polygon points="29.49,20.47 23.49,17.47 23.49,23.47" fill="red"/>
-      <line x1="5.49" y1="20.47" x2="5.49" y2="-3.53" stroke="green" stroke-width="2"/>
-      <polygon points="5.49,-3.53 2.49,2.47 8.49,2.47" fill="green"/>
+      <circle cx="3.44" cy="12.84" r="4" fill="black"/>
+      <line x1="3.44" y1="12.84" x2="27.44" y2="12.84" stroke="red" stroke-width="2"/>
+      <polygon points="27.44,12.84 21.44,9.84 21.44,15.84" fill="red"/>
+      <line x1="3.44" y1="12.84" x2="3.44" y2="-11.16" stroke="green" stroke-width="2"/>
+      <polygon points="3.44,-11.16 0.44,-5.16 6.44,-5.16" fill="green"/>
     </g>
     <g id="flagnote-12">
       <circle cx="0.00" cy="-288.00" r="4" fill="black"/>
@@ -174,11 +181,11 @@
       <polygon points="0.00,-312.00 -3.00,-306.00 3.00,-306.00" fill="green"/>
     </g>
     <g id="flagnote-12-leader_dest">
-      <circle cx="0.00" cy="-20.60" r="4" fill="black"/>
-      <line x1="0.00" y1="-20.60" x2="24.00" y2="-20.60" stroke="red" stroke-width="2"/>
-      <polygon points="24.00,-20.60 18.00,-23.60 18.00,-17.60" fill="red"/>
-      <line x1="0.00" y1="-20.60" x2="0.00" y2="-44.60" stroke="green" stroke-width="2"/>
-      <polygon points="0.00,-44.60 -3.00,-38.60 3.00,-38.60" fill="green"/>
+      <circle cx="0.00" cy="-12.97" r="4" fill="black"/>
+      <line x1="0.00" y1="-12.97" x2="24.00" y2="-12.97" stroke="red" stroke-width="2"/>
+      <polygon points="24.00,-12.97 18.00,-15.97 18.00,-9.97" fill="red"/>
+      <line x1="0.00" y1="-12.97" x2="0.00" y2="-36.97" stroke="green" stroke-width="2"/>
+      <polygon points="0.00,-36.97 -3.00,-30.97 3.00,-30.97" fill="green"/>
     </g>
     <g id="flagnote-13">
       <circle cx="0.00" cy="288.00" r="4" fill="black"/>
@@ -188,11 +195,11 @@
       <polygon points="0.00,264.00 -3.00,270.00 3.00,270.00" fill="green"/>
     </g>
     <g id="flagnote-13-leader_dest">
-      <circle cx="0.00" cy="20.60" r="4" fill="black"/>
-      <line x1="0.00" y1="20.60" x2="24.00" y2="20.60" stroke="red" stroke-width="2"/>
-      <polygon points="24.00,20.60 18.00,17.60 18.00,23.60" fill="red"/>
-      <line x1="0.00" y1="20.60" x2="0.00" y2="-3.40" stroke="green" stroke-width="2"/>
-      <polygon points="0.00,-3.40 -3.00,2.60 3.00,2.60" fill="green"/>
+      <circle cx="0.00" cy="12.97" r="4" fill="black"/>
+      <line x1="0.00" y1="12.97" x2="24.00" y2="12.97" stroke="red" stroke-width="2"/>
+      <polygon points="24.00,12.97 18.00,9.97 18.00,15.97" fill="red"/>
+      <line x1="0.00" y1="12.97" x2="0.00" y2="-11.03" stroke="green" stroke-width="2"/>
+      <polygon points="0.00,-11.03 -3.00,-5.03 3.00,-5.03" fill="green"/>
     </g>
   </g>
 </svg>

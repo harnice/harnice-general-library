@@ -44,14 +44,18 @@ from harnice import fileio, state
 from harnice.lists import rev_history
 import harnice.project_types.part as part
 
-import nema_geometry
-import nema_plugs
+_FAMILY_DIR = os.path.dirname(os.path.abspath(__file__))
+if _FAMILY_DIR not in sys.path:
+    sys.path.insert(0, _FAMILY_DIR)
+
+import nema_geometry  # noqa: E402
+import nema_plugs  # noqa: E402
 
 REVISION = "1"
 DATE_STARTED = "8/18/26"
-LIBRARY_REPO = (
-    "https://github.com/harnice/harness-accessories-and-general-standards"
-)
+LIBRARY_REPO = nema_plugs.LIBRARY_REPO
+LIBRARY_SUBPATH = nema_plugs.LIBRARY_SUBPATH
+MANUFACTURER = nema_plugs.MANUFACTURER
 delete_pngs = True
 
 PX_PER_IN = 96.0
@@ -220,7 +224,7 @@ def flagnote_csys_children(spec: dict, gender: str):
             continue
         children[f"flagnote-{i}"] = {
             "angle": angle,
-            "distance": note_r,
+            "distance": round(note_r, 4),
             "rotation": 0,
         }
         children[f"flagnote-{i}-leader_dest"] = {
@@ -534,68 +538,14 @@ def compile_part_attributes(cfg: dict) -> dict:
     return attrs
 
 
-CATALOG_COLUMNS = (
-    "library_pn",
-    "official_pin",
-    "spec",
-    "common_name",
-    "config",
-    "series",
-    "gender",
-    "contacts_type",
-    "locking",
-    "voltage",
-    "current_a",
-    "poles",
-    "wires",
-    "grounded",
-    "system",
-    "contact_letters",
-    "pin_count",
-    "max_wire_awg",
-    "mates",
-    "library_subpath",
-)
-
-
-def catalog_row(cfg: dict) -> dict:
-    spec = cfg["spec"]
-    gender = cfg["gender"]
-    g = nema_plugs.GENDERS[gender]
-    pn = nema_plugs.make_part_number(cfg["config"], gender)
-    mates = nema_plugs.compatible_mates(pn)
-    return {
-        "library_pn": pn,
-        "official_pin": nema_plugs.official_name(cfg["config"], gender),
-        "spec": "ANSI/NEMA WD 6",
-        "common_name": f"{spec['common_name']}, {g['name'].lower()}",
-        "config": spec["config"],
-        "series": spec["series"],
-        "gender": g["name"],
-        "contacts_type": g["contacts"],
-        "locking": spec["locking"],
-        "voltage": spec["voltage"],
-        "current_a": spec["amps"],
-        "poles": spec["poles"],
-        "wires": spec["wires"],
-        "grounded": spec["grounded"],
-        "system": spec["system"],
-        "contact_letters": " ".join(spec["contacts"]),
-        "pin_count": len(spec["contacts"]),
-        "max_wire_awg": spec["max_wire_awg"],
-        "mates": ", ".join(mates),
-        "library_subpath": f"nema_plugs/{pn}",
-    }
-
-
 def write_catalog_csv(path=None):
     if path is None:
-        path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "nema_plugs.csv"
-        )
-    rows = [catalog_row(cfg) for cfg in nema_plugs.iter_part_configurations()]
+        path = os.path.join(_FAMILY_DIR, "nema_plugs.csv")
+    rows = [nema_plugs.catalog_row(cfg) for cfg in nema_plugs.iter_part_configurations()]
     with open(path, "w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CATALOG_COLUMNS)
+        writer = csv.DictWriter(
+            handle, fieldnames=nema_plugs.CATALOG_COLUMNS, lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(rows)
     return path
@@ -632,7 +582,7 @@ def build_part(part_number, rev_dir):
         os.chdir(cwd)
 
 
-def make_part(cfg, render=True, attributes_only=False):
+def make_part(cfg, build=True, step_only=False, svg_only=False):
     spec = cfg["spec"]
     gender = cfg["gender"]
     part_number = nema_plugs.make_part_number(cfg["config"], gender)
@@ -643,25 +593,48 @@ def make_part(cfg, render=True, attributes_only=False):
     os.makedirs(part_dir, exist_ok=True)
 
     rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
-    if attributes_only:
+    json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+    svg_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-drawing.svg")
+    rev_hist = os.path.join(part_dir, f"{part_number}-revision_history.tsv")
+
+    if step_only or svg_only:
         os.makedirs(rev_dir, exist_ok=True)
-        json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+        if not os.path.exists(rev_hist):
+            rev_history.part_family_append(
+                {
+                    "project_type": state.project_type,
+                    "mfg": MANUFACTURER,
+                    "pn": part_number,
+                    "rev": REVISION,
+                    "desc": nema_plugs.description_from_cfg(cfg),
+                    "status": "",
+                    "datestarted": DATE_STARTED,
+                    "library_repo": LIBRARY_REPO,
+                    "library_subpath": LIBRARY_SUBPATH,
+                },
+                rev_hist,
+            )
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(compile_part_attributes(cfg), f, indent=2)
             f.write("\n")
+        if svg_only:
+            with open(svg_path, "w", encoding="utf-8") as f:
+                f.write(connector_svg(part_number, spec, gender))
+        if step_only:
+            write_part_step(rev_dir, part_number, spec, gender)
         return part_number
 
     rev_history.part_family_append(
         {
             "project_type": state.project_type,
-            "mfg": "NEMA",
+            "mfg": MANUFACTURER,
             "pn": part_number,
             "rev": REVISION,
             "desc": nema_plugs.description_from_cfg(cfg),
             "status": "",
             "datestarted": DATE_STARTED,
             "library_repo": LIBRARY_REPO,
-            "library_subpath": f"nema_plugs/{part_number}",
+            "library_subpath": LIBRARY_SUBPATH,
             "revisionupdates": "INITIAL RELEASE",
         },
         os.path.join(part_dir, f"{part_number}-revision_history.tsv"),
@@ -687,7 +660,7 @@ def make_part(cfg, render=True, attributes_only=False):
 
     write_part_step(rev_dir, part_number, spec, gender)
 
-    if render:
+    if build:
         build_part(part_number, rev_dir)
         if delete_pngs:
             for item in os.listdir(rev_dir):
@@ -697,24 +670,23 @@ def make_part(cfg, render=True, attributes_only=False):
     return part_number
 
 
-def main(csv_only=False, skip_render=False, attributes_only=False):
+def main(step_only=False, svg_only=False, csv_only=False, build=True):
     state.set_rev(REVISION)
     state.set_project_type("part")
 
-    if not attributes_only:
-        csv_path = write_catalog_csv()
-        print(f"Wrote catalog: {csv_path}")
-        if csv_only:
-            return
+    csv_path = write_catalog_csv()
+    print(f"Wrote catalog: {csv_path}")
+    if csv_only:
+        return
 
-    if not skip_render and not attributes_only:
+    if not (step_only or svg_only):
         cache_run_constant_lookups()
 
     configs = list(nema_plugs.iter_part_configurations())
     total = len(configs)
-    print(f"Building {total} NEMA plugs in {os.path.dirname(os.path.abspath(__file__))}")
+    print(f"Building {total} NEMA plugs in {_FAMILY_DIR}")
     for i, cfg in enumerate(configs, start=1):
-        make_part(cfg, render=not skip_render, attributes_only=attributes_only)
+        make_part(cfg, build=build, step_only=step_only, svg_only=svg_only)
         print(_progress_bar(i, total))
 
     print(f"Finished rendering {total} parts in family.")
@@ -722,7 +694,8 @@ def main(csv_only=False, skip_render=False, attributes_only=False):
 
 if __name__ == "__main__":
     main(
+        step_only="--step-only" in sys.argv,
+        svg_only="--svg-only" in sys.argv,
         csv_only="--csv-only" in sys.argv,
-        skip_render="--skip-render" in sys.argv,
-        attributes_only="--attributes-only" in sys.argv,
+        build="--no-build" not in sys.argv,
     )

@@ -1,16 +1,7 @@
 {
-  "wire_gauge_awg": "16",
-  "stud_size": "#8",
-  "insulation_color": "#0000FF",
-  "insulated": true,
-  "stud_hole_id": 0.171,
-  "ring_od": 0.3768,
-  "barrel_od": 0.2008,
-  "overall_length": 0.7785,
-  "barrel_material": "copper",
-  "plating": "tin",
-  "insulation_material": "vinyl",
-  "tools": null,
+  "tools": [
+    "crimp tool"
+  ],
   "build_notes": [],
   "csys_children": {
     "3d-mate": {
@@ -118,7 +109,7 @@
     },
     "flagnote-10-leader_dest": {
       "angle": 75,
-      "distance": 0.144,
+      "distance": 0.1439,
       "rotation": 0
     },
     "flagnote-11": {
@@ -128,7 +119,7 @@
     },
     "flagnote-11-leader_dest": {
       "angle": -75,
-      "distance": 0.144,
+      "distance": 0.1439,
       "rotation": 0
     },
     "flagnote-12": {
@@ -151,5 +142,16 @@
       "distance": 0.1404,
       "rotation": 0
     }
-  }
+  },
+  "wire_gauge_awg": "16",
+  "stud_size": "#8",
+  "insulation_color": "blue",
+  "insulated": true,
+  "stud_hole_id": 0.171,
+  "ring_od": 0.3768,
+  "barrel_od": 0.2008,
+  "overall_length": 0.7785,
+  "barrel_material": "copper",
+  "plating": "tin",
+  "insulation_material": "vinyl"
 }

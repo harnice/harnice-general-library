@@ -1,3 +1,5 @@
-channel_id	signal	A_cavity	B_cavity	A_connector_mpn	A_channel_type	B_connector_mpn	B_channel_type
-ch0	pos	pin	pin	GOALZERO_8MM_BARREL_PLUG	"(11, 'https://github.com/harnice/harnice')"	GOALZERO_8MM_BARREL_RECEPT	"(20, 'https://github.com/harnice/harnice')"
-ch0	neg	ring	ring	GOALZERO_8MM_BARREL_PLUG	"(11, 'https://github.com/harnice/harnice')"	GOALZERO_8MM_BARREL_RECEPT	"(20, 'https://github.com/harnice/harnice')"
+channel_id	repeat_channel_id	channel_type	signal	cavity	connector_id	device_connector_mpn	harness_connector_mpn
+ch0	1	(11, 'https://github.com/harnice/harnice')	pos	pin	A		GOALZERO_8MM_BARREL_PLUG
+ch0	2	(20, 'https://github.com/harnice/harnice')	pos	pin	B		GOALZERO_8MM_BARREL_RECEPT
+ch0	1	(11, 'https://github.com/harnice/harnice')	neg	ring	A		GOALZERO_8MM_BARREL_PLUG
+ch0	2	(20, 'https://github.com/harnice/harnice')	neg	ring	B		GOALZERO_8MM_BARREL_RECEPT

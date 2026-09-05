@@ -18,8 +18,8 @@ for row in [
         signals_list.append(
             channel_id=channel_name,
             signal=signal,
-            connector_name=channel_name,
+            connector_id=channel_name,
             cavity=pinout.get(signal),
             channel_type=channel_type,
-            connector_mpn=connector_mpn,
+            device_connector_mpn=connector_mpn,
         )

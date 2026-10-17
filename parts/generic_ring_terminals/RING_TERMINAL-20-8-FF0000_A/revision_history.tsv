@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	referenced_design	status	releaseticket	library_repo	library_subpath	source_part_number	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances	last_build
+part	mil spec	RING_TERMINAL-20-8-FF0000_A					https://github.com/harnice/d38999	Connector					2/16/26	2/17/26		4ae11c27294624f31d8a37ab427f4bab79df4c30	K SHUTT				

@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	referenced_design	status	releaseticket	library_repo	library_subpath	source_part_number	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances	last_build
+cable	McMaster-Carr	SO-14-3C_A	PORTABLE POWER CABLE, SO, 14 AWG, 3 CONDUCTOR, 600 V AC				https://github.com/harnice/harness-accessories-and-general-standards	portable_power_cable/SO-14-3C_A					8/18/26	8/18/26		1ab728225c2912cd922463850ba1e777db70896f	K SHUTT		INITIAL RELEASE		

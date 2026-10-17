@@ -5,7 +5,7 @@ available grounded (plus still-common 10-series dryer) NEMA wiring devices:
 straight-blade 5 / 6 / 7 / 10 / 14 / 15 / TT-30, and locking L5–L9, L14–L17,
 L21–L26.
 
-Library PNs: NEMA-5-15P, NEMA-L14-30R, NEMA-TT-30P.
+Library PNs: NEMA-5-15P_A, NEMA-L14-30R_A, NEMA-TT-30P_A.
 Official WD-6 names drop the NEMA- prefix (5-15P, L14-30R, TT-30P).
 """
 
@@ -400,18 +400,18 @@ def choose_part(config, gender="P", return_divider=None):
 
     config:
       WD-6 configuration, with or without gender suffix.
-      Examples: "5-15", "L14-30", "TT-30", "NEMA-L5-20P", "5-15P"
+      Examples: "5-15", "L14-30", "TT-30", "NEMA-L5-20P_A", "5-15P"
 
     gender:
       P / plug / male     — cord-cap plug (blades)
       R / receptacle / connector / female / C — cord connector (slots)
 
     return_divider:
-      Default library PNs are NEMA-5-15P. Pass "" to return the official
+      Default library PNs are NEMA-5-15P_A. Pass "" to return the official
       WD-6 name (5-15P). Other values are inserted after "NEMA".
 
     Returns:
-      Library part number string, e.g. NEMA-L14-30P.
+      Library part number string, e.g. NEMA-L14-30P_A.
     """
     parsed = _parse_config_or_pn(config, default_gender=gender)
     _require_config(parsed["config"])
@@ -427,7 +427,7 @@ def find_mating_connector(part_number, override_gender=None, return_divider=None
     Given a NEMA library or official PN, return the opposite-gender mate
     of the same configuration.
 
-    Sample: NEMA-L14-30P  ->  NEMA-L14-30R
+    Sample: NEMA-L14-30P_A  ->  NEMA-L14-30R_A
 
     T-slot receptacles (5-20R, 6-20R) also accept the 15 A plug of the
     same series; see compatible_mates().
@@ -481,7 +481,7 @@ def _parse_config_or_pn(value, default_gender):
     if not match:
         raise ValueError(
             f"Could not parse {value!r} as a NEMA connector. "
-            "Expected 5-15, L14-30P, NEMA-TT-30R, etc."
+            "Expected 5-15, L14-30P, NEMA-TT-30R_A, etc."
         )
     cid = f"{match.group('config')}-{int(match.group('amps'))}"
     _require_config(cid)
@@ -493,7 +493,7 @@ def _parse_config_or_pn(value, default_gender):
     else:
         raise ValueError(
             f"{value!r} has no gender suffix. Pass gender='P' or 'R', "
-            "or a PN like NEMA-5-15P."
+            "or a PN like NEMA-5-15P_A."
         )
     return {"config": cid, "gender": gender, "spec": CONFIGS[cid]}
 

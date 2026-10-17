@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	referenced_design	status	releaseticket	library_repo	library_subpath	source_part_number	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances	last_build
+part	NEMA	NEMA-15-60R_A	CONNECTOR, NEMA 15-60R, 250 V AC 3Φ, 60 A, CONNECTOR				https://github.com/harnice/harness-accessories-and-general-standards	nema_plugs/NEMA-15-60R_A					8/18/26	8/18/26		1ab728225c2912cd922463850ba1e777db70896f	K SHUTT		INITIAL RELEASE		

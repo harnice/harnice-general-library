@@ -1,4 +1,15 @@
 {
+  "page_size": [
+    1056,
+    816
+  ],
+  "outer_margin": 20,
+  "inner_margin": 40,
+  "tick_spacing": 96,
+  "tb_origin_offset": [
+    398,
+    48
+  ],
   "tblock_size_px": [
     604,
     48

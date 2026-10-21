@@ -657,7 +657,7 @@ def main():
         part_dir = os.path.join(family_dir, pn)
         os.makedirs(part_dir, exist_ok=True)
 
-        rev_dir = os.path.join(part_dir, f"{pn}-rev{REVISION}")
+        rev_dir = os.path.join(part_dir, f"rev{REVISION}")
         if os.path.exists(rev_dir):
             for item in os.listdir(rev_dir):
                 p = os.path.join(rev_dir, item)
@@ -683,12 +683,12 @@ def main():
         )
 
         attributes = compile_cable_attributes(cfg)
-        json_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-attributes.json")
+        json_path = os.path.join(rev_dir, "attributes.json")
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(attributes, f, indent=4)
             f.write("\n")
 
-        tsv_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-conductor_list.tsv")
+        tsv_path = os.path.join(rev_dir, "conductors.tsv")
         write_conductor_list(attributes, tsv_path)
 
     csv_path = os.path.join(family_dir, "portable_power_cable.csv")

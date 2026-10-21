@@ -377,7 +377,7 @@ def envelope_prisms_mm(spec: dict, gender: str):
 
 
 def write_part_step(rev_dir, part_number, spec, gender):
-    path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-model.step")
+    path = os.path.join(rev_dir, "model.step")
     step_utils.write_prism_segments_step(
         path,
         part_number,
@@ -625,10 +625,10 @@ def make_part(cfg, render=True, attributes_only=False):
     part_dir = os.path.join(family_dir, part_number)
     os.makedirs(part_dir, exist_ok=True)
 
-    rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
+    rev_dir = os.path.join(part_dir, f"rev{REVISION}")
     if attributes_only:
         os.makedirs(rev_dir, exist_ok=True)
-        json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+        json_path = os.path.join(rev_dir, "attributes.json")
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(compile_part_attributes(cfg), f, indent=2)
             f.write("\n")
@@ -650,7 +650,7 @@ def make_part(cfg, render=True, attributes_only=False):
         os.path.join(part_dir, f"{part_number}-revision_history.tsv"),
     )
 
-    rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
+    rev_dir = os.path.join(part_dir, f"rev{REVISION}")
     if os.path.exists(rev_dir):
         for item in os.listdir(rev_dir):
             item_path = os.path.join(rev_dir, item)
@@ -659,12 +659,12 @@ def make_part(cfg, render=True, attributes_only=False):
     else:
         os.makedirs(rev_dir)
 
-    json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+    json_path = os.path.join(rev_dir, "attributes.json")
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(compile_part_attributes(cfg), f, indent=2)
         f.write("\n")
 
-    svg_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-drawing.svg")
+    svg_path = os.path.join(rev_dir, "drawing.svg")
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(connector_svg(part_number, spec, gender))
 

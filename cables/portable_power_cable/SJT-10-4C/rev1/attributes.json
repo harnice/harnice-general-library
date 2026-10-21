@@ -1,0 +1,70 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "300 V AC",
+            "usage": "Hard Usage Indoors",
+            "type": "SJT",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.060in"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.192in",
+                "gauge": "10AWG",
+                "construction": "104x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

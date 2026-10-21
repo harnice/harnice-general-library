@@ -49,9 +49,8 @@ import nema_plugs
 
 REVISION = "1"
 DATE_STARTED = "8/18/26"
-LIBRARY_REPO = (
-    "https://github.com/harnice/harness-accessories-and-general-standards"
-)
+LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+LIBRARY_SUBPATH = "connectors/nema_plugs/"
 delete_pngs = True
 
 PX_PER_IN = 96.0
@@ -378,7 +377,7 @@ def envelope_prisms_mm(spec: dict, gender: str):
 
 
 def write_part_step(rev_dir, part_number, spec, gender):
-    path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-model.step")
+    path = os.path.join(rev_dir, "model.step")
     step_utils.write_prism_segments_step(
         path,
         part_number,
@@ -393,116 +392,100 @@ def write_part_step(rev_dir, part_number, spec, gender):
 # ---------------------------------------------------------------------------
 
 # Commercial cross-references for the cord-cap (P) / cord connector (R).
-# Hubbell: Insulgrip nylon plug (…1 / …66C / …20C) and connector body
+# Hubbell Insulgrip nylon plug (…1 / …66C / …20C) and connector body
 # (…3 / …69C / …29C). Where Hubbell only tools an angled plug, that PN is
-# used. Wall-plate receptacles are omitted. McMaster: industrial plastic
-# straight cord-mount plug/socket from the NEMA-type catalog tables.
+# used. Wall-plate receptacles are omitted.
 # Keys with no verified PN are left out of the attributes JSON.
-_VENDOR_PNS = {
+_HUBBELL_PNS = {
     # straight 15/20 A Insulgrip
-    ("5-15", "P"): ("HBL5266C", None),
-    ("5-15", "R"): ("HBL5269C", None),
-    ("5-20", "P"): ("HBL5366C", None),
-    ("5-20", "R"): ("HBL5369C", None),
-    ("6-15", "P"): ("HBL5666C", "7196K32"),
-    ("6-15", "R"): ("HBL5669C", "7196K42"),
-    ("6-20", "P"): ("HBL5466C", "7196K33"),
-    ("6-20", "R"): ("HBL5469C", "7196K43"),
-    ("7-15", "P"): (None, "7120K52"),
-    ("7-15", "R"): (None, "7120K69"),
-    # straight 30/50/60 A (Hubbell plug; McMaster industrial plug/socket)
-    ("5-30", "P"): ("HBL9309", None),
-    ("6-30", "P"): ("HBL9331", "7120K51"),
-    ("6-30", "R"): (None, "7120K61"),
-    ("5-50", "P"): ("HBL9361", None),
-    ("6-50", "P"): ("HBL9368", "7120K81"),
-    ("6-50", "R"): (None, "7120K83"),
-    ("10-20", "P"): (None, "7120K53"),
-    ("10-30", "P"): ("HBL9333", "7120K54"),
-    ("10-30", "R"): (None, "7120K651"),
-    ("10-50", "P"): (None, "7120K55"),
-    ("10-50", "R"): (None, "7120K64"),
-    ("14-20", "P"): ("HBL8411C", None),
-    ("14-30", "P"): ("HBL9431C", "7120K31"),
-    ("14-50", "P"): ("HBL9451C", "7120K57"),
-    ("14-60", "P"): ("HBL9461C", "7120K66"),
-    ("15-30", "P"): ("HBL8431C", None),
-    ("15-60", "P"): ("HBL8461C", None),
-    ("TT-30", "P"): ("HBLTT30P", None),
+    ("5-15", "P"): "HBL5266C",
+    ("5-15", "R"): "HBL5269C",
+    ("5-20", "P"): "HBL5366C",
+    ("5-20", "R"): "HBL5369C",
+    ("6-15", "P"): "HBL5666C",
+    ("6-15", "R"): "HBL5669C",
+    ("6-20", "P"): "HBL5466C",
+    ("6-20", "R"): "HBL5469C",
+    # straight 30/50/60 A
+    ("5-30", "P"): "HBL9309",
+    ("6-30", "P"): "HBL9331",
+    ("5-50", "P"): "HBL9361",
+    ("6-50", "P"): "HBL9368",
+    ("10-30", "P"): "HBL9333",
+    ("14-20", "P"): "HBL8411C",
+    ("14-30", "P"): "HBL9431C",
+    ("14-50", "P"): "HBL9451C",
+    ("14-60", "P"): "HBL9461C",
+    ("15-30", "P"): "HBL8431C",
+    ("15-60", "P"): "HBL8461C",
+    ("TT-30", "P"): "HBLTT30P",
     # locking 15 A Insulgrip
-    ("L5-15", "P"): ("HBL4720C", "7162K29"),
-    ("L5-15", "R"): ("HBL4729C", "7162K32"),
-    ("L6-15", "P"): ("HBL4570C", "7162K48"),
-    ("L6-15", "R"): ("HBL4579C", "7162K49"),
-    ("L7-15", "P"): ("HBL4770C", "7162K56"),
-    ("L7-15", "R"): ("HBL4779C", "7162K57"),
+    ("L5-15", "P"): "HBL4720C",
+    ("L5-15", "R"): "HBL4729C",
+    ("L6-15", "P"): "HBL4570C",
+    ("L6-15", "R"): "HBL4579C",
+    ("L7-15", "P"): "HBL4770C",
+    ("L7-15", "R"): "HBL4779C",
     # locking 20 A 2P3W
-    ("L5-20", "P"): ("HBL2311", "7162K36"),
-    ("L5-20", "R"): ("HBL2313", "7162K38"),
-    ("L6-20", "P"): ("HBL2321", "7162K5"),
-    ("L6-20", "R"): ("HBL2323", "7162K51"),
-    ("L7-20", "P"): ("HBL2331", "7162K59"),
-    ("L7-20", "R"): ("HBL2333", "7162K6"),
-    ("L8-20", "P"): ("HBL2341", "7162K65"),
-    ("L8-20", "R"): ("HBL2343", "7162K66"),
-    ("L9-20", "P"): ("HBL2351", "7162K71"),
-    ("L9-20", "R"): ("HBL2353", "7162K72"),
+    ("L5-20", "P"): "HBL2311",
+    ("L5-20", "R"): "HBL2313",
+    ("L6-20", "P"): "HBL2321",
+    ("L6-20", "R"): "HBL2323",
+    ("L7-20", "P"): "HBL2331",
+    ("L7-20", "R"): "HBL2333",
+    ("L8-20", "P"): "HBL2341",
+    ("L8-20", "R"): "HBL2343",
+    ("L9-20", "P"): "HBL2351",
+    ("L9-20", "R"): "HBL2353",
     # locking 30 A 2P3W
-    ("L5-30", "P"): ("HBL2611", "7162K41"),
-    ("L5-30", "R"): ("HBL2613", "7162K46"),
-    ("L6-30", "P"): ("HBL2621", "7162K53"),
-    ("L6-30", "R"): ("HBL2623", "7162K54"),
-    ("L7-30", "P"): ("HBL2631", "7162K62"),
-    ("L7-30", "R"): ("HBL2633", "7162K63"),
-    ("L8-30", "P"): ("HBL2641", "7162K68"),
-    ("L8-30", "R"): ("HBL2643", "7162K69"),
-    ("L9-30", "P"): ("HBL2651", "7162K74"),
-    ("L9-30", "R"): ("HBL2653", "7162K75"),
+    ("L5-30", "P"): "HBL2611",
+    ("L5-30", "R"): "HBL2613",
+    ("L6-30", "P"): "HBL2621",
+    ("L6-30", "R"): "HBL2623",
+    ("L7-30", "P"): "HBL2631",
+    ("L7-30", "R"): "HBL2633",
+    ("L8-30", "P"): "HBL2641",
+    ("L8-30", "R"): "HBL2643",
+    ("L9-30", "P"): "HBL2651",
+    ("L9-30", "R"): "HBL2653",
     # locking 20 A 3P4W
-    ("L14-20", "P"): ("HBL2411", "7164K41"),
-    ("L14-20", "R"): ("HBL2413", "7164K43"),
-    ("L15-20", "P"): ("HBL2421", "7164K46"),
-    ("L15-20", "R"): ("HBL2423", "7164K47"),
-    ("L16-20", "P"): ("HBL2431", "7164K52"),
-    ("L16-20", "R"): ("HBL2433", "7164K53"),
+    ("L14-20", "P"): "HBL2411",
+    ("L14-20", "R"): "HBL2413",
+    ("L15-20", "P"): "HBL2421",
+    ("L15-20", "R"): "HBL2423",
+    ("L16-20", "P"): "HBL2431",
+    ("L16-20", "R"): "HBL2433",
     # locking 30 A 3P4W
-    ("L14-30", "P"): ("HBL2711", "7164K55"),
-    ("L14-30", "R"): ("HBL2713", "7164K56"),
-    ("L15-30", "P"): ("HBL2721", "7164K49"),
-    ("L15-30", "R"): ("HBL2723", "7164K5"),
-    ("L16-30", "P"): ("HBL2731", "7164K58"),
-    ("L16-30", "R"): ("HBL2733", "7164K59"),
-    ("L17-30", "P"): ("HBL2741", "7164K61"),
-    ("L17-30", "R"): ("HBL2743", "7164K62"),
+    ("L14-30", "P"): "HBL2711",
+    ("L14-30", "R"): "HBL2713",
+    ("L15-30", "P"): "HBL2721",
+    ("L15-30", "R"): "HBL2723",
+    ("L16-30", "P"): "HBL2731",
+    ("L16-30", "R"): "HBL2733",
+    ("L17-30", "P"): "HBL2741",
+    ("L17-30", "R"): "HBL2743",
     # locking 20 A 4P5W
-    ("L21-20", "P"): ("HBL2511", "7184K31"),
-    ("L21-20", "R"): ("HBL2513", "7184K32"),
-    ("L22-20", "P"): ("HBL2521", "7184K37"),
-    ("L22-20", "R"): ("HBL2523", "7184K38"),
-    ("L23-20", "P"): ("HBL2531", "7184K44"),
-    ("L23-20", "R"): ("HBL2533", "7184K45"),
+    ("L21-20", "P"): "HBL2511",
+    ("L21-20", "R"): "HBL2513",
+    ("L22-20", "P"): "HBL2521",
+    ("L22-20", "R"): "HBL2523",
+    ("L23-20", "P"): "HBL2531",
+    ("L23-20", "R"): "HBL2533",
     # locking 30 A 4P5W
-    ("L21-30", "P"): ("HBL2811", "7184K34"),
-    ("L21-30", "R"): ("HBL2813", "7184K35"),
-    ("L22-30", "P"): ("HBL2821", "7184K41"),
-    ("L22-30", "R"): ("HBL2823", "7184K42"),
-    ("L23-30", "P"): ("HBL2831", "7184K47"),
-    ("L23-30", "R"): ("HBL2833", "7184K48"),
+    ("L21-30", "P"): "HBL2811",
+    ("L21-30", "R"): "HBL2813",
+    ("L22-30", "P"): "HBL2821",
+    ("L22-30", "R"): "HBL2823",
+    ("L23-30", "P"): "HBL2831",
+    ("L23-30", "R"): "HBL2833",
 }
 
 
 def _vendor_attributes(config: str, gender: str) -> dict:
-    entry = _VENDOR_PNS.get((config, gender))
-    if not entry:
+    hubbell = _HUBBELL_PNS.get((config, gender))
+    if not hubbell:
         return {}
-    hubbell, mcmaster = entry
-    out = {}
-    if hubbell:
-        out["hubbell pn"] = hubbell
-    if mcmaster:
-        out["mcmaster pn"] = mcmaster
-        out["mcmaster url"] = f"https://www.mcmaster.com/{mcmaster}/"
-    return out
+    return {"hubbell pn": hubbell}
 
 
 def compile_part_attributes(cfg: dict) -> dict:
@@ -584,7 +567,7 @@ def catalog_row(cfg: dict) -> dict:
         "pin_count": len(spec["contacts"]),
         "max_wire_awg": spec["max_wire_awg"],
         "mates": ", ".join(mates),
-        "library_subpath": f"nema_plugs/{pn}",
+        "library_subpath": LIBRARY_SUBPATH,
     }
 
 
@@ -642,10 +625,10 @@ def make_part(cfg, render=True, attributes_only=False):
     part_dir = os.path.join(family_dir, part_number)
     os.makedirs(part_dir, exist_ok=True)
 
-    rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
+    rev_dir = os.path.join(part_dir, f"rev{REVISION}")
     if attributes_only:
         os.makedirs(rev_dir, exist_ok=True)
-        json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+        json_path = os.path.join(rev_dir, "attributes.json")
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(compile_part_attributes(cfg), f, indent=2)
             f.write("\n")
@@ -661,13 +644,13 @@ def make_part(cfg, render=True, attributes_only=False):
             "status": "",
             "datestarted": DATE_STARTED,
             "library_repo": LIBRARY_REPO,
-            "library_subpath": f"nema_plugs/{part_number}",
+            "library_subpath": LIBRARY_SUBPATH,
             "revisionupdates": "INITIAL RELEASE",
         },
         os.path.join(part_dir, f"{part_number}-revision_history.tsv"),
     )
 
-    rev_dir = os.path.join(part_dir, f"{part_number}-rev{REVISION}")
+    rev_dir = os.path.join(part_dir, f"rev{REVISION}")
     if os.path.exists(rev_dir):
         for item in os.listdir(rev_dir):
             item_path = os.path.join(rev_dir, item)
@@ -676,12 +659,12 @@ def make_part(cfg, render=True, attributes_only=False):
     else:
         os.makedirs(rev_dir)
 
-    json_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-attributes.json")
+    json_path = os.path.join(rev_dir, "attributes.json")
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(compile_part_attributes(cfg), f, indent=2)
         f.write("\n")
 
-    svg_path = os.path.join(rev_dir, f"{part_number}-rev{REVISION}-drawing.svg")
+    svg_path = os.path.join(rev_dir, "drawing.svg")
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(connector_svg(part_number, spec, gender))
 

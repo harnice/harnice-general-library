@@ -1,0 +1,70 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "600 V AC",
+            "usage": "Extra Hard Usage Indoors",
+            "type": "S",
+            "jacketed": true,
+            "material": "rubber",
+            "color": "black",
+            "thickness": "0.060in"
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "rubber",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

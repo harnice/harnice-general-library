@@ -1,0 +1,58 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "600 V AC",
+            "usage": "Extra Hard Usage Outdoors",
+            "type": "STW",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.095in",
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.171in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,71 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "300 V AC",
+            "usage": "Hard Usage Outdoors",
+            "type": "SJTW",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.045in",
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.141in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.141in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.141in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.141in",
+                "gauge": "12AWG",
+                "construction": "65x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

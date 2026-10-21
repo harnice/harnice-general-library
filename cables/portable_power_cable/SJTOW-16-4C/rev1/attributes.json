@@ -1,0 +1,72 @@
+{
+    "jacket": {
+        "properties": {
+            "construction": "round",
+            "voltage": "300 V AC",
+            "usage": "Hard Usage Outdoors",
+            "type": "SJTOW",
+            "jacketed": true,
+            "material": "pvc",
+            "color": "black",
+            "thickness": "0.030in",
+            "oil resistant jacket": true,
+            "weather resistant": true
+        },
+        "black": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "black"
+            }
+        },
+        "white": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "white",
+                "outline_color": "black"
+            }
+        },
+        "red": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "red"
+            }
+        },
+        "green": {
+            "conductor": true,
+            "properties": {
+                "insulation material": "pvc",
+                "od": "0.111in",
+                "gauge": "16AWG",
+                "construction": "26x30",
+                "material": "copper"
+            },
+            "appearance": {
+                "base_color": "green",
+                "parallelstripe": [
+                    "yellow"
+                ]
+            }
+        }
+    }
+}

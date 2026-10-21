@@ -444,6 +444,18 @@ def part_number_from_cfg(cfg: dict) -> str:
     return f"RING_TERMINAL-{gauge}-{stud}{ins}"
 
 
+def description_from_cfg(cfg: dict) -> str:
+    """Short catalog description: gauge, stud, and insulation color."""
+    stud = cfg["stud_size"]
+    stud_text = "1 IN" if stud == "1" else stud
+    desc = f"RING TERMINAL, {cfg['wire_gauge']} AWG, {stud_text} STUD"
+    insulation = cfg.get("insulation")
+    if insulation:
+        names = {color.upper(): name.upper() for name, color in INSULATION_COLORS.items()}
+        desc += f", {names.get(insulation.upper(), insulation.upper())}"
+    return desc
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -462,7 +474,7 @@ def main(skip_render=False, attributes_only=False):
         part_dir = os.path.join(family_dir, pn)
         os.makedirs(part_dir, exist_ok=True)
 
-        rev_dir = os.path.join(part_dir, f"{pn}-rev{REVISION}")
+        rev_dir = os.path.join(part_dir, f"rev{REVISION}")
         if not attributes_only:
             if os.path.exists(rev_dir):
                 for item in os.listdir(rev_dir):
@@ -479,11 +491,11 @@ def main(skip_render=False, attributes_only=False):
                     "mfg": "mil spec",
                     "pn": pn,
                     "rev": REVISION,
-                    "desc": "",
+                    "desc": description_from_cfg(cfg),
                     "status": "",
                     "datestarted": DATE_STARTED,
-                    "library_repo": "https://github.com/harnice/d38999",
-                    "library_subpath": "Connector",
+                    "library_repo": "https://github.com/harnice/harnice-general-library",
+                    "library_subpath": "parts/generic_ring_terminals/",
                 },
                 os.path.join(part_dir, f"{pn}-revision_history.tsv"),
             )
@@ -492,7 +504,7 @@ def main(skip_render=False, attributes_only=False):
 
         # ---- attributes JSON ----
         attributes = compile_part_attributes(cfg)
-        json_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-attributes.json")
+        json_path = os.path.join(rev_dir, "attributes.json")
         with open(json_path, "w") as f:
             json.dump(attributes, f, indent=2)
             f.write("\n")
@@ -509,7 +521,7 @@ def main(skip_render=False, attributes_only=False):
             overall_length=attributes["overall_length"],
             insulation=cfg["insulation"],
         )
-        svg_path = os.path.join(rev_dir, f"{pn}-rev{REVISION}-drawing.svg")
+        svg_path = os.path.join(rev_dir, "drawing.svg")
         with open(svg_path, "w") as f:
             f.write(svg_content)
 

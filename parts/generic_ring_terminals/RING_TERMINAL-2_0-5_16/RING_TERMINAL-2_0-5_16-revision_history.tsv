@@ -1,2 +1,2 @@
 project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances
-part	mil spec	RING_TERMINAL-2_0-5_16		1			https://github.com/harnice/d38999	Connector	2/16/26	2/17/26		4ae11c27294624f31d8a37ab427f4bab79df4c30	K SHUTT			
+part	mil spec	RING_TERMINAL-2_0-5_16	RING TERMINAL, 2/0 AWG, 5/16 STUD	1			https://github.com/harnice/harnice-general-library	parts/generic_ring_terminals/	2/16/26	2/17/26		4ae11c27294624f31d8a37ab427f4bab79df4c30	K SHUTT			

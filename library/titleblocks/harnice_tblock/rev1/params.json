@@ -1,0 +1,63 @@
+{
+  "tblock_size_px": [
+    604,
+    48
+  ],
+  "row_heights": [
+    24,
+    24
+  ],
+  "column_widths": [
+    [
+      264,
+      50,
+      84
+    ],
+    [
+      73,
+      126,
+      139,
+      60
+    ]
+  ],
+  "logo_width": 206,
+  "label_offset": [
+    2,
+    7
+  ],
+  "key_offset_y": 16,
+  "cell_texts": [
+    [
+      [
+        "DESCRIPTION",
+        "tblock-key-desc"
+      ],
+      [
+        "REV",
+        "tblock-key-rev"
+      ],
+      [
+        "PAGE DESC",
+        "tblock-key-pagedesc"
+      ]
+    ],
+    [
+      [
+        "SCALE",
+        "tblock-key-scale"
+      ],
+      [
+        "PART NUMBER",
+        "tblock-key-pn"
+      ],
+      [
+        "DRAWN BY",
+        "tblock-key-drawnby"
+      ],
+      [
+        "SHEET",
+        "tblock-key-sheet"
+      ]
+    ]
+  ]
+}

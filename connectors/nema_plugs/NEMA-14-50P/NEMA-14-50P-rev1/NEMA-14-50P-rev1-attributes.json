@@ -170,7 +170,5 @@
   "wires": 4,
   "grounded": true,
   "system": "hot-hot-neutral-ground",
-  "hubbell pn": "HBL9451C",
-  "mcmaster pn": "7120K57",
-  "mcmaster url": "https://www.mcmaster.com/7120K57/"
+  "hubbell pn": "HBL9451C"
 }

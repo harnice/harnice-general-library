@@ -11,10 +11,7 @@
             "thickness": "0.095in",
             "oil resistant jacket": true,
             "oil resistant insulation": true,
-            "weather resistant": true,
-            "mcmaster pn": "7081K24",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K24/"
+            "weather resistant": true
         },
         "black": {
             "conductor": true,

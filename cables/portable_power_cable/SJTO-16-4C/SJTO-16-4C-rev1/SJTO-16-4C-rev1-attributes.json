@@ -9,10 +9,7 @@
             "material": "pvc",
             "color": "black",
             "thickness": "0.030in",
-            "oil resistant jacket": true,
-            "mcmaster pn": "7422K23",
-            "mcmaster designation": "SJOOW",
-            "mcmaster url": "https://www.mcmaster.com/7422K23/"
+            "oil resistant jacket": true
         },
         "black": {
             "conductor": true,

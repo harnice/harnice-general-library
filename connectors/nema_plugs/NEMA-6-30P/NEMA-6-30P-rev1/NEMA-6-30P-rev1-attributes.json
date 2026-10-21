@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-hot-ground",
-  "hubbell pn": "HBL9331",
-  "mcmaster pn": "7120K51",
-  "mcmaster url": "https://www.mcmaster.com/7120K51/"
+  "hubbell pn": "HBL9331"
 }

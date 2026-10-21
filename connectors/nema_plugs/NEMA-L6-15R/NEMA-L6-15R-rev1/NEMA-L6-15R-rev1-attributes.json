@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-hot-ground",
-  "hubbell pn": "HBL4579C",
-  "mcmaster pn": "7162K49",
-  "mcmaster url": "https://www.mcmaster.com/7162K49/"
+  "hubbell pn": "HBL4579C"
 }

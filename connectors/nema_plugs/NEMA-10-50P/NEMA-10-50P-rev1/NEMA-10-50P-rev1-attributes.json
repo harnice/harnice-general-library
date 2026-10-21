@@ -165,7 +165,5 @@
   "poles": 3,
   "wires": 3,
   "grounded": false,
-  "system": "hot-hot-neutral",
-  "mcmaster pn": "7120K55",
-  "mcmaster url": "https://www.mcmaster.com/7120K55/"
+  "system": "hot-hot-neutral"
 }

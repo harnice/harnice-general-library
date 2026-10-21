@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-neutral-ground",
-  "hubbell pn": "HBL4779C",
-  "mcmaster pn": "7162K57",
-  "mcmaster url": "https://www.mcmaster.com/7162K57/"
+  "hubbell pn": "HBL4779C"
 }

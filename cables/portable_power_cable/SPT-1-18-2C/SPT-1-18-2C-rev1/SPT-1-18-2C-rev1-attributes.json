@@ -5,10 +5,7 @@
             "voltage": "300 V AC",
             "usage": "Indoor Use Only",
             "type": "SPT-1",
-            "jacketed": false,
-            "mcmaster pn": "7870T21",
-            "mcmaster designation": "SPT-1",
-            "mcmaster url": "https://www.mcmaster.com/7870T21/"
+            "jacketed": false
         },
         "black": {
             "conductor": true,

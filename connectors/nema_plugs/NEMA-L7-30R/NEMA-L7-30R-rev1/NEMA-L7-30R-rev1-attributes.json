@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-neutral-ground",
-  "hubbell pn": "HBL2633",
-  "mcmaster pn": "7162K63",
-  "mcmaster url": "https://www.mcmaster.com/7162K63/"
+  "hubbell pn": "HBL2633"
 }

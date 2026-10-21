@@ -9,10 +9,7 @@
             "material": "pvc",
             "color": "black",
             "thickness": "0.080in",
-            "oil resistant jacket": true,
-            "mcmaster pn": "8201K45",
-            "mcmaster designation": "STOW",
-            "mcmaster url": "https://www.mcmaster.com/8201K45/"
+            "oil resistant jacket": true
         },
         "black": {
             "conductor": true,

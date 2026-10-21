@@ -10,10 +10,7 @@
             "color": "black",
             "thickness": "0.155in",
             "oil resistant jacket": true,
-            "oil resistant insulation": true,
-            "mcmaster pn": "7081K3",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K3/"
+            "oil resistant insulation": true
         },
         "black": {
             "conductor": true,

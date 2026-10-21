@@ -8,10 +8,7 @@
             "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.030in",
-            "mcmaster pn": "7422K22",
-            "mcmaster designation": "SJOOW",
-            "mcmaster url": "https://www.mcmaster.com/7422K22/"
+            "thickness": "0.030in"
         },
         "black": {
             "conductor": true,

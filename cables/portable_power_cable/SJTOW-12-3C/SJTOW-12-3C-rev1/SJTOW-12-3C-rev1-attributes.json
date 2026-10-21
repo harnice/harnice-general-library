@@ -10,10 +10,7 @@
             "color": "black",
             "thickness": "0.045in",
             "oil resistant jacket": true,
-            "weather resistant": true,
-            "mcmaster pn": "7422K26",
-            "mcmaster designation": "SJOOW",
-            "mcmaster url": "https://www.mcmaster.com/7422K26/"
+            "weather resistant": true
         },
         "black": {
             "conductor": true,

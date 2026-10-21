@@ -9,10 +9,7 @@
             "material": "neoprene",
             "color": "black",
             "thickness": "0.060in",
-            "oil resistant jacket": true,
-            "mcmaster pn": "7081K11",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K11/"
+            "oil resistant jacket": true
         },
         "black": {
             "conductor": true,

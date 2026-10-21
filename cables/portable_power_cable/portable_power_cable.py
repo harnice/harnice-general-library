@@ -7,9 +7,8 @@ from harnice.lists import rev_history
 
 REVISION = "1"
 DATE_STARTED = "8/18/26"
-LIBRARY_REPO = (
-    "https://github.com/harnice/harness-accessories-and-general-standards"
-)
+LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+LIBRARY_SUBPATH = "cables/portable_power_cable/"
 
 # ---------------------------------------------------------------------------
 # Reference data
@@ -70,102 +69,6 @@ CONDUCTOR_COLORS = {
     4: ["black", "white", "red", "green"],
     5: ["black", "white", "red", "orange", "green"],
 }
-
-# McMaster-Carr bulk (by-the-foot) catalog numbers, black jacket unless noted.
-# Sourced from mcmaster.com power-cable tables. Sizes they do not sell are omitted.
-MCMASTER_SOOW = {
-    ("18", 2): "7081K11",
-    ("18", 3): "7081K12",
-    ("18", 4): "7081K13",
-    ("16", 2): "7081K14",
-    ("16", 3): "7081K22",
-    ("16", 4): "7081K31",
-    ("14", 2): "7081K15",
-    ("14", 3): "7081K23",
-    ("14", 4): "7081K32",
-    ("12", 2): "7081K16",
-    ("12", 3): "7081K24",
-    ("12", 4): "7081K33",
-    ("10", 2): "7081K17",
-    ("10", 3): "7081K41",
-    ("10", 4): "7081K42",
-    ("8", 3): "7081K35",
-    ("8", 4): "7081K82",
-    ("6", 3): "7081K84",
-    ("6", 4): "7081K25",
-    ("4", 3): "7081K3",
-    ("4", 4): "7081K28",
-    ("2", 4): "7081K34",
-}
-MCMASTER_SJOOW = {
-    ("18", 2): "7422K2",
-    ("18", 3): "7422K21",
-    ("18", 4): "7422K11",
-    ("16", 2): "7422K61",
-    ("16", 3): "7422K22",
-    ("16", 4): "7422K23",
-    ("14", 2): "7422K62",
-    ("14", 3): "7422K24",
-    ("14", 4): "7422K25",
-    ("12", 2): "7422K1",
-    ("12", 3): "7422K26",
-    ("12", 4): "7422K27",
-    ("10", 2): "7422K75",
-    ("10", 3): "7422K28",
-    ("10", 4): "7422K29",
-}
-MCMASTER_SJTOW = {
-    ("18", 3): "8169K31",
-    ("16", 3): "8169K32",
-    ("16", 4): "8169K34",
-}
-MCMASTER_STOW = {
-    ("18", 3): "8201K41",
-    ("16", 3): "8201K42",
-    ("16", 4): "8201K43",
-    ("14", 3): "8201K44",
-    ("14", 4): "8201K45",
-    ("12", 3): "8201K46",
-    ("12", 4): "8201K47",
-}
-MCMASTER_SPT1 = {
-    ("18", 2): "7870T21",
-}
-
-
-def mcmaster_part(code: str, gauge: str, n_conductors: int) -> dict | None:
-    """Return the McMaster bulk PN for this type/gauge/count, if they sell one.
-
-    Exact designation is preferred. When McMaster does not stock that letter
-    code as bulk cable, the closest bulk type they do sell is used and recorded
-    as `designation`.
-    """
-    key = (gauge, n_conductors)
-
-    def hit(designation: str, table: dict) -> dict | None:
-        pn = table.get(key)
-        if not pn:
-            return None
-        return {
-            "pn": pn,
-            "designation": designation,
-            "url": f"https://www.mcmaster.com/{pn}/",
-        }
-
-    if code == "SOOW":
-        return hit("SOOW", MCMASTER_SOOW)
-    if code in ("S", "SO", "SOO"):
-        return hit("SOOW", MCMASTER_SOOW)
-    if code == "SJTOW":
-        return hit("SJTOW", MCMASTER_SJTOW) or hit("SJOOW", MCMASTER_SJOOW)
-    if code in ("SJT", "SJTW", "SJTO", "SJTOOW"):
-        return hit("SJOOW", MCMASTER_SJOOW)
-    if code in ("ST", "STW", "STO"):
-        return hit("STOW", MCMASTER_STOW) or hit("SOOW", MCMASTER_SOOW)
-    if code == "SPT-1":
-        return hit("SPT-1", MCMASTER_SPT1)
-    return None
-
 
 def awg_span(start: str, end: str) -> list[str]:
     return EVEN_AWG[EVEN_AWG.index(start) : EVEN_AWG.index(end) + 1]
@@ -618,12 +521,6 @@ def compile_cable_attributes(cfg: dict) -> dict:
         if spec.get(flag):
             jacket_properties[flag.replace("_", " ")] = True
 
-    mcmaster = mcmaster_part(spec["code"], gauge, n)
-    if mcmaster:
-        jacket_properties["mcmaster pn"] = mcmaster["pn"]
-        jacket_properties["mcmaster designation"] = mcmaster["designation"]
-        jacket_properties["mcmaster url"] = mcmaster["url"]
-
     return {"jacket": {**{"properties": jacket_properties}, **conductors}}
 
 
@@ -650,9 +547,6 @@ CSV_COLUMNS = [
     "oil_resistant_jacket",
     "oil_resistant_insulation",
     "weather_resistant",
-    "mcmaster_pn",
-    "mcmaster_designation",
-    "mcmaster_url",
     "mfg",
     "library_subpath",
 ]
@@ -663,7 +557,6 @@ def csv_row_from_cfg(cfg: dict) -> dict:
     gauge = cfg["gauge"]
     n = cfg["n_conductors"]
     pn = part_number_from_cfg(cfg)
-    mcmaster = mcmaster_part(spec["code"], gauge, n) or {}
     insulation_in = spec["insulation_in"](gauge)
     jacket_in = spec["jacket_in"](gauge)
     return {
@@ -689,11 +582,8 @@ def csv_row_from_cfg(cfg: dict) -> dict:
         "oil_resistant_jacket": bool(spec.get("oil_resistant_jacket")),
         "oil_resistant_insulation": bool(spec.get("oil_resistant_insulation")),
         "weather_resistant": bool(spec.get("weather_resistant")),
-        "mcmaster_pn": mcmaster.get("pn", ""),
-        "mcmaster_designation": mcmaster.get("designation", ""),
-        "mcmaster_url": mcmaster.get("url", ""),
-        "mfg": "McMaster-Carr" if mcmaster else "",
-        "library_subpath": f"portable_power_cable/{pn}",
+        "mfg": "",
+        "library_subpath": LIBRARY_SUBPATH,
     }
 
 
@@ -759,16 +649,10 @@ def main():
     family_dir = os.path.dirname(os.path.abspath(__file__))
     configs = build_configurations()
     print(f"Building {len(configs)} portable power cables in {family_dir}")
-    with_mcmaster = 0
 
     for cfg in configs:
         pn = part_number_from_cfg(cfg)
-        mcmaster = mcmaster_part(
-            cfg["spec"]["code"], cfg["gauge"], cfg["n_conductors"]
-        )
-        print(f"Preparing cable: {pn}" + (f" ({mcmaster['pn']})" if mcmaster else ""))
-        if mcmaster:
-            with_mcmaster += 1
+        print(f"Preparing cable: {pn}")
 
         part_dir = os.path.join(family_dir, pn)
         os.makedirs(part_dir, exist_ok=True)
@@ -785,14 +669,14 @@ def main():
         rev_history.part_family_append(
             {
                 "project_type": state.project_type,
-                "mfg": "McMaster-Carr" if mcmaster else "",
+                "mfg": "",
                 "pn": pn,
                 "rev": REVISION,
                 "desc": description_from_cfg(cfg),
                 "status": "",
                 "datestarted": DATE_STARTED,
                 "library_repo": LIBRARY_REPO,
-                "library_subpath": f"portable_power_cable/{pn}",
+                "library_subpath": LIBRARY_SUBPATH,
                 "revisionupdates": "INITIAL RELEASE",
             },
             os.path.join(part_dir, f"{pn}-revision_history.tsv"),
@@ -810,10 +694,7 @@ def main():
     csv_path = os.path.join(family_dir, "portable_power_cable.csv")
     write_family_csv(configs, csv_path)
 
-    print(
-        f"Finished building {len(configs)} portable power cables "
-        f"({with_mcmaster} with McMaster-Carr part numbers)."
-    )
+    print(f"Finished building {len(configs)} portable power cables.")
     print(f"Wrote family catalog: {csv_path}")
 
 

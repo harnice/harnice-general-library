@@ -174,7 +174,5 @@
   "wires": 5,
   "grounded": true,
   "system": "3-phase wye hot-hot-hot-neutral-ground",
-  "hubbell pn": "HBL2833",
-  "mcmaster pn": "7184K48",
-  "mcmaster url": "https://www.mcmaster.com/7184K48/"
+  "hubbell pn": "HBL2833"
 }

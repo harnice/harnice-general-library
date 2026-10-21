@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": false,
   "system": "hot-hot-neutral",
-  "hubbell pn": "HBL9333",
-  "mcmaster pn": "7120K54",
-  "mcmaster url": "https://www.mcmaster.com/7120K54/"
+  "hubbell pn": "HBL9333"
 }

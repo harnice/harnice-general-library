@@ -170,7 +170,5 @@
   "wires": 4,
   "grounded": true,
   "system": "3-phase delta hot-hot-hot-ground",
-  "hubbell pn": "HBL2431",
-  "mcmaster pn": "7164K52",
-  "mcmaster url": "https://www.mcmaster.com/7164K52/"
+  "hubbell pn": "HBL2431"
 }

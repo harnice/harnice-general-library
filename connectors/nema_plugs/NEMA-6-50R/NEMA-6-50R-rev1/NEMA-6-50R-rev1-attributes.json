@@ -165,7 +165,5 @@
   "poles": 2,
   "wires": 3,
   "grounded": true,
-  "system": "hot-hot-ground",
-  "mcmaster pn": "7120K83",
-  "mcmaster url": "https://www.mcmaster.com/7120K83/"
+  "system": "hot-hot-ground"
 }

@@ -482,8 +482,8 @@ def main(skip_render=False, attributes_only=False):
                     "desc": "",
                     "status": "",
                     "datestarted": DATE_STARTED,
-                    "library_repo": "https://github.com/harnice/d38999",
-                    "library_subpath": "Connector",
+                    "library_repo": "https://github.com/harnice/harnice-general-library",
+                    "library_subpath": "parts/generic_ring_terminals/",
                 },
                 os.path.join(part_dir, f"{pn}-revision_history.tsv"),
             )

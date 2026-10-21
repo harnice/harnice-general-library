@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-neutral-ground",
-  "hubbell pn": "HBL2311",
-  "mcmaster pn": "7162K36",
-  "mcmaster url": "https://www.mcmaster.com/7162K36/"
+  "hubbell pn": "HBL2311"
 }

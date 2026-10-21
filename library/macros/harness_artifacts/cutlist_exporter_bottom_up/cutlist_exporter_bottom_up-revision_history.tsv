@@ -1,2 +1,2 @@
 project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	source_part_number	source_revision	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances	last_build
-macro		bom_exporter_bottom_up		1			https://github.com/harnice/harnice-general-library	library/macros/harness_artifacts/						7/20/25	9/19/26		10d1a09635a5bde8157111db78fda019dcc74488	K SHUTT		INITIAL RELEASE		succeeded
+macro		cutlist_exporter_bottom_up		1			https://github.com/harnice/harnice-general-library	library/macros/harness_artifacts/						7/20/25	9/19/26		10d1a09635a5bde8157111db78fda019dcc74488	K SHUTT		INITIAL RELEASE		succeeded

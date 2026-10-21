@@ -9,10 +9,7 @@
             "material": "pvc",
             "color": "black",
             "thickness": "0.080in",
-            "weather resistant": true,
-            "mcmaster pn": "8201K44",
-            "mcmaster designation": "STOW",
-            "mcmaster url": "https://www.mcmaster.com/8201K44/"
+            "weather resistant": true
         },
         "black": {
             "conductor": true,

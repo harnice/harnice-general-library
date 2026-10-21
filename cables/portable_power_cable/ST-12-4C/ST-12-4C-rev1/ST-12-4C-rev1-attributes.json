@@ -8,10 +8,7 @@
             "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.095in",
-            "mcmaster pn": "8201K47",
-            "mcmaster designation": "STOW",
-            "mcmaster url": "https://www.mcmaster.com/8201K47/"
+            "thickness": "0.095in"
         },
         "black": {
             "conductor": true,

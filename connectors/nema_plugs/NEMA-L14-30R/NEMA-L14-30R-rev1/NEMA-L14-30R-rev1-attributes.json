@@ -170,7 +170,5 @@
   "wires": 4,
   "grounded": true,
   "system": "hot-hot-neutral-ground",
-  "hubbell pn": "HBL2713",
-  "mcmaster pn": "7164K56",
-  "mcmaster url": "https://www.mcmaster.com/7164K56/"
+  "hubbell pn": "HBL2713"
 }

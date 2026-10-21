@@ -1,4 +1,3 @@
-from modulefinder import test
 import os
 import csv
 from harnice import fileio, state

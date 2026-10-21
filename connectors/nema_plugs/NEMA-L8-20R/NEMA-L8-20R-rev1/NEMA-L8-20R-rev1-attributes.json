@@ -166,7 +166,5 @@
   "wires": 3,
   "grounded": true,
   "system": "hot-hot-ground",
-  "hubbell pn": "HBL2343",
-  "mcmaster pn": "7162K66",
-  "mcmaster url": "https://www.mcmaster.com/7162K66/"
+  "hubbell pn": "HBL2343"
 }

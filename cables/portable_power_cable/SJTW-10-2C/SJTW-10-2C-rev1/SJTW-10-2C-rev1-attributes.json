@@ -9,10 +9,7 @@
             "material": "pvc",
             "color": "black",
             "thickness": "0.060in",
-            "weather resistant": true,
-            "mcmaster pn": "7422K75",
-            "mcmaster designation": "SJOOW",
-            "mcmaster url": "https://www.mcmaster.com/7422K75/"
+            "weather resistant": true
         },
         "black": {
             "conductor": true,

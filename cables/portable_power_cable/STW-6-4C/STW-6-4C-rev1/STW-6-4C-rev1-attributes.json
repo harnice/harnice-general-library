@@ -9,10 +9,7 @@
             "material": "pvc",
             "color": "black",
             "thickness": "0.140in",
-            "weather resistant": true,
-            "mcmaster pn": "7081K25",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K25/"
+            "weather resistant": true
         },
         "black": {
             "conductor": true,

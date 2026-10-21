@@ -8,10 +8,7 @@
             "jacketed": true,
             "material": "rubber",
             "color": "black",
-            "thickness": "0.140in",
-            "mcmaster pn": "7081K25",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K25/"
+            "thickness": "0.140in"
         },
         "black": {
             "conductor": true,

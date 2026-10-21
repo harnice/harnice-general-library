@@ -8,10 +8,7 @@
             "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.060in",
-            "mcmaster pn": "7081K14",
-            "mcmaster designation": "SOOW",
-            "mcmaster url": "https://www.mcmaster.com/7081K14/"
+            "thickness": "0.060in"
         },
         "black": {
             "conductor": true,

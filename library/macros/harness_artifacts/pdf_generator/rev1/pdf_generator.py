@@ -14,7 +14,6 @@ from harnice.utils import svg_utils, library_utils, pdf_drawings_utils
 
 artifact_mpn = "pdf_generator"
 
-_INKSCAPE_DEFAULT = "/Applications/Inkscape.app/Contents/MacOS/inkscape"
 # Inkscape/GLib noise: CSS props it recognizes by id but does not implement (e.g. cursor=400).
 _INKSCAPE_STDERR_IGNORE_SUBSTRINGS = (
     "Unimplemented style property",
@@ -23,20 +22,10 @@ _INKSCAPE_STDERR_IGNORE_SUBSTRINGS = (
 
 
 def _inkscape_bin():
-    """Resolve Inkscape from paths/paths.json, else paths.example.json, else default."""
-    paths_dir = os.path.join(fileio.harnice_root(), "paths")
-    for name in ("paths.json", "paths.example.json"):
-        p = os.path.join(paths_dir, name)
-        if not os.path.isfile(p):
-            continue
-        try:
-            with open(p, encoding="utf-8") as f:
-                data = json.load(f)
-            if isinstance(data, dict) and data.get("inkscape"):
-                return data["inkscape"]
-        except (json.JSONDecodeError, OSError):
-            pass
-    return _INKSCAPE_DEFAULT
+    """Find Inkscape (saved path, PATH, macOS app, Homebrew, Windows install)."""
+    from harnice.utils.inkscape_utils import resolve_inkscape
+
+    return resolve_inkscape()
 
 
 def _run_inkscape(args, *, check=True):

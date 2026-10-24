@@ -112,7 +112,7 @@ def _instance_model_path(instance):
         "instance_data",
         item_type,
         name,
-        f"{name}-model.step",
+        "model.step",
     )
 
 

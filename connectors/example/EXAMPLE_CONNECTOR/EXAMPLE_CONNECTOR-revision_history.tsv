@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	datestarted	datemodified	datereleased	git_hash_of_harnice_src	drawnby	checkedby	revisionupdates	affectedinstances
+part	HARNICE	EXAMPLE_CONNECTOR	CONNECTOR, EXAMPLE, PLACEHOLDER WHEN NO MATE IS CHOSEN	1			https://github.com/harnice/harnice-general-library	connectors/example	10/21/26	10/21/26			K SHUTT		INITIAL RELEASE	

@@ -1,18 +1,11 @@
-from harnice.utils import physical_body
+from harnice import fileio
+from harnice.utils import cad
 
-# Copies a STEP file onto the device as body.step. Call from the device
-# build instructions:
-# build_utils.run_macro(
-#     "build_physical_model_from_step",
-#     "library/macros/device_artifacts",
-#     "https://github.com/harnice/harnice-general-library",
-#     artifact_id="body-1",
-#     path_to_step="vendor/chassis.step",
-# )
-#
-# Bytes are copied unchanged, so image links already in that file stay.
+# Copies a STEP file onto the device at fileio.path("body").
+# import_step does not build a cad model, so there is no surface to attach
+# an image to. Bytes are copied unchanged.
 
 if "path_to_step" not in globals() or not path_to_step:
     raise ValueError("path_to_step is required")
 
-physical_body.build_physical_model_from_step(path_to_step)
+cad.import_step(path_to_step, fileio.path("body"))

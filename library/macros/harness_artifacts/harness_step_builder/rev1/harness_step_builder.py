@@ -158,15 +158,20 @@ def _segment_tube(segment, diameter_in):
     return _tube_from_points_in(flattened_network.spline_points(segment), diameter_in)
 
 
-def _centerline_inches(hops, segments_by_id):
+def _centerline_inches(hops, segments_by_id, segment_instances, nodes_by_id):
     points = []
     for seg_name, direction in hops:
         segment = segments_by_id.get(seg_name)
         if segment is None:
             continue
-        pts = list(flattened_network.spline_points(segment))
-        if direction == "ba":
-            pts.reverse()
+        inst = segment_instances.get(seg_name) or {}
+        start_name = (
+            inst.get("node_at_end_b") if direction == "ba" else inst.get("node_at_end_a")
+        )
+        start_loc = (nodes_by_id.get(start_name) or {}).get("location")
+        pts = flattened_network.oriented_spline_points(
+            segment, start_loc, direction=direction
+        )
         if not pts:
             continue
         if points and _near(points[-1], pts[0]):
@@ -175,10 +180,14 @@ def _centerline_inches(hops, segments_by_id):
     return points
 
 
-def _append_trace_tube(bodies, name, hops, segments_by_id, diameter_in):
+def _append_trace_tube(
+    bodies, name, hops, segments_by_id, diameter_in, segment_instances, nodes_by_id
+):
     if diameter_in is None or diameter_in <= 0:
         return
-    points_in = _centerline_inches(hops, segments_by_id)
+    points_in = _centerline_inches(
+        hops, segments_by_id, segment_instances, nodes_by_id
+    )
     if len(points_in) < 2:
         return
     try:
@@ -204,6 +213,17 @@ segments_by_id = {
     segment.get("segment_id"): segment
     for segment in (chosen_network.get("segments") or [])
     if segment.get("segment_id") not in ("", None)
+}
+segment_instances = {
+    instance.get("instance_name"): instance
+    for instance in world_instances
+    if instance.get("item_type") == "segment"
+    and instance.get("instance_name") not in ("", None)
+}
+nodes_by_id = {
+    node.get("node_id"): node
+    for node in (chosen_network.get("nodes") or [])
+    if node.get("node_id") not in ("", None)
 }
 bodies = []
 
@@ -235,7 +255,9 @@ for instance in input_instances:
             diameter = cable_utils.cable_jacket_od(name, instance)
         except ValueError:
             continue
-        _append_trace_tube(bodies, name, hops, segments_by_id, diameter)
+        _append_trace_tube(
+            bodies, name, hops, segments_by_id, diameter, segment_instances, nodes_by_id
+        )
     elif item_type == "conductor":
         hops = cable_utils.mapped_segment_hops(name, "conductor-segment", world_instances)
         if not hops:
@@ -244,7 +266,9 @@ for instance in input_instances:
             diameter = cable_utils.conductor_od(instance, world_instances)
         except ValueError:
             continue
-        _append_trace_tube(bodies, name, hops, segments_by_id, diameter)
+        _append_trace_tube(
+            bodies, name, hops, segments_by_id, diameter, segment_instances, nodes_by_id
+        )
 
 for instance in input_instances:
     if instance.get("item_type") in SKIP_MODEL_ITEM_TYPES:

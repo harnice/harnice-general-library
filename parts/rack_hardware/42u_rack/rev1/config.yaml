@@ -1,0 +1,8 @@
+fields:
+- id: U
+  type: number
+  label: Number of units
+  required: true
+  default: 42
+  validation:
+    minimum: 1

@@ -168,6 +168,7 @@ svg = [
     '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
     (
         '<svg xmlns="http://www.w3.org/2000/svg"'
+        ' xmlns:xlink="http://www.w3.org/1999/xlink"'
         ' xmlns:schem="https://example.com/schema/v1" version="1.1">'
     ),
     '  <g id="svg-master-contents-start">',
@@ -293,6 +294,7 @@ def ensure_page_svg_scaffold(svg_path, page_w, page_h):
     """Create or upgrade a user-editable page SVG with frame/tblock/master groups."""
     scaffold = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:schem="https://example.com/schema/v1"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
     version="1.1"
@@ -319,6 +321,9 @@ def ensure_page_svg_scaffold(svg_path, page_w, page_h):
 
     content = pdf_drawings_utils.ensure_attr_on_root_svg(
         content, "xmlns:schem", "https://example.com/schema/v1"
+    )
+    content = pdf_drawings_utils.ensure_attr_on_root_svg(
+        content, "xmlns:xlink", "http://www.w3.org/1999/xlink"
     )
 
     # Keep existing clone content; ensure markers + size attributes exist.
@@ -531,6 +536,10 @@ for this_page_name in [
     with open(svg_path, encoding="utf-8") as f:
         page_svg = f.read()
     export_svg = pdf_drawings_utils.strip_configuration_elements(page_svg)
+    export_svg = pdf_drawings_utils.rasterize_linked_images(
+        export_svg,
+        os.path.dirname(os.path.abspath(svg_path)),
+    )
     export_path = svg_path
     export_tmp = None
     if export_svg != page_svg:

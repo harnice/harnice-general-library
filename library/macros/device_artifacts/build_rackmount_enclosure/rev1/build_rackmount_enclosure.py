@@ -13,16 +13,15 @@ from harnice.utils import cad
 #
 # The footprint sketch is on "right". That plane's normal is [0, 0, 1],
 # u is [1, 0, 0] (width, +X) and v is [0, 1, 0] (depth, +Y). The sketch
-# uuid is "shell". It is 21 inches wide, which is 19 inches plus 1 inch on
-# each side, and `depth` deep with no extra margin. The front edge is v = 0.
-# extrude grows the solid along +Z by units * 1.75, plus 1 inch of wall on
-# the top and the bottom.
+# uuid is "shell". It is 19 inches wide and `depth` deep. The front edge is
+# v = 0. extrude grows the solid along +Z by units * 1.75, plus 1 inch of
+# wall on the top and the bottom.
 #
 # The opening sketch is on "front". That plane's normal is [0, 1, 0], u is
 # [0, 0, 1] (height, +Z) and v is [1, 0, 0] (width, +X). The sketch uuid is
 # "opening". It is exactly units * 1.75 tall and 17 inches wide. The ears
 # belong to the rack, so this is 17 inches, not 19. It sits 1 inch above
-# z = 0, centered in the 21 inch width. extrude grows that prism along +Y
+# z = 0, centered in the 19 inch width. extrude grows that prism along +Y
 # through the shell. boolean_subtract cuts it out, so the front and the
 # back are both open.
 #
@@ -45,7 +44,7 @@ if depth <= 0 or units <= 0:
 unit = 1.75
 opening_height = units * unit
 outer_height = opening_height + 2.0
-half_outer = 10.5
+half_outer = 9.5
 half_opening = 8.5
 z0 = 1.0
 z1 = z0 + opening_height

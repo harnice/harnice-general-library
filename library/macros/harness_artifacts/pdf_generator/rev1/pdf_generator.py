@@ -531,6 +531,10 @@ for this_page_name in [
     with open(svg_path, encoding="utf-8") as f:
         page_svg = f.read()
     export_svg = pdf_drawings_utils.strip_configuration_elements(page_svg)
+    export_svg = pdf_drawings_utils.rasterize_linked_images(
+        export_svg,
+        os.path.dirname(os.path.abspath(svg_path)),
+    )
     export_path = svg_path
     export_tmp = None
     if export_svg != page_svg:

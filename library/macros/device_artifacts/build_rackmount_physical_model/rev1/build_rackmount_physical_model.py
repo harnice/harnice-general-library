@@ -6,26 +6,32 @@ from harnice.utils import cad
 # Rack chassis, in inches. Saved with fileio.path("body"), which is the
 # device's body.step, not a file in this macro's folder.
 #
-# +X is right, +Z is up, and the front face is y = 0. That matches the
-# viewer's view cube: Right is +X, Top is +Z, Front is -Y.
+# The faceplate is the front of the model: the plane y = 0, which is the
+# viewer's front (minimum Y, normal -Y). +Z is up. +X is to the right when
+# looking at that front. The chassis extends along +Y by `depth`. Width is
+# centered on X. Height grows along +Z.
 #
 # The sketch is on "right". That plane's normal is [0, 0, 1], u is [1, 0, 0]
 # (width, +X) and v is [0, 1, 0] (depth, +Y). The sketch uuid is "bottom":
-# the face at z = 0. extrude grows the solid along +Z by u * 1.75.
+# the face at z = 0. The front edge is v = 0. extrude grows the solid along
+# +Z by u * 1.75.
 #
-# The front ears are 19 inches wide and 1/16 inch thick. The chassis behind
-# them is 17 inches wide. A depth shallower than the ear is just that plate.
-# Width is centered on X. Depth starts at the front face and grows along +Y.
+# The faceplate ears are 19 inches wide and 1/16 inch thick. The chassis
+# behind them is 17 inches wide. A depth shallower than the ear is just that
+# plate.
 #
-# images maps a surface uuid to a file. The front ears are also stored as
-# the surface "front", which is the face the viewer paints. The orientation
-# passed to attach_png is degrees.
+# images maps a surface name to a file. "front" is the faceplate, and the
+# viewer paints that y = 0 face under the same name. "back" is the face at
+# y = depth. "bottom" stays the sketch face at z = 0. The orientation passed
+# to attach_png is degrees.
 #
-# Each rack unit gets a mate connector on the front face, centered on that
-# unit. U1 is the bottom unit. x is the center of the width, y is 0, and z
-# is the middle of that 1.75 inch band. Angles stay 0. A mate already saved
-# under another id, such as a signals-list connector, is kept. An older U
-# mate this chassis no longer has is dropped.
+# Each rack unit gets a mate connector on the faceplate, centered on that
+# unit. F1 is the bottom unit. x is 0, y is 0, and z is the middle of that
+# 1.75 inch band. gamma is -90, so the mate's +X points out of the front
+# and its +Z points up. Each of these mates has source "build", so the next
+# build places them again. A mate with source "gui" keeps the pose saved in
+# attributes.json. A gui mate with the same id replaces the build mate.
+# Other attributes in that file stay.
 
 if "params" not in globals() or not isinstance(params, dict):
     raise ValueError("params is required")
@@ -57,6 +63,7 @@ if depth <= ear:
         "d": (-half_ear, depth),
     }
     edges = [("a", "b"), ("b", "c"), ("c", "d"), ("d", "a")]
+    back_edge = "bottom-c-d"
 else:
     vertices = {
         "a": (-half_ear, 0.0),
@@ -72,14 +79,22 @@ else:
         ("a", "b"), ("b", "c"), ("c", "d"), ("d", "e"),
         ("e", "f"), ("f", "g"), ("g", "h"), ("h", "a"),
     ]
+    back_edge = "bottom-e-f"
 
 model = cad.new()
 cad.sketch(model, "bottom", "right", vertices, edges)
 cad.extrude(model, "bottom", height)
-# Edge a-b is the front face: y = 0, the ears, the full 19 inch width.
-front_edge = model.surfaces["bottom-a-b"]
+# Edge a-b is the faceplate: y = 0, the ears, the full 19 inch width.
+# The viewer calls this minimum-Y face "front".
+faceplate = model.surfaces["bottom-a-b"]
 model.surfaces["front"] = {
-    "plane": front_edge["plane"],
+    "plane": faceplate["plane"],
+    "png": None,
+    "orientation": None,
+}
+back = model.surfaces[back_edge]
+model.surfaces["back"] = {
+    "plane": back["plane"],
     "png": None,
     "orientation": None,
 }
@@ -92,27 +107,16 @@ band_start = 0.0
 index = 1
 while band_start < height:
     band = unit if band_start + unit <= height else height - band_start
-    cad.mate(model, f"U{index}", [0, 0, band_start + band / 2])
+    cad.mate(model, f"F{index}", [0, 0, band_start + band / 2], gamma=-90)
     band_start += unit
     index += 1
 
-mates_path = fileio.path("mates")
+mates_path = fileio.path("attributes")
+saved_body = None
 if os.path.isfile(mates_path):
     from harnice.utils import physical_body
 
-    have = {mate["id"] for mate in model.mates}
-    for saved in physical_body.load_body(mates_path)["mate_connectors"]:
-        name = saved["id"]
-        if name in have:
-            continue
-        if len(name) > 1 and name[0] == "U" and name[1:].isdigit():
-            continue
-        cad.mate(
-            model,
-            name,
-            saved["location"],
-            saved["alpha"],
-            saved["beta"],
-            saved["gamma"],
-        )
+    saved_body = physical_body.load_body(mates_path)
+if saved_body:
+    cad.keep_gui_mates(model, saved_body["mate_connectors"])
 cad.save_mates(model, mates_path)

@@ -6,31 +6,34 @@ from harnice.utils import cad
 # Rack enclosure, in inches. Saved with fileio.path("body"), which is the
 # device's body.step, not a file in this macro's folder.
 #
-# +X is right, +Z is up, and the front face is y = 0. That matches the
-# viewer's view cube: Right is +X, Top is +Z, Front is -Y.
+# The front of the rack is the front of the model: the face at y = 0, which
+# is the viewer's front (minimum Y, normal -Y). +Z is up. +X is to the right
+# when looking at that front. The shell extends along +Y by `depth`. Width
+# is centered on X. Height grows along +Z.
 #
 # The footprint sketch is on "right". That plane's normal is [0, 0, 1],
 # u is [1, 0, 0] (width, +X) and v is [0, 1, 0] (depth, +Y). The sketch
 # uuid is "shell". It is 21 inches wide, which is 19 inches plus 1 inch on
-# each side, and `depth` deep with no extra margin. Width is centered on X.
-# Depth starts at the front face and grows along +Y. extrude grows the
-# solid along +Z by units * 1.75, plus 1 inch of wall on the top and the
-# bottom.
+# each side, and `depth` deep with no extra margin. The front edge is v = 0.
+# extrude grows the solid along +Z by units * 1.75, plus 1 inch of wall on
+# the top and the bottom.
 #
-# The opening sketch is on "front". That plane's normal is [0, 1, 0],
-# u is [0, 0, 1] (height, +Z) and v is [1, 0, 0] (width, +X). The sketch
-# uuid is "opening". It is exactly units * 1.75 tall and 17 inches wide.
-# The ears belong to the rack, so this is 17 inches, not 19. It sits 1 inch
-# above z = 0, centered in the 21 inch width. extrude grows that prism
-# along +Y by the same depth. boolean_subtract cuts it out of the shell,
-# so the front and the back are both open.
+# The opening sketch is on "front". That plane's normal is [0, 1, 0], u is
+# [0, 0, 1] (height, +Z) and v is [1, 0, 0] (width, +X). The sketch uuid is
+# "opening". It is exactly units * 1.75 tall and 17 inches wide. The ears
+# belong to the rack, so this is 17 inches, not 19. It sits 1 inch above
+# z = 0, centered in the 21 inch width. extrude grows that prism along +Y
+# through the shell. boolean_subtract cuts it out, so the front and the
+# back are both open.
 #
-# Each rack unit gets a mate connector on the front face, centered on that
-# unit of the opening. U1 is the bottom unit. x is 0, y is 0, and z is the
-# middle of that 1.75 inch band, starting 1 inch above the bottom of the
-# shell. Angles stay 0. A mate already saved under another id, such as a
-# signals-list connector, is kept. An older U mate this enclosure no longer
-# has is dropped.
+# Each rack unit gets two mate connectors, one on the front and one on the
+# back, centered on that unit of the opening. F1 and B1 are the bottom unit.
+# Front mates are at y = 0 with gamma -90, so +X points out the front (-Y)
+# and +Z points up. Back mates are at y = depth with gamma 90, so +X points
+# out the back (+Y) and +Z still points up. Each of these mates has source
+# "build", so the next build places them again. A mate with source "gui"
+# keeps the pose saved in attributes.json. A gui mate with the same id
+# replaces the build mate. Other attributes in that file stay.
 
 if "depth" not in globals() or "units" not in globals():
     raise ValueError("depth and units are required")
@@ -81,27 +84,18 @@ band_start = z0
 index = 1
 while band_start < z1:
     band = unit if band_start + unit <= z1 else z1 - band_start
-    cad.mate(model, f"U{index}", [0, 0, band_start + band / 2])
+    center = band_start + band / 2
+    cad.mate(model, f"F{index}", [0, 0, center], gamma=-90)
+    cad.mate(model, f"B{index}", [0, depth, center], gamma=90)
     band_start += unit
     index += 1
 
-mates_path = fileio.path("mates")
+mates_path = fileio.path("attributes")
+saved_body = None
 if os.path.isfile(mates_path):
     from harnice.utils import physical_body
 
-    have = {mate["id"] for mate in model.mates}
-    for saved in physical_body.load_body(mates_path)["mate_connectors"]:
-        name = saved["id"]
-        if name in have:
-            continue
-        if len(name) > 1 and name[0] == "U" and name[1:].isdigit():
-            continue
-        cad.mate(
-            model,
-            name,
-            saved["location"],
-            saved["alpha"],
-            saved["beta"],
-            saved["gamma"],
-        )
+    saved_body = physical_body.load_body(mates_path)
+if saved_body:
+    cad.keep_gui_mates(model, saved_body["mate_connectors"])
 cad.save_mates(model, mates_path)

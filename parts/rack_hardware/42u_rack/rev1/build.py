@@ -8,5 +8,6 @@ build_utils.run_macro(
     "https://github.com/harnice/harnice-general-library",
     artifact_id="body-1",
     depth=36,
-    units=42,
+    units=configuration["U"],
 )
+

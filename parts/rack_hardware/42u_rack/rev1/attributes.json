@@ -1,0 +1,1013 @@
+{
+    "default_refdes": "DEVICE",
+    "mate_connectors": [
+        {
+            "id": "U1",
+            "location": [
+                0.0,
+                0.0,
+                1.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B1",
+            "location": [
+                0.0,
+                36.0,
+                1.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U2",
+            "location": [
+                0.0,
+                0.0,
+                3.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B2",
+            "location": [
+                0.0,
+                36.0,
+                3.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U3",
+            "location": [
+                0.0,
+                0.0,
+                5.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B3",
+            "location": [
+                0.0,
+                36.0,
+                5.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U4",
+            "location": [
+                0.0,
+                0.0,
+                7.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B4",
+            "location": [
+                0.0,
+                36.0,
+                7.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U5",
+            "location": [
+                0.0,
+                0.0,
+                8.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B5",
+            "location": [
+                0.0,
+                36.0,
+                8.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U6",
+            "location": [
+                0.0,
+                0.0,
+                10.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B6",
+            "location": [
+                0.0,
+                36.0,
+                10.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U7",
+            "location": [
+                0.0,
+                0.0,
+                12.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B7",
+            "location": [
+                0.0,
+                36.0,
+                12.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U8",
+            "location": [
+                0.0,
+                0.0,
+                14.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B8",
+            "location": [
+                0.0,
+                36.0,
+                14.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U9",
+            "location": [
+                0.0,
+                0.0,
+                15.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B9",
+            "location": [
+                0.0,
+                36.0,
+                15.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U10",
+            "location": [
+                0.0,
+                0.0,
+                17.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B10",
+            "location": [
+                0.0,
+                36.0,
+                17.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U11",
+            "location": [
+                0.0,
+                0.0,
+                19.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B11",
+            "location": [
+                0.0,
+                36.0,
+                19.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U12",
+            "location": [
+                0.0,
+                0.0,
+                21.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B12",
+            "location": [
+                0.0,
+                36.0,
+                21.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U13",
+            "location": [
+                0.0,
+                0.0,
+                22.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B13",
+            "location": [
+                0.0,
+                36.0,
+                22.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U14",
+            "location": [
+                0.0,
+                0.0,
+                24.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B14",
+            "location": [
+                0.0,
+                36.0,
+                24.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U15",
+            "location": [
+                0.0,
+                0.0,
+                26.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B15",
+            "location": [
+                0.0,
+                36.0,
+                26.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U16",
+            "location": [
+                0.0,
+                0.0,
+                28.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B16",
+            "location": [
+                0.0,
+                36.0,
+                28.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U17",
+            "location": [
+                0.0,
+                0.0,
+                29.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B17",
+            "location": [
+                0.0,
+                36.0,
+                29.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U18",
+            "location": [
+                0.0,
+                0.0,
+                31.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B18",
+            "location": [
+                0.0,
+                36.0,
+                31.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U19",
+            "location": [
+                0.0,
+                0.0,
+                33.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B19",
+            "location": [
+                0.0,
+                36.0,
+                33.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U20",
+            "location": [
+                0.0,
+                0.0,
+                35.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B20",
+            "location": [
+                0.0,
+                36.0,
+                35.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U21",
+            "location": [
+                0.0,
+                0.0,
+                36.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B21",
+            "location": [
+                0.0,
+                36.0,
+                36.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U22",
+            "location": [
+                0.0,
+                0.0,
+                38.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B22",
+            "location": [
+                0.0,
+                36.0,
+                38.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U23",
+            "location": [
+                0.0,
+                0.0,
+                40.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B23",
+            "location": [
+                0.0,
+                36.0,
+                40.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U24",
+            "location": [
+                0.0,
+                0.0,
+                42.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B24",
+            "location": [
+                0.0,
+                36.0,
+                42.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U25",
+            "location": [
+                0.0,
+                0.0,
+                43.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B25",
+            "location": [
+                0.0,
+                36.0,
+                43.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U26",
+            "location": [
+                0.0,
+                0.0,
+                45.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B26",
+            "location": [
+                0.0,
+                36.0,
+                45.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U27",
+            "location": [
+                0.0,
+                0.0,
+                47.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B27",
+            "location": [
+                0.0,
+                36.0,
+                47.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U28",
+            "location": [
+                0.0,
+                0.0,
+                49.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B28",
+            "location": [
+                0.0,
+                36.0,
+                49.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U29",
+            "location": [
+                0.0,
+                0.0,
+                50.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B29",
+            "location": [
+                0.0,
+                36.0,
+                50.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U30",
+            "location": [
+                0.0,
+                0.0,
+                52.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B30",
+            "location": [
+                0.0,
+                36.0,
+                52.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U31",
+            "location": [
+                0.0,
+                0.0,
+                54.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B31",
+            "location": [
+                0.0,
+                36.0,
+                54.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U32",
+            "location": [
+                0.0,
+                0.0,
+                56.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B32",
+            "location": [
+                0.0,
+                36.0,
+                56.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U33",
+            "location": [
+                0.0,
+                0.0,
+                57.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B33",
+            "location": [
+                0.0,
+                36.0,
+                57.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U34",
+            "location": [
+                0.0,
+                0.0,
+                59.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B34",
+            "location": [
+                0.0,
+                36.0,
+                59.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U35",
+            "location": [
+                0.0,
+                0.0,
+                61.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B35",
+            "location": [
+                0.0,
+                36.0,
+                61.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U36",
+            "location": [
+                0.0,
+                0.0,
+                63.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B36",
+            "location": [
+                0.0,
+                36.0,
+                63.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U37",
+            "location": [
+                0.0,
+                0.0,
+                64.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B37",
+            "location": [
+                0.0,
+                36.0,
+                64.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U38",
+            "location": [
+                0.0,
+                0.0,
+                66.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B38",
+            "location": [
+                0.0,
+                36.0,
+                66.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U39",
+            "location": [
+                0.0,
+                0.0,
+                68.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B39",
+            "location": [
+                0.0,
+                36.0,
+                68.375
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U40",
+            "location": [
+                0.0,
+                0.0,
+                70.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B40",
+            "location": [
+                0.0,
+                36.0,
+                70.125
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U41",
+            "location": [
+                0.0,
+                0.0,
+                71.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B41",
+            "location": [
+                0.0,
+                36.0,
+                71.875
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        },
+        {
+            "id": "U42",
+            "location": [
+                0.0,
+                0.0,
+                73.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": -90.0,
+            "source": "build"
+        },
+        {
+            "id": "B42",
+            "location": [
+                0.0,
+                36.0,
+                73.625
+            ],
+            "alpha": 0.0,
+            "beta": 0.0,
+            "gamma": 90.0,
+            "source": "build"
+        }
+    ]
+}

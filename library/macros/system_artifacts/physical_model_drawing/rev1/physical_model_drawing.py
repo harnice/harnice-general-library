@@ -6,6 +6,7 @@ from harnice.utils import physical_drawing
 # ARGS
 # artifact_id = unique instance name for this run
 # scale = drawing scale, same meaning as the formboard. 1 is full size.
+# lineweight = stroke on the sheet, in px. It stays this thick when scale changes.
 # hidden_instances = device names to leave out. A list, or one name.
 # orientation = "front", "back", "left", "right", "top", or "bottom",
 #   or the viewport as alpha, beta, gamma: {"alpha": 0, "beta": 0, "gamma": 0}
@@ -21,6 +22,7 @@ from harnice.utils import physical_drawing
 #     "https://github.com/harnice/harnice-general-library",
 #     artifact_id="physical-1",
 #     scale=1,
+#     lineweight=1,
 #     hidden_instances=[],
 #     orientation="front",
 # )
@@ -29,6 +31,8 @@ artifact_mpn = "physical_model_drawing"
 
 if "scale" not in globals() or scale is None:
     scale = 1
+if "lineweight" not in globals() or lineweight is None:
+    lineweight = 1
 if "hidden_instances" not in globals() or hidden_instances is None:
     hidden_instances = []
 if "orientation" not in globals() or orientation is None:
@@ -66,6 +70,7 @@ os.makedirs(dirpath(None), exist_ok=True)
 svg_text = physical_drawing.render_system_drawing(
     artifact_id,
     scale=scale,
+    lineweight=lineweight,
     orientation=orientation,
     hidden_instances=hidden_instances,
 )

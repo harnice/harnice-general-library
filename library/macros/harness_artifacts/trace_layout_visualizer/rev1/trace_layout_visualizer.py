@@ -1,7 +1,7 @@
 import os
 from harnice import fileio
 from harnice.lists import flattened_network, instances_list
-from harnice.utils import appearance
+from harnice.utils import appearance, svg_utils
 
 artifact_mpn = "trace_layout_visualizer"
 # artifact_id: intentionally NOT defined here — injected externally by runpy
@@ -134,16 +134,32 @@ for inst in source_instances:
     row["appearance"] = appearance_for_print(inst.get("appearance"))
     print_instances.append(row)
 
+# Stroke, spacing, and label size follow svg_utils.trace_overlay_style when the
+# script has changed them. A key still at the overlay default keeps the sheet
+# number above, so an untouched build matches older drawings. stroke_width is
+# inches. segment_spacing is px in this pixel network. label_font_size is the
+# printed px size, divided by scale because the text sits in the scale group.
+stroke_width = svg_utils.trace_overlay_sheet_value("stroke_width", TRACE_WIDTH_IN)
+segment_spacing = svg_utils.trace_overlay_sheet_value(
+    "segment_spacing", TRACE_SPACING_IN * PX_PER_INCH
+)
+label_print_px = svg_utils.trace_overlay_sheet_value(
+    "label_font_size", LABEL_PRINT_SIZE_PX
+)
+
 content_lines = []
 for item_type in trace_item_types:
     layer_markup = flattened_network.trace_layer_markup(
         network_2D,
         item_type,
         input_instances=print_instances,
-        stroke_width=TRACE_WIDTH_IN,
-        segment_spacing=TRACE_SPACING_IN * PX_PER_INCH,
+        stroke_width=stroke_width,
+        segment_spacing=segment_spacing,
         # Labels sit inside the scale group, so pre-divide to print at a fixed size.
-        label_font_size=LABEL_PRINT_SIZE_PX / scale,
+        label_font_size=label_print_px / scale,
+        min_label_segment_length=svg_utils.trace_overlay_style[
+            "min_label_segment_length"
+        ],
     )
     layer_id = f"{artifact_id}-{item_type}_traces"
     content_lines.append(f'    <g id="{layer_id}" inkscape:label="{layer_id}">')

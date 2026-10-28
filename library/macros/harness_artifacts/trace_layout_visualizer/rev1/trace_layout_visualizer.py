@@ -134,18 +134,19 @@ for inst in source_instances:
     row["appearance"] = appearance_for_print(inst.get("appearance"))
     print_instances.append(row)
 
-# Stroke, spacing, and label size follow svg_utils.trace_overlay_style when the
-# script has changed them. A key still at the overlay default keeps the sheet
-# number above, so an untouched build matches older drawings. stroke_width is
-# inches. segment_spacing is px in this pixel network. label_font_size is the
-# printed px size, divided by scale because the text sits in the scale group.
-stroke_width = svg_utils.trace_overlay_sheet_value("stroke_width", TRACE_WIDTH_IN)
-segment_spacing = svg_utils.trace_overlay_sheet_value(
-    "segment_spacing", TRACE_SPACING_IN * PX_PER_INCH
-)
-label_print_px = svg_utils.trace_overlay_sheet_value(
-    "label_font_size", LABEL_PRINT_SIZE_PX
-)
+# A key still at the overlay default keeps the sheet number above, so an
+# untouched build matches older drawings. stroke_width is inches.
+# segment_spacing is px in this pixel network. label_font_size is the printed
+# px size, divided by scale because the text sits in the scale group.
+stroke_width = svg_utils.trace_overlay_style["stroke_width"]
+if stroke_width == svg_utils.TRACE_OVERLAY_STYLE["stroke_width"]:
+    stroke_width = TRACE_WIDTH_IN
+segment_spacing = svg_utils.trace_overlay_style["segment_spacing"]
+if segment_spacing == svg_utils.TRACE_OVERLAY_STYLE["segment_spacing"]:
+    segment_spacing = TRACE_SPACING_IN * PX_PER_INCH
+label_print_px = svg_utils.trace_overlay_style["label_font_size"]
+if label_print_px == svg_utils.TRACE_OVERLAY_STYLE["label_font_size"]:
+    label_print_px = LABEL_PRINT_SIZE_PX
 
 content_lines = []
 for item_type in trace_item_types:

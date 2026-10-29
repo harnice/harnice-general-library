@@ -4,7 +4,7 @@ signals_list.new()
 
 build_utils.run_macro(
     "build_rackmount_enclosure",
-    "library/macros/device_artifacts",
+    "macros/device_artifacts",
     "https://github.com/harnice/harnice-general-library",
     artifact_id="body-1",
     depth=36,

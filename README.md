@@ -3,6 +3,8 @@
 Reusable parts for Harnice projects.
 
 - `cables/`, `connectors/`, and `parts/` are catalog parts.
-- `library/flagnotes/`, `library/macros/`, and `library/titleblocks/` are the reference flagnotes, macros, and titleblock.
+- `flagnotes/`, `macros/`, and `titleblocks/` are the reference flagnotes, macros, and titleblock.
 
-`lib_repo` for these items is `https://github.com/harnice/harnice-general-library`. Macro and flagnote paths stay `library/macros/...`, `library/flagnotes/`, and `library/titleblocks/`.
+`lib_repo` for these items is `https://github.com/harnice/harnice-general-library`. Macro and flagnote paths are `macros/...`, `flagnotes/`, and `titleblocks/`.
+
+Edit this tree in the Harnice source repository, at `harnice-general-library/`. A merge to `main` there that changes that directory publishes the same files here.

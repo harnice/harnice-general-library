@@ -1,2 +1,0 @@
-instance_name	mpn	item_type	lib_repo	lib_subpath	lib_desc	lib_latest_rev	lib_rev_used_here	lib_status	lib_releaseticket	lib_datestarted	lib_datemodified	lib_datereleased	lib_drawnby	lib_checkedby	project_editable_lib_modified
-body-1	build_rackmount_enclosure	macro	https://github.com/harnice/harnice-general-library	macros/device_artifacts		1	1			10/25/26	10/25/26		K SHUTT		True

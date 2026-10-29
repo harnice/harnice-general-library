@@ -7,7 +7,7 @@ build_utils.run_macro(
     "macros/device_artifacts",
     "https://github.com/harnice/harnice-general-library",
     artifact_id="body-1",
-    depth=36,
+    depth=configuration["depth"],
     units=configuration["U"],
 )
 

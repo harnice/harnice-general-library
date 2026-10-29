@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-29.9999999999999 -30 150 120" width="150" height="120">
+  <g id="generic_server_rack_case-rev1-contents-start">
+    <rect x="9.947598300641403e-14" y="0" width="89.9999999999999" height="60" class="diagram-primitive selected" fill="#838383" stroke="black" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="1" rx="0" id="sde-1793251771007-nfnurtq"/>
+    <rect x="9.999999810010294" y="9.999999810010195" width="70.0000001899897" height="40.000000189989805" class="diagram-primitive" fill="#161616" stroke="black" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="1" rx="0" id="sde-1793251863354-cuz4xud"/>
+    <text x="45.765197753906264" y="21.57232666015625" class="diagram-primitive" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="6" font-weight="normal" text-anchor="middle" dominant-baseline="alphabetic" data-wrap-width="59.99999999999997" data-text="&quot;{refdes}\n{configuration.get(\&quot;U\&quot;)}U rack case\n&quot;" id="sde-1793251771007-w55lo45">
+      <tspan x="45.765197753906264" dy="0" data-line="{refdes}">{refdes}</tspan>
+      <tspan x="45.765197753906264" dy="7.199999999999999" data-line="{configuration.get(&quot;U&quot;)">{configuration.get("U")</tspan>
+      <tspan x="45.765197753906264" dy="7.199999999999999" data-line="}U rack case">}U rack case</tspan>
+      <tspan x="45.765197753906264" dy="7.199999999999999" data-line=""> </tspan>
+    </text>
+  </g>
+  <g id="generic_server_rack_case-rev1-contents-end"></g>
+</svg>

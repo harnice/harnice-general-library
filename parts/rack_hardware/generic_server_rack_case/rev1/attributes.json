@@ -1,5 +1,5 @@
 {
-    "default_refdes": "DEVICE",
+    "default_refdes": "RACK",
     "mate_connectors": [
         {
             "id": "U1",

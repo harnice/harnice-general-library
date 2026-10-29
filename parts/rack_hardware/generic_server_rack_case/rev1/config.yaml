@@ -1,0 +1,15 @@
+fields:
+- id: U
+  type: number
+  label: Number of units
+  required: true
+  default: 42
+  validation:
+    minimum: 1
+- id: depth
+  type: number
+  label: Depth (inches)
+  required: true
+  default: 36
+  validation:
+    exclusiveMinimum: 0

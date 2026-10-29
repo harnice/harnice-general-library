@@ -155,12 +155,6 @@ for root, _, files in os.walk(directory_to_search):
 
         masters.append((master_name, source_svg_path))
 
-extra_master_names = set()
-for extra in pdf_drawings_utils.extra_project_masters():
-    extra_master_names.add(extra["name"])
-    if extra["name"] not in {name for name, _ in masters}:
-        masters.append((extra["name"], extra["path"]))
-
 masters.sort(key=lambda x: x[0])  # sort alphabetically by master_name
 
 # write the svg structure
@@ -194,11 +188,6 @@ with open(path("master contents svg"), "w", encoding="utf-8") as f:
 
 # fetch content from each -master.svg into the master contents svg
 for master_name, source_svg_path in masters:
-    if master_name in extra_master_names:
-        pdf_drawings_utils.copy_svg_inner_into_group(
-            source_svg_path, path("master contents svg"), master_name
-        )
-        continue
     svg_utils.find_and_replace_svg_group(
         source_svg_path, master_name, path("master contents svg"), master_name
     )

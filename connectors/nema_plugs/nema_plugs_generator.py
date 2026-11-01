@@ -596,9 +596,10 @@ def _progress_bar(done, total, width=25):
 
 
 def cache_run_constant_lookups():
-    git_hash = fileio.get_git_hash_of_harnice_src()
+    version = fileio.harnice_version()
     drawnby = fileio.drawnby()
-    fileio.get_git_hash_of_harnice_src = lambda: git_hash
+    fileio.harnice_version = lambda: version
+    fileio.get_git_hash_of_harnice_src = lambda: version
     fileio.drawnby = lambda: drawnby
 
 

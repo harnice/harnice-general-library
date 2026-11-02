@@ -15,6 +15,8 @@ from harnice.utils import physical_drawing
 #
 # Face photos are <image> links to the PNG, relative to the revision.
 # pdf_generator embeds those links as raster images in the PDF.
+# Each device refdes is drawn at the body center. It is left off when other
+# bodies hide half or more of that body's silhouette.
 #
 # build_utils.run_macro(
 #     "physical_model_drawing",

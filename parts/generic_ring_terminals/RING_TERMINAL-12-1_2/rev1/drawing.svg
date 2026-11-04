@@ -18,6 +18,13 @@
 <g id="RING_TERMINAL-12-1_2-drawing-contents-end">
   </g>
   <g id="output csys locations">
+    <g id="3d-mate">
+      <circle cx="118.05" cy="-0.00" r="4" fill="black"/>
+      <line x1="118.05" y1="-0.00" x2="142.05" y2="-0.00" stroke="red" stroke-width="2"/>
+      <polygon points="142.05,-0.00 136.05,-3.00 136.05,3.00" fill="red"/>
+      <line x1="118.05" y1="-0.00" x2="118.05" y2="-24.00" stroke="green" stroke-width="2"/>
+      <polygon points="118.05,-24.00 115.05,-18.00 121.05,-18.00" fill="green"/>
+    </g>
     <g id="flagnote-1">
       <circle cx="288.00" cy="-0.00" r="4" fill="black"/>
       <line x1="288.00" y1="-0.00" x2="312.00" y2="-0.00" stroke="red" stroke-width="2"/>

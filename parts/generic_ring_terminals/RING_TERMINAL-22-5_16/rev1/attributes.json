@@ -10,7 +10,11 @@
   "barrel_material": "copper",
   "plating": "tin",
   "insulation_material": null,
-  "tools": null,
+  "molex_pn": "19193-0023",
+  "mcmaster_pn": "7113K553",
+  "tools": [
+    "generic ring terminal crimp tool 10awg-22awg"
+  ],
   "build_notes": [],
   "csys_children": {
     "3d-mate": {
@@ -38,7 +42,7 @@
     },
     "flagnote-2-leader_dest": {
       "angle": 15,
-      "distance": 0.8609,
+      "distance": 0.8661,
       "rotation": 0
     },
     "flagnote-3": {
@@ -48,7 +52,7 @@
     },
     "flagnote-3-leader_dest": {
       "angle": -15,
-      "distance": 0.8609,
+      "distance": 0.8661,
       "rotation": 0
     },
     "flagnote-4": {
@@ -58,7 +62,7 @@
     },
     "flagnote-4-leader_dest": {
       "angle": 30,
-      "distance": 0.2153,
+      "distance": 0.5895,
       "rotation": 0
     },
     "flagnote-5": {
@@ -68,7 +72,7 @@
     },
     "flagnote-5-leader_dest": {
       "angle": -30,
-      "distance": 0.2153,
+      "distance": 0.5895,
       "rotation": 0
     },
     "flagnote-6": {
@@ -78,7 +82,7 @@
     },
     "flagnote-6-leader_dest": {
       "angle": 45,
-      "distance": 0.164,
+      "distance": 0.4286,
       "rotation": 0
     },
     "flagnote-7": {
@@ -88,7 +92,7 @@
     },
     "flagnote-7-leader_dest": {
       "angle": -45,
-      "distance": 0.164,
+      "distance": 0.4286,
       "rotation": 0
     },
     "flagnote-8": {
@@ -98,7 +102,7 @@
     },
     "flagnote-8-leader_dest": {
       "angle": 60,
-      "distance": 0.1412,
+      "distance": 0.3573,
       "rotation": 0
     },
     "flagnote-9": {
@@ -108,7 +112,7 @@
     },
     "flagnote-9-leader_dest": {
       "angle": -60,
-      "distance": 0.1412,
+      "distance": 0.3573,
       "rotation": 0
     },
     "flagnote-10": {
@@ -118,7 +122,7 @@
     },
     "flagnote-10-leader_dest": {
       "angle": 75,
-      "distance": 0.1308,
+      "distance": 0.3245,
       "rotation": 0
     },
     "flagnote-11": {
@@ -128,7 +132,7 @@
     },
     "flagnote-11-leader_dest": {
       "angle": -75,
-      "distance": 0.1308,
+      "distance": 0.3245,
       "rotation": 0
     },
     "flagnote-12": {
@@ -138,7 +142,7 @@
     },
     "flagnote-12-leader_dest": {
       "angle": 90,
-      "distance": 0.1277,
+      "distance": 0.3148,
       "rotation": 0
     },
     "flagnote-13": {
@@ -148,7 +152,7 @@
     },
     "flagnote-13-leader_dest": {
       "angle": -90,
-      "distance": 0.1277,
+      "distance": 0.3148,
       "rotation": 0
     }
   }

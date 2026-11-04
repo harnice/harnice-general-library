@@ -1,5 +1,5 @@
 {
-    "default_refdes": "FP",
+    "default_refdes": "BP",
     "mate_connectors": [
         {
             "id": "F1",

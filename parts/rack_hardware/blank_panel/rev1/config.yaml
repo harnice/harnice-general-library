@@ -1,0 +1,15 @@
+fields:
+- id: number_of_rack_units
+  type: number
+  label: Number of rack units
+  required: true
+  default: 1
+  validation:
+    minimum: 1
+    maximum: 6
+    multipleOf: 1
+- id: vented
+  type: boolean
+  label: Vented
+  required: true
+  default: false

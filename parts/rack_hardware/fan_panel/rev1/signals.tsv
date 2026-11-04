@@ -1,0 +1,4 @@
+channel_id	repeat_channel_id	channel_type	signal	cavity	connector_id	device_connector_mpn	harness_connector_mpn
+in1		(18, 'https://github.com/harnice/harnice-general-library')	live	X	J1	NEMA-5-15P	
+in1		(18, 'https://github.com/harnice/harnice-general-library')	neutral	W	J1	NEMA-5-15P	
+in1		(18, 'https://github.com/harnice/harnice-general-library')	earth	G	J1	NEMA-5-15P	

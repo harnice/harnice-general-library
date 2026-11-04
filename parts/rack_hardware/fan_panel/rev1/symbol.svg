@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-35 -30 165 94.03125" width="165" height="94.03125">
+  <g id="fan_panel-rev1-contents-start">
+    <rect x="-1.4210854715202004e-14" y="0" width="100.00000000000001" height="30" class="diagram-primitive" fill="#202020" stroke="black" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="1" rx="0" id="pg-mw1j57y9-0-nbae-sde-1793760275075-picuxy6"/>
+    <text x="49.99999981000994" y="9.99999957159121" class="diagram-primitive" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="9" font-weight="normal" text-anchor="middle" dominant-baseline="hanging" data-wrap-width="67.865692518652" data-text="&quot;{refdes}&quot;" id="pg-mw1j57ya-1-x8f1-sde-1793760275075-pgo21nm">
+      <tspan x="49.99999981000994" dy="0" data-line="{refdes}">{refdes}</tspan>
+    </text>
+    <text x="50.64932632446232" y="18.246750831604004" class="diagram-primitive" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="6" font-weight="normal" text-anchor="middle" dominant-baseline="hanging" data-wrap-width="69.0995254516613" data-text="&quot;{configuration.get(\&quot;number_of_rack_units\&quot;)}U fan panel&quot;" id="sde-1793761266537-mhwla3c">
+      <tspan x="50.64932632446232" dy="0" data-line="{configuration.get(&quot;numbe">{configuration.get("numbe</tspan>
+      <tspan x="50.64932632446232" dy="7.199999999999999" data-line="r_of_rack_units&quot;)}U fan">r_of_rack_units")}U fan</tspan>
+      <tspan x="50.64932632446232" dy="7.199999999999999" data-line="panel">panel</tspan>
+    </text>
+    <circle class="connector" data-pin-name="J1" id="J1" cx="0" cy="20" r="0.1" fill="black" style=""/>
+    <g class="connector-glyph" data-connector-glyph="chamfered-rectangle" transform="translate(0,20) rotate(-90) rotate(-90)" id="sde-1793764025694-t5j3hwy">
+      <defs id="cg-mw1kscbi-7tw5t-defs2"/>
+      <path d="m 0,-6.7199998 -2.8799999,0 -2.88,2.8799999 v 7.6799998 l 2.88,2.8799999 2.8799999,0 z" fill="#b4b4b4" stroke="#434343" stroke-width="0.4" stroke-linecap="round" stroke-linejoin="round" id="cg-mw1kscbi-7tw5t-path1" style="stroke:#000000;stroke-width:0.8;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"/>
+      <text xml:space="preserve" id="cg-mw1kscbi-7tw5t-label" class="connector-glyph-text" x="-0.7" y="0" font-family="Helvetica" font-size="4pt" fill="#000000" text-anchor="middle" dominant-baseline="alphabetic" transform="rotate(-90 -0.7 0)" data-text="&quot;ACIN&quot;" data-wrap-width="120">
+        <tspan x="-0.7" dy="0" data-line="ACIN">ACIN</tspan>
+      </text>
+    </g>
+  </g>
+  <g id="fan_panel-rev1-contents-end"></g>
+</svg>

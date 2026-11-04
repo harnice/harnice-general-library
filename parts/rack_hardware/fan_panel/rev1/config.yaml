@@ -1,0 +1,10 @@
+fields:
+- id: number_of_rack_units
+  type: number
+  label: Number of rack units
+  required: true
+  default: 3
+  validation:
+    minimum: 1
+    maximum: 3
+    multipleOf: 1

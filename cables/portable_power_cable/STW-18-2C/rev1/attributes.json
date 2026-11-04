@@ -1,15 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Extra Hard Usage Outdoors",
-            "type": "STW",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.060in",
-            "weather resistant": true
+            "diameter": "0.060in",
+            "mcmaster pn": "7081K11"
         },
         "black": {
             "conductor": true,

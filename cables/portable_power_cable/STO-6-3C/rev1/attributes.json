@@ -1,15 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Extra Hard Usage Indoors",
-            "type": "STO",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.140in",
-            "oil resistant jacket": true
+            "diameter": "0.140in",
+            "mcmaster pn": "7081K84"
         },
         "black": {
             "conductor": true,

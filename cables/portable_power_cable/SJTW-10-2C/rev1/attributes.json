@@ -1,15 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "300 V AC",
-            "usage": "Hard Usage Outdoors",
-            "type": "SJTW",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.060in",
-            "weather resistant": true
+            "diameter": "0.060in",
+            "mcmaster pn": "7422K75"
         },
         "black": {
             "conductor": true,

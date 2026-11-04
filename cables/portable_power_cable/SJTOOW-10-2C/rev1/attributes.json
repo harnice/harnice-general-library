@@ -1,17 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "300 V AC",
-            "usage": "Extra Hard Usage Outdoors",
-            "type": "SJTOOW",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.060in",
-            "oil resistant jacket": true,
-            "oil resistant insulation": true,
-            "weather resistant": true
+            "diameter": "0.060in",
+            "mcmaster pn": "7422K75"
         },
         "black": {
             "conductor": true,
@@ -20,8 +14,7 @@
                 "od": "0.192in",
                 "gauge": "10AWG",
                 "construction": "104x30",
-                "material": "copper",
-                "oil resistant": true
+                "material": "copper"
             },
             "appearance": {
                 "base_color": "black"
@@ -34,8 +27,7 @@
                 "od": "0.192in",
                 "gauge": "10AWG",
                 "construction": "104x30",
-                "material": "copper",
-                "oil resistant": true
+                "material": "copper"
             },
             "appearance": {
                 "base_color": "white",

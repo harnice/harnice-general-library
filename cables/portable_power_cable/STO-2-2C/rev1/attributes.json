@@ -1,15 +1,10 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Extra Hard Usage Indoors",
-            "type": "STO",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.170in",
-            "oil resistant jacket": true
+            "diameter": "0.170in"
         },
         "black": {
             "conductor": true,

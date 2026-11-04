@@ -1,15 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "300 V AC",
-            "usage": "Hard Usage Indoors",
-            "type": "SJTO",
-            "jacketed": true,
             "material": "pvc",
             "color": "black",
-            "thickness": "0.030in",
-            "oil resistant jacket": true
+            "diameter": "0.030in",
+            "mcmaster pn": "7422K62"
         },
         "black": {
             "conductor": true,

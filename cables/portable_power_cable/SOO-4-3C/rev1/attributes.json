@@ -1,16 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Extra Hard Usage Indoors",
-            "type": "SOO",
-            "jacketed": true,
             "material": "neoprene",
             "color": "black",
-            "thickness": "0.155in",
-            "oil resistant jacket": true,
-            "oil resistant insulation": true
+            "diameter": "0.155in",
+            "mcmaster pn": "7081K3"
         },
         "black": {
             "conductor": true,
@@ -19,8 +14,7 @@
                 "od": "0.324in",
                 "gauge": "4AWG",
                 "construction": "420x30",
-                "material": "copper",
-                "oil resistant": true
+                "material": "copper"
             },
             "appearance": {
                 "base_color": "black"
@@ -33,8 +27,7 @@
                 "od": "0.324in",
                 "gauge": "4AWG",
                 "construction": "420x30",
-                "material": "copper",
-                "oil resistant": true
+                "material": "copper"
             },
             "appearance": {
                 "base_color": "white",
@@ -48,8 +41,7 @@
                 "od": "0.324in",
                 "gauge": "4AWG",
                 "construction": "420x30",
-                "material": "copper",
-                "oil resistant": true
+                "material": "copper"
             },
             "appearance": {
                 "base_color": "green",

@@ -1,14 +1,11 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Extra Hard Usage Indoors",
-            "type": "S",
-            "jacketed": true,
             "material": "rubber",
             "color": "black",
-            "thickness": "0.080in"
+            "diameter": "0.080in",
+            "mcmaster pn": "7081K23"
         },
         "black": {
             "conductor": true,

@@ -5,12 +5,12 @@
     <text x="34.41618347168012" y="8.675145387649131" class="diagram-primitive" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="9" font-weight="normal" text-anchor="middle" dominant-baseline="hanging" data-wrap-width="84" data-text="&quot;{refdes}&quot;" id="sde-1793760275075-pgo21nm">
       <tspan x="34.41618347168012" dy="0" data-line="{refdes}">{refdes}</tspan>
     </text>
-    <text x="34.59017181396571" y="16.51387214660601" class="diagram-primitive selected" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="6" font-weight="normal" text-anchor="middle" dominant-baseline="hanging" data-wrap-width="69.25475311279152" data-text="&quot;{configuration.get(\&quot;number_of_rack_units\&quot;)}U {\&quot;vented\&quot; if configuration.get(\&quot;vented\&quot;)} blank panel&quot;" id="sde-1793760353270-66d5jv6">
+    <text x="34.59017181396571" y="16.51387214660601" class="diagram-primitive selected" fill="#c6c6c6" stroke="#f8f8f8" fill-opacity="1" stroke-width="0.2mm" stroke-opacity="0" font-family="Helvetica" font-size="6" font-weight="normal" text-anchor="middle" dominant-baseline="hanging" data-wrap-width="69.25475311279152" data-text="&quot;{configuration.get(\&quot;number_of_rack_units\&quot;)}U{\&quot; vented\&quot; if configuration.get(\&quot;vented\&quot;) else \&quot;\&quot;} blank panel&quot;" id="sde-1793760353270-66d5jv6">
       <tspan x="34.59017181396571" dy="0" data-line="{configuration.get(&quot;numbe">{configuration.get("numbe</tspan>
-      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="r_of_rack_units&quot;)}U">r_of_rack_units")}U</tspan>
-      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="{&quot;vented&quot; if">{"vented" if</tspan>
-      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="configuration.get(&quot;vented&quot;">configuration.get("vented"</tspan>
-      <tspan x="34.59017181396571" dy="7.199999999999999" data-line=")} blank panel">)} blank panel</tspan>
+      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="r_of_rack_units&quot;)}U{&quot;">r_of_rack_units")}U{"</tspan>
+      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="vented&quot; if">vented" if</tspan>
+      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="configuration.get(&quot;vented&quot;)">configuration.get("vented")</tspan>
+      <tspan x="34.59017181396571" dy="7.199999999999999" data-line="else &quot;&quot;} blank panel">else ""} blank panel</tspan>
     </text>
   </g>
   <g id="blank_panel-rev1-contents-end"></g>

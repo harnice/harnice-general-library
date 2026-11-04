@@ -68,12 +68,9 @@ FLAGNOTE_ANGLES_DEG = (
 )
 
 
-def _load_step_utils():
-    try:
-        from harnice.utils import step_utils as module
-        return module
-    except ImportError:
-        pass
+try:
+    from harnice.utils import step_utils
+except ImportError:
     import importlib.util
 
     sibling = os.path.normpath(
@@ -94,192 +91,38 @@ def _load_step_utils():
             "Generating STEP envelopes requires harnice.utils.step_utils "
             "(Harnice src/harnice/utils/step_utils.py)."
         )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    step_utils = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(step_utils)
 
 
-step_utils = _load_step_utils()
-
-
-# ---------------------------------------------------------------------------
-# Envelopes
-# ---------------------------------------------------------------------------
-
-def connector_length_in(spec: dict, gender: str) -> float:
-    return nema_geometry.overall_length(spec, gender)
-
-
-# ---------------------------------------------------------------------------
-# Side-view silhouette (inches, math coords, +Y up = part +Z)
-# ---------------------------------------------------------------------------
-
-def envelope_stations_in(spec: dict, gender: str):
-    """Stepped (x, radius) stations from the cable end to the mating face."""
-    house = nema_geometry.housing(spec, gender)
-    body_l = house["length"]
-    body_r = house["diameter"] / 2.0
-    face_r = house["face"] / 2.0
-    ring_r = face_r * 1.06 if spec["locking"] else face_r
-    face_start = max(0.0, body_l - house["face_length"])
-    stations = [(0.0, body_r)]
-    if face_start > 0.05:
-        stations.append((face_start, body_r))
-        stations.append((face_start, ring_r))
-    stations.append((body_l, ring_r))
-    if gender == "P":
-        blade_r = _blade_side_radius_in(spec)
-        longest = max(nema_geometry.blade_length(spec, n) for n in spec["contacts"])
-        stations.append((body_l, blade_r))
-        stations.append((body_l + longest, blade_r))
-    return stations
-
-
-def _blade_side_radius_in(spec: dict) -> float:
-    zs = []
-    for feat in nema_geometry.face_features(spec, "P"):
-        z0, z1 = _feature_z_span(feat)
-        zs.extend((abs(z0), abs(z1)))
-    return max(zs) if zs else nema_geometry.face_diameter(spec) / 2.0
-
-
-def _feature_z_span(feat: dict):
+def _feature_z_span(feat):
     zs = [z for poly in nema_geometry.feature_polygons_yz(feat) for _, z in poly]
     return (min(zs), max(zs)) if zs else (0.0, 0.0)
 
 
-def part_perimeter_inches(spec: dict, gender: str):
-    stations = envelope_stations_in(spec, gender)
-    pts = [(x, r) for x, r in stations]
-    pts += [(x, -r) for x, r in reversed(stations)]
-    if pts[0] != pts[-1]:
-        pts.append(pts[0])
-    return pts
+def connector_svg(part_number, spec, gender):
+    def px_in(inches):
+        return inches * PX_PER_IN
 
+    def poly(points, fill="#C0C0C0"):
+        pts = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
+        return f'<polygon points="{pts}" fill="{fill}" stroke="black" stroke-width="1"/>'
 
-def _ray_edge_intersection_t(origin, angle_rad, p0, p1, eps=1e-9):
-    ox, oy = origin
-    dx, dy = math.cos(angle_rad), math.sin(angle_rad)
-    ex, ey = p1[0] - p0[0], p1[1] - p0[1]
-    det = dx * ey - dy * ex
-    if abs(det) < eps:
-        return None
-    rx, ry = p0[0] - ox, p0[1] - oy
-    t = (rx * ey - ry * ex) / det
-    u = (rx * dy - ry * dx) / det
-    if t < -eps or u < -eps or u > 1 + eps:
-        return None
-    return max(0.0, t)
-
-
-def _ray_perimeter_exit_distance(origin, angle_deg, perimeter):
-    if perimeter[0] != perimeter[-1]:
-        perimeter = perimeter + [perimeter[0]]
-    angle_rad = math.radians(angle_deg)
-    hits = []
-    for i in range(len(perimeter) - 1):
-        t = _ray_edge_intersection_t(origin, angle_rad, perimeter[i], perimeter[i + 1])
-        if t is not None and t > 1e-6:
-            hits.append(t)
-    if not hits:
-        return None
-    return max(hits)
-
-
-def csys_6dof(x, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0):
-    """Child csys pose in inches/degrees relative to the STEP (part) origin."""
-    return {
-        "x": round(float(x), 4),
-        "y": round(float(y), 4),
-        "z": round(float(z), 4),
-        "rx": round(float(rx), 4),
-        "ry": round(float(ry), 4),
-        "rz": round(float(rz), 4),
-    }
-
-
-def mate_csys_3d(spec: dict, gender: str):
-    """Mating face in the STEP frame (inches), identity orientation.
-
-    Origin is the cable-side strain relief; this output sits on the
-    mating face (blade tips on a plug, nylon face on a connector).
-    """
-    return csys_6dof(nema_geometry.overall_length(spec, gender))
-
-
-def flagnote_csys_children(spec: dict, gender: str):
-    """Polar flagnotes about the cable-end origin; leaders on the silhouette."""
-    perimeter = part_perimeter_inches(spec, gender)
-    overall = nema_geometry.overall_length(spec, gender)
-    note_r = max(FLAGNOTE_RADIUS_IN, overall + 0.5)
-    children = {}
-    for i, angle in enumerate(FLAGNOTE_ANGLES_DEG, start=1):
-        r_leader = _ray_perimeter_exit_distance((0.0, 0.0), angle, perimeter)
-        if r_leader is None:
-            continue
-        children[f"flagnote-{i}"] = {
-            "angle": angle,
-            "distance": note_r,
-            "rotation": 0,
-        }
-        children[f"flagnote-{i}-leader_dest"] = {
-            "angle": angle,
-            "distance": round(r_leader, 4),
-            "rotation": 0,
-        }
-    return children
-
-
-# ---------------------------------------------------------------------------
-# Geometry helpers
-# ---------------------------------------------------------------------------
-
-def _px_in(inches):
-    return inches * PX_PER_IN
-
-
-def _mm_in(inches):
-    return inches * MM_PER_IN
-
-
-def _poly(points, fill="#C0C0C0"):
-    pts = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
-    return f'<polygon points="{pts}" fill="{fill}" stroke="black" stroke-width="1"/>'
-
-
-def _rect(x, y, w, h, fill, stroke="black"):
-    return (
-        f'<rect x="{x:.2f}" y="{y:.2f}" width="{w:.2f}" height="{h:.2f}" '
-        f'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'
-    )
-
-
-def _circle(cx, cy, r, fill, stroke="black"):
-    return (
-        f'<circle cx="{cx:.2f}" cy="{cy:.2f}" r="{r:.2f}" '
-        f'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'
-    )
-
-
-def _circle_yz(cy, cz, radius_mm, n=24):
-    return [
-        (
-            cy + radius_mm * math.cos(2.0 * math.pi * i / n),
-            cz + radius_mm * math.sin(2.0 * math.pi * i / n),
+    def rect(x, y, w, h, fill, stroke="black"):
+        return (
+            f'<rect x="{x:.2f}" y="{y:.2f}" width="{w:.2f}" height="{h:.2f}" '
+            f'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'
         )
-        for i in range(n)
-    ]
 
+    def circle(cx, cy, r, fill, stroke="black"):
+        return (
+            f'<circle cx="{cx:.2f}" cy="{cy:.2f}" r="{r:.2f}" '
+            f'fill="{fill}" stroke="{stroke}" stroke-width="1"/>'
+        )
 
-def _blade_color(name: str) -> str:
-    return GROUND_HEX if name == "G" else BLADE_HEX
+    def blade_color(name):
+        return GROUND_HEX if name == "G" else BLADE_HEX
 
-
-# ---------------------------------------------------------------------------
-# SVG — side elevation (D38999 convention)
-# ---------------------------------------------------------------------------
-
-def connector_svg(part_number: str, spec: dict, gender: str) -> str:
     house = nema_geometry.housing(spec, gender)
     body_l = house["length"]
     body_r = house["diameter"] / 2.0
@@ -289,11 +132,11 @@ def connector_svg(part_number: str, spec: dict, gender: str) -> str:
     clamp = min(0.35, body_l * 0.18)
 
     x0 = 0.0
-    x_clamp = _px_in(clamp)
-    x_face0 = _px_in(face_start)
-    x_face = _px_in(body_l)
-    r_body = _px_in(body_r)
-    r_ring = _px_in(ring_r)
+    x_clamp = px_in(clamp)
+    x_face0 = px_in(face_start)
+    x_face = px_in(body_l)
+    r_body = px_in(body_r)
+    r_ring = px_in(ring_r)
     r_cable = r_body * 0.55
 
     parts = []
@@ -310,34 +153,34 @@ def connector_svg(part_number: str, spec: dict, gender: str) -> str:
         (x_clamp, r_body),
         (x0, r_cable),
     ]
-    parts.append(_poly(body_outline, fill=BODY_HEX))
+    parts.append(poly(body_outline, fill=BODY_HEX))
     if spec["locking"]:
-        ring_w = min(_px_in(0.28), _px_in(body_l) * 0.18)
+        ring_w = min(px_in(0.28), px_in(body_l) * 0.18)
         parts.append(
-            _rect(x_face - ring_w, -r_ring, ring_w, 2.0 * r_ring, RING_HEX)
+            rect(x_face - ring_w, -r_ring, ring_w, 2.0 * r_ring, RING_HEX)
         )
-    parts.append(_circle(x0 + _px_in(0.08), 0.0, _px_in(0.16), "#111111"))
+    parts.append(circle(x0 + px_in(0.08), 0.0, px_in(0.16), "#111111"))
 
     if gender == "P":
         for feat in nema_geometry.face_features(spec, "P"):
             z0, z1 = _feature_z_span(feat)
             blade_l = nema_geometry.blade_length(spec, feat["name"])
-            y_top = -_px_in(z1)
-            h = _px_in(z1 - z0)
+            y_top = -px_in(z1)
+            h = px_in(z1 - z0)
             if h < 2.0:
                 h = 2.0
-                y_top = -_px_in((z0 + z1) / 2.0) - h / 2.0
+                y_top = -px_in((z0 + z1) / 2.0) - h / 2.0
             parts.append(
-                _rect(x_face, y_top, _px_in(blade_l), h, _blade_color(feat["name"]))
+                rect(x_face, y_top, px_in(blade_l), h, blade_color(feat["name"]))
             )
     else:
         # Cord connector: shallow slot pockets at the face, no protruding blades.
         for feat in nema_geometry.face_features(spec, "R"):
             z0, z1 = _feature_z_span(feat)
-            slot_w = _px_in(0.12)
-            y_top = -_px_in(z1)
-            h = max(2.0, _px_in(z1 - z0))
-            parts.append(_rect(x_face - slot_w, y_top, slot_w, h, SLOT_HEX))
+            slot_w = px_in(0.12)
+            y_top = -px_in(z1)
+            h = max(2.0, px_in(z1 - z0))
+            parts.append(rect(x_face - slot_w, y_top, slot_w, h, SLOT_HEX))
 
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400" height="400">
@@ -353,30 +196,41 @@ def connector_svg(part_number: str, spec: dict, gender: str) -> str:
 # STEP — housing along +X, blades from the face
 # ---------------------------------------------------------------------------
 
-def envelope_prisms_mm(spec: dict, gender: str):
-    house = nema_geometry.housing(spec, gender)
-    body_l = _mm_in(house["length"])
-    body_r = _mm_in(house["diameter"] / 2.0)
-    face_r = _mm_in(house["face"] / 2.0)
-    face_len = _mm_in(house["face_length"])
-    face_start = max(0.0, body_l - face_len)
-
-    segments = []
-    if face_start > 0.05:
-        segments.append((0.0, face_start, _circle_yz(0.0, 0.0, body_r)))
-    ring_r = face_r * 1.06 if spec["locking"] else face_r
-    segments.append((face_start, body_l, _circle_yz(0.0, 0.0, ring_r)))
-
-    if gender == "P":
-        for feat in nema_geometry.face_features(spec, "P"):
-            x1 = body_l + _mm_in(nema_geometry.blade_length(spec, feat["name"]))
-            for poly_in in nema_geometry.feature_polygons_yz(feat):
-                poly_mm = [(_mm_in(y), _mm_in(z)) for y, z in poly_in]
-                segments.append((body_l, x1, poly_mm))
-    return segments
-
-
 def write_part_step(rev_dir, part_number, spec, gender):
+    def mm_in(inches):
+        return inches * MM_PER_IN
+
+    def circle_yz(cy, cz, radius_mm, n=24):
+        return [
+            (
+                cy + radius_mm * math.cos(2.0 * math.pi * i / n),
+                cz + radius_mm * math.sin(2.0 * math.pi * i / n),
+            )
+            for i in range(n)
+        ]
+
+    def envelope_prisms_mm(spec, gender):
+        house = nema_geometry.housing(spec, gender)
+        body_l = mm_in(house["length"])
+        body_r = mm_in(house["diameter"] / 2.0)
+        face_r = mm_in(house["face"] / 2.0)
+        face_len = mm_in(house["face_length"])
+        face_start = max(0.0, body_l - face_len)
+
+        segments = []
+        if face_start > 0.05:
+            segments.append((0.0, face_start, circle_yz(0.0, 0.0, body_r)))
+        ring_r = face_r * 1.06 if spec["locking"] else face_r
+        segments.append((face_start, body_l, circle_yz(0.0, 0.0, ring_r)))
+
+        if gender == "P":
+            for feat in nema_geometry.face_features(spec, "P"):
+                x1 = body_l + mm_in(nema_geometry.blade_length(spec, feat["name"]))
+                for poly_in in nema_geometry.feature_polygons_yz(feat):
+                    poly_mm = [(mm_in(y), mm_in(z)) for y, z in poly_in]
+                    segments.append((body_l, x1, poly_mm))
+        return segments
+
     path = os.path.join(rev_dir, "model.step")
     step_utils.write_prism_segments_step(
         path,
@@ -481,25 +335,112 @@ _HUBBELL_PNS = {
 }
 
 
-def _vendor_attributes(config: str, gender: str) -> dict:
-    hubbell = _HUBBELL_PNS.get((config, gender))
-    if not hubbell:
-        return {}
-    return {"hubbell pn": hubbell}
+def compile_part_attributes(cfg):
+    def flagnote_csys_children(spec, gender):
+        def envelope_stations_in(spec, gender):
+            def blade_side_radius_in(spec):
+                zs = []
+                for feat in nema_geometry.face_features(spec, "P"):
+                    z0, z1 = _feature_z_span(feat)
+                    zs.extend((abs(z0), abs(z1)))
+                return max(zs) if zs else nema_geometry.face_diameter(spec) / 2.0
 
+            house = nema_geometry.housing(spec, gender)
+            body_l = house["length"]
+            body_r = house["diameter"] / 2.0
+            face_r = house["face"] / 2.0
+            ring_r = face_r * 1.06 if spec["locking"] else face_r
+            face_start = max(0.0, body_l - house["face_length"])
+            stations = [(0.0, body_r)]
+            if face_start > 0.05:
+                stations.append((face_start, body_r))
+                stations.append((face_start, ring_r))
+            stations.append((body_l, ring_r))
+            if gender == "P":
+                blade_r = blade_side_radius_in(spec)
+                longest = max(
+                    nema_geometry.blade_length(spec, n) for n in spec["contacts"]
+                )
+                stations.append((body_l, blade_r))
+                stations.append((body_l + longest, blade_r))
+            return stations
 
-def compile_part_attributes(cfg: dict) -> dict:
+        def part_perimeter_inches(spec, gender):
+            stations = envelope_stations_in(spec, gender)
+            pts = [(x, r) for x, r in stations]
+            pts += [(x, -r) for x, r in reversed(stations)]
+            if pts[0] != pts[-1]:
+                pts.append(pts[0])
+            return pts
+
+        def ray_perimeter_exit_distance(origin, angle_deg, perimeter):
+            def ray_edge_intersection_t(origin, angle_rad, p0, p1, eps=1e-9):
+                ox, oy = origin
+                dx, dy = math.cos(angle_rad), math.sin(angle_rad)
+                ex, ey = p1[0] - p0[0], p1[1] - p0[1]
+                det = dx * ey - dy * ex
+                if abs(det) < eps:
+                    return None
+                rx, ry = p0[0] - ox, p0[1] - oy
+                t = (rx * ey - ry * ex) / det
+                u = (rx * dy - ry * dx) / det
+                if t < -eps or u < -eps or u > 1 + eps:
+                    return None
+                return max(0.0, t)
+
+            if perimeter[0] != perimeter[-1]:
+                perimeter = perimeter + [perimeter[0]]
+            angle_rad = math.radians(angle_deg)
+            hits = []
+            for i in range(len(perimeter) - 1):
+                t = ray_edge_intersection_t(
+                    origin, angle_rad, perimeter[i], perimeter[i + 1]
+                )
+                if t is not None and t > 1e-6:
+                    hits.append(t)
+            if not hits:
+                return None
+            return max(hits)
+
+        perimeter = part_perimeter_inches(spec, gender)
+        overall = nema_geometry.overall_length(spec, gender)
+        note_r = max(FLAGNOTE_RADIUS_IN, overall + 0.5)
+        children = {}
+        for i, angle in enumerate(FLAGNOTE_ANGLES_DEG, start=1):
+            r_leader = ray_perimeter_exit_distance((0.0, 0.0), angle, perimeter)
+            if r_leader is None:
+                continue
+            children[f"flagnote-{i}"] = {
+                "angle": angle,
+                "distance": note_r,
+                "rotation": 0,
+            }
+            children[f"flagnote-{i}-leader_dest"] = {
+                "angle": angle,
+                "distance": round(r_leader, 4),
+                "rotation": 0,
+            }
+        return children
+
     spec = cfg["spec"]
     gender = cfg["gender"]
     contacts = [
         {"name": name, "size": spec["max_wire_awg"]}
         for name in spec["contacts"]
     ]
+    length = nema_geometry.overall_length(spec, gender)
     attrs = {
         "tools": ["flathead screwdriver"],
         "build_notes": [],
         "csys_children": {
-            "3d-mate": mate_csys_3d(spec, gender),
+            "3d-mate": {
+                "x": round(float(length), 4),
+                "y": 0.0,
+                "z": 0.0,
+                "rx": 0.0,
+                "ry": 0.0,
+                "rz": 0.0,
+            },
             **flagnote_csys_children(spec, gender),
         },
         "contacts": contacts,
@@ -513,7 +454,9 @@ def compile_part_attributes(cfg: dict) -> dict:
         "grounded": spec["grounded"],
         "system": spec["system"],
     }
-    attrs.update(_vendor_attributes(spec["config"], gender))
+    hubbell = _HUBBELL_PNS.get((spec["config"], gender))
+    if hubbell:
+        attrs["hubbell pn"] = hubbell
     return attrs
 
 
@@ -541,82 +484,19 @@ CATALOG_COLUMNS = (
 )
 
 
-def catalog_row(cfg: dict) -> dict:
-    spec = cfg["spec"]
-    gender = cfg["gender"]
-    g = nema_plugs.GENDERS[gender]
-    pn = nema_plugs.make_part_number(cfg["config"], gender)
-    mates = nema_plugs.compatible_mates(pn)
-    return {
-        "library_pn": pn,
-        "official_pin": nema_plugs.official_name(cfg["config"], gender),
-        "spec": "ANSI/NEMA WD 6",
-        "common_name": f"{spec['common_name']}, {g['name'].lower()}",
-        "config": spec["config"],
-        "series": spec["series"],
-        "gender": g["name"],
-        "contacts_type": g["contacts"],
-        "locking": spec["locking"],
-        "voltage": spec["voltage"],
-        "current_a": spec["amps"],
-        "poles": spec["poles"],
-        "wires": spec["wires"],
-        "grounded": spec["grounded"],
-        "system": spec["system"],
-        "contact_letters": " ".join(spec["contacts"]),
-        "pin_count": len(spec["contacts"]),
-        "max_wire_awg": spec["max_wire_awg"],
-        "mates": ", ".join(mates),
-        "library_subpath": LIBRARY_SUBPATH,
-    }
-
-
-def write_catalog_csv(path=None):
-    if path is None:
-        path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "nema_plugs.csv"
-        )
-    rows = [catalog_row(cfg) for cfg in nema_plugs.iter_part_configurations()]
-    with open(path, "w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CATALOG_COLUMNS)
-        writer.writeheader()
-        writer.writerows(rows)
-    return path
-
-
-def _progress_bar(done, total, width=25):
-    if total <= 0:
-        filled = width
-        pct = 100
-    else:
-        filled = min(width, max(0, round(width * done / total)))
-        pct = round(100.0 * done / total)
-    cells = ["x"] * filled + ["."] * (width - filled)
-    return "[ " + " ".join(cells) + f" ] ({pct}%)"
-
-
-def cache_run_constant_lookups():
-    version = fileio.harnice_version()
-    drawnby = fileio.drawnby()
-    fileio.harnice_version = lambda: version
-    fileio.get_git_hash_of_harnice_src = lambda: version
-    fileio.drawnby = lambda: drawnby
-
-
-def build_part(part_number, rev_dir):
-    cwd = os.getcwd()
-    os.chdir(rev_dir)
-    try:
-        state.set_pn(part_number)
-        state.set_rev(REVISION)
-        state.set_file_structure(part.file_structure())
-        part.generate_structure()
-        part.build()
-    finally:
-        os.chdir(cwd)
-
-
 def make_part(cfg, render=True, attributes_only=False):
+    def build_part(part_number, rev_dir):
+        cwd = os.getcwd()
+        os.chdir(rev_dir)
+        try:
+            state.set_pn(part_number)
+            state.set_rev(REVISION)
+            state.set_file_structure(part.file_structure())
+            part.generate_structure()
+            part.build()
+        finally:
+            os.chdir(cwd)
+
     spec = cfg["spec"]
     gender = cfg["gender"]
     part_number = nema_plugs.make_part_number(cfg["config"], gender)
@@ -682,6 +562,64 @@ def make_part(cfg, render=True, attributes_only=False):
 
 
 def main(csv_only=False, skip_render=False, attributes_only=False):
+    def catalog_row(cfg):
+        spec = cfg["spec"]
+        gender = cfg["gender"]
+        g = nema_plugs.GENDERS[gender]
+        pn = nema_plugs.make_part_number(cfg["config"], gender)
+        mates = nema_plugs.compatible_mates(pn)
+        return {
+            "library_pn": pn,
+            "official_pin": nema_plugs.official_name(cfg["config"], gender),
+            "spec": "ANSI/NEMA WD 6",
+            "common_name": f"{spec['common_name']}, {g['name'].lower()}",
+            "config": spec["config"],
+            "series": spec["series"],
+            "gender": g["name"],
+            "contacts_type": g["contacts"],
+            "locking": spec["locking"],
+            "voltage": spec["voltage"],
+            "current_a": spec["amps"],
+            "poles": spec["poles"],
+            "wires": spec["wires"],
+            "grounded": spec["grounded"],
+            "system": spec["system"],
+            "contact_letters": " ".join(spec["contacts"]),
+            "pin_count": len(spec["contacts"]),
+            "max_wire_awg": spec["max_wire_awg"],
+            "mates": ", ".join(mates),
+            "library_subpath": LIBRARY_SUBPATH,
+        }
+
+    def write_catalog_csv(path=None):
+        if path is None:
+            path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "nema_plugs.csv"
+            )
+        rows = [catalog_row(cfg) for cfg in nema_plugs.iter_part_configurations()]
+        with open(path, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=CATALOG_COLUMNS)
+            writer.writeheader()
+            writer.writerows(rows)
+        return path
+
+    def progress_bar(done, total, width=25):
+        if total <= 0:
+            filled = width
+            pct = 100
+        else:
+            filled = min(width, max(0, round(width * done / total)))
+            pct = round(100.0 * done / total)
+        cells = ["x"] * filled + ["."] * (width - filled)
+        return "[ " + " ".join(cells) + f" ] ({pct}%)"
+
+    def cache_run_constant_lookups():
+        version = fileio.harnice_version()
+        drawnby = fileio.drawnby()
+        fileio.harnice_version = lambda: version
+        fileio.get_git_hash_of_harnice_src = lambda: version
+        fileio.drawnby = lambda: drawnby
+
     state.set_rev(REVISION)
     state.set_project_type("part")
 
@@ -699,7 +637,7 @@ def main(csv_only=False, skip_render=False, attributes_only=False):
     print(f"Building {total} NEMA plugs in {os.path.dirname(os.path.abspath(__file__))}")
     for i, cfg in enumerate(configs, start=1):
         make_part(cfg, render=not skip_render, attributes_only=attributes_only)
-        print(_progress_bar(i, total))
+        print(progress_bar(i, total))
 
     print(f"Finished rendering {total} parts in family.")
 

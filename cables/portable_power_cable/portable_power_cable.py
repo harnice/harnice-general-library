@@ -1,14 +1,44 @@
-import csv
-import json
-import os
+"""Portable power cable chooser.
 
-from harnice import state
-from harnice.lists import rev_history
+Legal SKUs are the UL letter-code, gauge, and conductor-count combinations
+in this folder. A McMaster-Carr bulk part number is recorded when one is
+known. Harness build instructions import this module, not the generator.
 
-REVISION = "1"
-DATE_STARTED = "8/18/26"
+    import os
+    import sys
+
+    from harnice.lists import instances_list
+    from harnice.utils import library_utils
+
+    LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+    LIBRARY_SUBPATH = "cables/portable_power_cable/"
+    sys.path.append(
+        os.path.join(library_utils.get_local_path(LIBRARY_REPO), LIBRARY_SUBPATH)
+    )
+    import portable_power_cable
+
+    for instance in instances_list.read():
+        if instance.get("item_type") != "cable":
+            continue
+        code = instance.get("cable_type")
+        gauge = instance.get("gauge_awg")
+        n = instance.get("conductors")
+        if not code or not gauge or not n:
+            continue
+        instances_list.modify(
+            instance.get("instance_name"),
+            {
+                "mpn": portable_power_cable.choose_part(code, gauge, n),
+                "lib_repo": LIBRARY_REPO,
+                "lib_subpath": LIBRARY_SUBPATH,
+            },
+        )
+"""
+import re
+
 LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
 LIBRARY_SUBPATH = "cables/portable_power_cable/"
+MANUFACTURER = ""
 
 # ---------------------------------------------------------------------------
 # Reference data
@@ -69,6 +99,94 @@ CONDUCTOR_COLORS = {
     4: ["black", "white", "red", "green"],
     5: ["black", "white", "red", "orange", "green"],
 }
+
+# McMaster-Carr bulk (by-the-foot) catalog numbers, black jacket unless noted.
+# Sizes they do not sell are omitted.
+# https://www.mcmaster.com/products/portable-cord/
+MCMASTER_SOOW = {
+    ("18", 2): "7081K11",
+    ("18", 3): "7081K12",
+    ("18", 4): "7081K13",
+    ("16", 2): "7081K14",
+    ("16", 3): "7081K22",
+    ("16", 4): "7081K31",
+    ("14", 2): "7081K15",
+    ("14", 3): "7081K23",
+    ("14", 4): "7081K32",
+    ("12", 2): "7081K16",
+    ("12", 3): "7081K24",
+    ("12", 4): "7081K33",
+    ("10", 2): "7081K17",
+    ("10", 3): "7081K41",
+    ("10", 4): "7081K42",
+    ("8", 3): "7081K35",
+    ("8", 4): "7081K82",
+    ("6", 3): "7081K84",
+    ("6", 4): "7081K25",
+    ("4", 3): "7081K3",
+    ("4", 4): "7081K28",
+    ("2", 4): "7081K34",
+}
+MCMASTER_SJOOW = {
+    ("18", 2): "7422K2",
+    ("18", 3): "7422K21",
+    ("18", 4): "7422K11",
+    ("16", 2): "7422K61",
+    ("16", 3): "7422K22",
+    ("16", 4): "7422K23",
+    ("14", 2): "7422K62",
+    ("14", 3): "7422K24",
+    ("14", 4): "7422K25",
+    ("12", 2): "7422K1",
+    ("12", 3): "7422K26",
+    ("12", 4): "7422K27",
+    ("10", 2): "7422K75",
+    ("10", 3): "7422K28",
+    ("10", 4): "7422K29",
+}
+MCMASTER_SJTOW = {
+    ("18", 3): "8169K31",
+    ("16", 3): "8169K32",
+    ("16", 4): "8169K34",
+}
+MCMASTER_STOW = {
+    ("18", 3): "8201K41",
+    ("16", 3): "8201K42",
+    ("16", 4): "8201K43",
+    ("14", 3): "8201K44",
+    ("14", 4): "8201K45",
+    ("12", 3): "8201K46",
+    ("12", 4): "8201K47",
+}
+MCMASTER_SPT1 = {
+    ("18", 2): "7870T21",
+}
+
+
+def mcmaster_part(code, gauge, n_conductors):
+    """McMaster bulk part number for this type, gauge, and count.
+
+    When McMaster does not stock that letter code, this returns the part
+    number of the closest bulk type they do sell.
+    """
+    key = (gauge, n_conductors)
+
+    def hit(table):
+        return table.get(key)
+
+    if code == "SOOW":
+        return hit(MCMASTER_SOOW)
+    if code in ("S", "SO", "SOO"):
+        return hit(MCMASTER_SOOW)
+    if code == "SJTOW":
+        return hit(MCMASTER_SJTOW) or hit(MCMASTER_SJOOW)
+    if code in ("SJT", "SJTW", "SJTO", "SJTOOW"):
+        return hit(MCMASTER_SJOOW)
+    if code in ("ST", "STW", "STO"):
+        return hit(MCMASTER_STOW) or hit(MCMASTER_SOOW)
+    if code == "SPT-1":
+        return hit(MCMASTER_SPT1)
+    return None
 
 def awg_span(start: str, end: str) -> list[str]:
     return EVEN_AWG[EVEN_AWG.index(start) : EVEN_AWG.index(end) + 1]
@@ -169,10 +287,7 @@ CABLE_TYPES = [
         "conductors": [2, 3],
         "insulation_material": "pvc",
         "jacket_material": None,
-        "jacketed": False,
-        "construction": "parallel",
         "voltage": "300 V AC",
-        "usage": "Indoor Use Only",
         "insulation_in": lambda _g: 0.030,
         "jacket_in": lambda _g: 0.0,
         "jacket_color": None,
@@ -184,10 +299,7 @@ CABLE_TYPES = [
         "conductors": [2, 3],
         "insulation_material": "pvc",
         "jacket_material": None,
-        "jacketed": False,
-        "construction": "parallel",
         "voltage": "300 V AC",
-        "usage": "Indoor Use Only",
         "insulation_in": lambda _g: 0.045,
         "jacket_in": lambda _g: 0.0,
         "jacket_color": None,
@@ -199,10 +311,7 @@ CABLE_TYPES = [
         "conductors": [2, 3],
         "insulation_material": "pvc",
         "jacket_material": None,
-        "jacketed": False,
-        "construction": "parallel",
         "voltage": "300 V AC",
-        "usage": "Indoor Use Only",
         "insulation_in": lambda _g: 0.060,
         "jacket_in": lambda _g: 0.0,
         "jacket_color": None,
@@ -214,10 +323,7 @@ CABLE_TYPES = [
         "conductors": [2, 3],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Light Usage Indoors",
         "insulation_in": lambda _g: 0.015,
         "jacket_in": lambda _g: 0.015,
         "jacket_color": "gray",
@@ -229,10 +335,7 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Hard Usage Indoors",
         "insulation_in": sj_insulation_in,
         "jacket_in": sj_jacket_in,
         "jacket_color": "black",
@@ -244,14 +347,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Hard Usage Outdoors",
         "insulation_in": sj_insulation_in,
         "jacket_in": sj_jacket_in,
         "jacket_color": "black",
-        "weather_resistant": True,
     },
     {
         "code": "SJTO",
@@ -260,14 +359,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Hard Usage Indoors",
         "insulation_in": sj_insulation_in,
         "jacket_in": sj_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_jacket": True,
     },
     {
         "code": "SJTOW",
@@ -276,15 +371,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Hard Usage Outdoors",
         "insulation_in": sj_insulation_in,
         "jacket_in": sj_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_jacket": True,
-        "weather_resistant": True,
     },
     {
         "code": "SJTOOW",
@@ -293,16 +383,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "300 V AC",
-        "usage": "Extra Hard Usage Outdoors",
         "insulation_in": sj_insulation_in,
         "jacket_in": sj_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_insulation": True,
-        "oil_resistant_jacket": True,
-        "weather_resistant": True,
     },
     {
         "code": "S",
@@ -311,10 +395,7 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "rubber",
         "jacket_material": "rubber",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Indoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
@@ -326,14 +407,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "rubber",
         "jacket_material": "neoprene",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Indoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_jacket": True,
     },
     {
         "code": "SOO",
@@ -342,15 +419,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "rubber",
         "jacket_material": "neoprene",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Indoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_insulation": True,
-        "oil_resistant_jacket": True,
     },
     {
         "code": "SOOW",
@@ -359,16 +431,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "rubber",
         "jacket_material": "neoprene",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Outdoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_insulation": True,
-        "oil_resistant_jacket": True,
-        "weather_resistant": True,
     },
     {
         "code": "ST",
@@ -377,10 +443,7 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Indoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
@@ -392,14 +455,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Outdoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
-        "weather_resistant": True,
     },
     {
         "code": "STO",
@@ -408,14 +467,10 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Extra Hard Usage Indoors",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "black",
-        "oil_resistant_jacket": True,
     },
     {
         "code": "SRDT",
@@ -424,10 +479,7 @@ CABLE_TYPES = [
         "conductors": [3, 4],
         "insulation_material": "pvc",
         "jacket_material": "pvc",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "600 V AC",
-        "usage": "Electric Range and Dryer Cords",
         "insulation_in": s_insulation_in,
         "jacket_in": s_jacket_in,
         "jacket_color": "gray",
@@ -439,37 +491,43 @@ CABLE_TYPES = [
         "conductors": [2, 3, 4, 5],
         "insulation_material": "epdm",
         "jacket_material": "super vu-tron",
-        "jacketed": True,
-        "construction": "round",
         "voltage": "2000 V AC",
-        "usage": "Extra Hard Usage Outdoors",
         "insulation_in": w_insulation_in,
         "jacket_in": w_jacket_in,
         "jacket_color": "yellow",
-        "weather_resistant": True,
     },
 ]
 
 
-# ---------------------------------------------------------------------------
-# Attribute compilation
-# ---------------------------------------------------------------------------
+_TYPES_BY_CODE = {spec["code"]: spec for spec in CABLE_TYPES}
 
-def build_configurations() -> list[dict]:
-    configs = []
+_PN_RE = re.compile(
+    r"^(?P<code>[A-Z]+(?:-\d+)?)"
+    r"[-_ ]"
+    r"(?P<gauge>\d+(?:[_/]\d+)?)"
+    r"[-_ ]"
+    r"(?P<n>\d+)\s*C?$",
+    re.IGNORECASE,
+)
+
+
+def iter_part_configurations():
     for spec in CABLE_TYPES:
         for gauge in spec["gauges"]:
             for n in spec["conductors"]:
-                configs.append({"spec": spec, "gauge": gauge, "n_conductors": n})
-    return configs
+                yield {"spec": spec, "gauge": gauge, "n_conductors": n}
 
 
-def part_number_from_cfg(cfg: dict) -> str:
+def make_part_number(cfg):
     gauge = cfg["gauge"].replace("/", "_")
     return f"{cfg['spec']['code']}-{gauge}-{cfg['n_conductors']}C"
 
 
-def description_from_cfg(cfg: dict) -> str:
+def official_pin(cfg):
+    return make_part_number(cfg)
+
+
+def description_from_cfg(cfg):
     spec = cfg["spec"]
     return (
         f"PORTABLE POWER CABLE, {spec['code']}, "
@@ -477,226 +535,151 @@ def description_from_cfg(cfg: dict) -> str:
     ).upper()
 
 
-def compile_cable_attributes(cfg: dict) -> dict:
-    spec = cfg["spec"]
-    gauge = cfg["gauge"]
-    n = cfg["n_conductors"]
-    insulation_in = spec["insulation_in"](gauge)
-    jacket_in = spec["jacket_in"](gauge)
+def list_types():
+    return [spec["code"] for spec in CABLE_TYPES]
 
-    conductors = {}
-    for color in CONDUCTOR_COLORS[n]:
-        conductors[color] = {
-            "conductor": True,
-            "properties": {
-                "insulation material": spec["insulation_material"],
-                "od": insulated_od(gauge, insulation_in),
-                "gauge": f"{gauge}AWG",
-                "construction": CLASS_K_STRANDING[gauge],
-                "material": "copper",
-            },
-            "appearance": conductor_appearance(color),
-        }
-        if spec.get("oil_resistant_insulation"):
-            conductors[color]["properties"]["oil resistant"] = True
 
-    jacket_properties = {
-        "construction": spec["construction"],
-        "voltage": spec["voltage"],
-        "usage": spec["usage"],
-        "type": spec["code"],
-        "jacketed": spec["jacketed"],
-    }
-    if spec["jacket_material"]:
-        jacket_properties["material"] = spec["jacket_material"]
-    if spec["jacket_color"]:
-        jacket_properties["color"] = spec["jacket_color"]
-    if jacket_in:
-        jacket_properties["thickness"] = fmt_in(jacket_in)
-    for flag in (
-        "oil_resistant_jacket",
-        "oil_resistant_insulation",
-        "weather_resistant",
-    ):
-        if spec.get(flag):
-            jacket_properties[flag.replace("_", " ")] = True
+def _normalize_code(value):
+    text = str(value).strip().upper().replace("_", "-")
+    if text not in _TYPES_BY_CODE:
+        raise ValueError(
+            f"Unknown portable-cord type {value!r}. "
+            f"This library has: {', '.join(list_types())}."
+        )
+    return text
 
-    return {"jacket": {**{"properties": jacket_properties}, **conductors}}
+
+def _normalize_gauge(value):
+    text = str(value).strip().upper().replace("_", "/")
+    if text.endswith("AWG"):
+        text = text[:-3].strip()
+    if text.isdigit():
+        text = str(int(text))
+    if text not in AWG_OD:
+        raise ValueError(f"Unknown wire gauge {value!r}.")
+    return text
+
+
+def list_parts(cable_type=None):
+    """Library PNs, optionally filtered by UL letter code."""
+    code = _normalize_code(cable_type) if cable_type is not None else None
+    out = []
+    for cfg in iter_part_configurations():
+        if code is not None and cfg["spec"]["code"] != code:
+            continue
+        out.append(make_part_number(cfg))
+    return out
+
+
+def parse_portable_power_cable(part_number):
+    """Parse a library PN into spec, gauge, and conductor count."""
+    text = str(part_number).strip()
+    match = _PN_RE.match(text.replace(" ", ""))
+    if not match:
+        raise ValueError(
+            f"Could not parse {part_number!r} as portable power cable. "
+            "Expected SOOW-14-3C or SPT-1-18-2C."
+        )
+    code = _normalize_code(match.group("code"))
+    gauge = _normalize_gauge(match.group("gauge"))
+    n = int(match.group("n"))
+    spec = _TYPES_BY_CODE[code]
+    if gauge not in spec["gauges"] or n not in spec["conductors"]:
+        raise ValueError(
+            f"{part_number!r} is not a SKU in this library. "
+            f"Legal {code} PNs: {', '.join(list_parts(code))}."
+        )
+    cfg = {"spec": spec, "gauge": gauge, "n_conductors": n}
+    cfg["mpn"] = make_part_number(cfg)
+    return cfg
+
+
+def choose_part(cable_type, gauge=None, conductors=None, n_conductors=None):
+    """Choose a portable-power-cable SKU that exists in this library.
+
+    cable_type is a UL letter code (SOOW, SJT, SPT-1, W) or a full library
+    PN. gauge is an AWG such as 14, "14", "1/0", or "1_0". conductors and
+    n_conductors are the conductor count. Both are ignored when cable_type
+    is a full PN and gauge is omitted.
+
+    Returns the library PN. Raises ValueError when that combination is not
+    in this library.
+    """
+    text = str(cable_type).strip()
+    looks_like_pn = bool(_PN_RE.match(text.replace(" ", "")))
+    if looks_like_pn and gauge is None and conductors is None and n_conductors is None:
+        return parse_portable_power_cable(text)["mpn"]
+    if conductors is None:
+        conductors = n_conductors
+    if looks_like_pn and gauge is not None and conductors is not None:
+        parsed = parse_portable_power_cable(text)
+        gauge = parsed["gauge"]
+        conductors = parsed["n_conductors"]
+        text = parsed["spec"]["code"]
+    if gauge is None or conductors is None:
+        raise ValueError(
+            "choose_part requires cable_type, gauge, and conductors "
+            "(or a full PN like SOOW-14-3C)."
+        )
+    code = _normalize_code(text)
+    gauge = _normalize_gauge(gauge)
+    n = int(conductors)
+    spec = _TYPES_BY_CODE[code]
+    if gauge not in spec["gauges"] or n not in spec["conductors"]:
+        raise ValueError(
+            f"No {code} cable for {gauge} AWG / {n} conductor in this library. "
+            f"Legal gauges: {', '.join(spec['gauges'])}. "
+            f"Legal conductor counts: {', '.join(str(c) for c in spec['conductors'])}."
+        )
+    return make_part_number({"spec": spec, "gauge": gauge, "n_conductors": n})
 
 
 CSV_COLUMNS = [
     "pn",
-    "type",
     "name",
     "description",
     "gauge_awg",
     "conductors",
     "conductor_colors",
     "voltage",
-    "usage",
-    "construction",
-    "jacketed",
     "jacket_material",
     "jacket_color",
-    "jacket_thickness",
+    "jacket_diameter",
     "insulation_material",
     "insulation_thickness",
     "conductor_od",
     "stranding",
     "conductor_material",
-    "oil_resistant_jacket",
-    "oil_resistant_insulation",
-    "weather_resistant",
+    "mcmaster_pn",
     "mfg",
     "library_subpath",
 ]
 
 
-def csv_row_from_cfg(cfg: dict) -> dict:
+def catalog_row(cfg):
     spec = cfg["spec"]
     gauge = cfg["gauge"]
     n = cfg["n_conductors"]
-    pn = part_number_from_cfg(cfg)
     insulation_in = spec["insulation_in"](gauge)
     jacket_in = spec["jacket_in"](gauge)
+    mcmaster = mcmaster_part(spec["code"], gauge, n) or ""
     return {
-        "pn": pn,
-        "type": spec["code"],
+        "pn": make_part_number(cfg),
         "name": spec["name"],
         "description": description_from_cfg(cfg),
         "gauge_awg": gauge,
         "conductors": n,
         "conductor_colors": ", ".join(CONDUCTOR_COLORS[n]),
         "voltage": spec["voltage"],
-        "usage": spec["usage"],
-        "construction": spec["construction"],
-        "jacketed": spec["jacketed"],
         "jacket_material": spec["jacket_material"] or "",
         "jacket_color": spec["jacket_color"] or "",
-        "jacket_thickness": fmt_in(jacket_in) if jacket_in else "",
+        "jacket_diameter": fmt_in(jacket_in) if jacket_in else "",
         "insulation_material": spec["insulation_material"],
         "insulation_thickness": fmt_in(insulation_in),
         "conductor_od": insulated_od(gauge, insulation_in),
         "stranding": CLASS_K_STRANDING[gauge],
         "conductor_material": "copper",
-        "oil_resistant_jacket": bool(spec.get("oil_resistant_jacket")),
-        "oil_resistant_insulation": bool(spec.get("oil_resistant_insulation")),
-        "weather_resistant": bool(spec.get("weather_resistant")),
-        "mfg": "",
+        "mcmaster_pn": mcmaster,
+        "mfg": "McMaster-Carr" if mcmaster else "",
         "library_subpath": LIBRARY_SUBPATH,
     }
-
-
-def write_family_csv(configs: list[dict], path: str) -> None:
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(csv_row_from_cfg(cfg) for cfg in configs)
-
-
-def write_conductor_list(attrs: dict, path: str) -> int:
-    """Walk the attributes tree the same way harnice.project_types.cable.build does."""
-    rows = []
-    all_headers = {"appearance"}
-
-    def recurse(obj, parent_chain=None):
-        if parent_chain is None:
-            parent_chain = []
-        if isinstance(obj, dict):
-            if obj.get("conductor") is True:
-                props = obj.get("properties", {})
-                appearance = obj.get("appearance", {})
-                container = parent_chain[-2] if len(parent_chain) >= 2 else ""
-                identifier = parent_chain[-1] if len(parent_chain) >= 1 else ""
-                row = {"container": container, "identifier": identifier}
-                for k, v in props.items():
-                    row[k] = v
-                    all_headers.add(k)
-                row["appearance"] = (
-                    json.dumps(
-                        appearance, separators=(",", ":"), ensure_ascii=False
-                    ).replace('"', "'")
-                    if appearance
-                    else ""
-                )
-                rows.append(row)
-            for k, v in obj.items():
-                if isinstance(v, (dict, list)):
-                    recurse(v, parent_chain + [k])
-        elif isinstance(obj, list):
-            for item in obj:
-                recurse(item, parent_chain)
-
-    recurse(attrs)
-    headers = ["container", "identifier"] + sorted(all_headers)
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f, fieldnames=headers, delimiter="\t", lineterminator="\n"
-        )
-        writer.writeheader()
-        writer.writerows(rows)
-    return len(rows)
-
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-def main():
-    state.set_rev(REVISION)
-    state.set_project_type("cable")
-
-    family_dir = os.path.dirname(os.path.abspath(__file__))
-    configs = build_configurations()
-    print(f"Building {len(configs)} portable power cables in {family_dir}")
-
-    for cfg in configs:
-        pn = part_number_from_cfg(cfg)
-        print(f"Preparing cable: {pn}")
-
-        part_dir = os.path.join(family_dir, pn)
-        os.makedirs(part_dir, exist_ok=True)
-
-        rev_dir = os.path.join(part_dir, f"rev{REVISION}")
-        if os.path.exists(rev_dir):
-            for item in os.listdir(rev_dir):
-                p = os.path.join(rev_dir, item)
-                if os.path.isfile(p):
-                    os.remove(p)
-        else:
-            os.makedirs(rev_dir)
-
-        rev_history.part_family_append(
-            {
-                "project_type": state.project_type,
-                "mfg": "",
-                "pn": pn,
-                "rev": REVISION,
-                "desc": description_from_cfg(cfg),
-                "status": "",
-                "datestarted": DATE_STARTED,
-                "library_repo": LIBRARY_REPO,
-                "library_subpath": LIBRARY_SUBPATH,
-                "revisionupdates": "INITIAL RELEASE",
-            },
-            os.path.join(part_dir, f"{pn}-revision_history.tsv"),
-        )
-
-        attributes = compile_cable_attributes(cfg)
-        json_path = os.path.join(rev_dir, "attributes.json")
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(attributes, f, indent=4)
-            f.write("\n")
-
-        tsv_path = os.path.join(rev_dir, "conductors.tsv")
-        write_conductor_list(attributes, tsv_path)
-
-    csv_path = os.path.join(family_dir, "portable_power_cable.csv")
-    write_family_csv(configs, csv_path)
-
-    print(f"Finished building {len(configs)} portable power cables.")
-    print(f"Wrote family catalog: {csv_path}")
-
-
-if __name__ == "__main__":
-    main()

@@ -1,26 +1,50 @@
+"""Generic ring-terminal chooser.
+
+Legal SKUs are the curated AWG, stud, and insulation combinations sold as
+common vinyl-insulated and bare copper ring terminals. Dimensions are
+estimated envelopes, not a vendor drawing. Harness build instructions
+import this module, not the generator.
+
+    import os
+    import sys
+
+    from harnice.lists import instances_list
+    from harnice.utils import library_utils
+
+    LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+    LIBRARY_SUBPATH = "parts/generic_ring_terminals/"
+    sys.path.append(
+        os.path.join(library_utils.get_local_path(LIBRARY_REPO), LIBRARY_SUBPATH)
+    )
+    import ring_terminal
+
+    for instance in instances_list.read():
+        if instance.get("item_type") != "part":
+            continue
+        gauge = instance.get("wire_gauge_awg")
+        stud = instance.get("stud_size")
+        if not gauge or not stud:
+            continue
+        instances_list.modify(
+            instance.get("instance_name"),
+            {
+                "mpn": ring_terminal.choose_part(
+                    gauge, stud, insulation=instance.get("insulation_color")
+                ),
+                "lib_repo": LIBRARY_REPO,
+                "lib_subpath": LIBRARY_SUBPATH,
+            },
+        )
 """
-Generic ring terminals.
+import re
 
-Origin is the barrel (cable) end on the axis, +X toward the ring / stud.
-Same cable-side convention as the aerospace library (D38999, D-sub,
-thermocouple). csys_children["3d-mate"] sits on the ring tip.
-"""
-import os
-import json
-import subprocess
-import math
-from harnice.lists import rev_history
-from harnice import state
+LIBRARY_REPO = "https://github.com/harnice/harnice-general-library"
+LIBRARY_SUBPATH = "parts/generic_ring_terminals/"
+MANUFACTURER = ""
 
-REVISION = "1"
-DATE_STARTED = "2/16/26"
-FLAGNOTE_RADIUS_IN = 3.0
-FLAGNOTE_PADDING_IN = 0.04
-
-# ---------------------------------------------------------------------------
-# Reference data
-# ---------------------------------------------------------------------------
-
+# Stud clearance holes, inches. estimate: typical vinyl and bare copper
+# terminals, not a single manufacturer table.
+# https://www.mcmaster.com/products/ring-terminals/
 STUD_SIZES = {
     "#0": 0.067,  "#1": 0.08,   "#2": 0.093,  "#4": 0.119,
     "#5": 0.132,  "#6": 0.145,  "#8": 0.171,  "#10": 0.197,
@@ -51,354 +75,6 @@ INSULATION_COLORS = {
     "yellow": "#FFFF00",  # 12-10 AWG
 }
 
-
-def csys_6dof(x, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0):
-    """Child csys pose in inches/degrees relative to the part origin."""
-    return {
-        "x": round(float(x), 4),
-        "y": round(float(y), 4),
-        "z": round(float(z), 4),
-        "rx": round(float(rx), 4),
-        "ry": round(float(ry), 4),
-        "rz": round(float(rz), 4),
-    }
-
-
-def mate_csys_3d(overall_length: float):
-    """Ring tip in the part frame. Origin is the barrel (cable) end."""
-    return csys_6dof(overall_length)
-
-
-def part_perimeter_inches(ring_od: float, barrel_od: float, overall_length: float):
-    """Side-view silhouette; origin at the barrel end, +X toward the ring."""
-    ring_r = ring_od / 2.0
-    barrel_r = barrel_od / 2.0
-    barrel_len = max(0.0, overall_length - ring_od)
-    rcx = overall_length - ring_r
-    attach = math.atan2(barrel_r, ring_r)
-    n_arc = 16
-    pts = [
-        (0.0, -barrel_r),
-        (0.0, barrel_r),
-        (barrel_len, barrel_r),
-        (rcx - ring_r * math.cos(attach), ring_r * math.sin(attach)),
-    ]
-    span = 2.0 * (math.pi - attach)
-    for i in range(1, n_arc):
-        ang = (math.pi - attach) - span * i / n_arc
-        pts.append((rcx + ring_r * math.cos(ang), ring_r * math.sin(ang)))
-    pts += [
-        (rcx - ring_r * math.cos(attach), -ring_r * math.sin(attach)),
-        (barrel_len, -barrel_r),
-        (0.0, -barrel_r),
-    ]
-    return pts
-
-
-def _ray_edge_intersection_t(origin, angle_rad, p0, p1, eps=1e-9):
-    ox, oy = origin
-    dx, dy = math.cos(angle_rad), math.sin(angle_rad)
-    ex, ey = p1[0] - p0[0], p1[1] - p0[1]
-    det = dx * ey - dy * ex
-    if abs(det) < eps:
-        return None
-    rx, ry = p0[0] - ox, p0[1] - oy
-    t = (rx * ey - ry * ex) / det
-    u = (rx * dy - ry * dx) / det
-    if t < -eps or u < -eps or u > 1 + eps:
-        return None
-    return max(0.0, t)
-
-
-def _ray_perimeter_exit_distance(origin, angle_deg, perimeter):
-    if perimeter[0] != perimeter[-1]:
-        perimeter = perimeter + [perimeter[0]]
-    angle_rad = math.radians(angle_deg)
-    hits = []
-    for i in range(len(perimeter) - 1):
-        t = _ray_edge_intersection_t(origin, angle_rad, perimeter[i], perimeter[i + 1])
-        if t is not None and t > 1e-6:
-            hits.append(t)
-    if not hits:
-        return None
-    return max(hits)
-
-
-def terminal_outline_distance(
-    angle_deg: float,
-    ring_od: float,
-    overall_length: float,
-    barrel_od: float | None = None,
-    padding: float = FLAGNOTE_PADDING_IN,
-) -> float:
-    """Distance from the cable-end origin to the silhouette at a given angle.
-
-    Origin is the barrel (cable) end on the axis. +X toward the ring tip.
-    """
-    if barrel_od is None:
-        barrel_od = ring_od
-    perimeter = part_perimeter_inches(ring_od, barrel_od, overall_length)
-    t = _ray_perimeter_exit_distance((0.0, 0.0), angle_deg, perimeter)
-    if t is None:
-        return overall_length + padding
-    return t + padding
-
-
-def build_csys_children(
-    ring_od: float,
-    overall_length: float,
-    barrel_od: float | None = None,
-    num_flagnotes: int = 13,
-    label_distance: float = FLAGNOTE_RADIUS_IN,
-    padding: float = FLAGNOTE_PADDING_IN,
-) -> dict:
-    """Polar flagnotes about the cable-end origin; 3d-mate at the ring tip.
-
-    Angles are distributed symmetrically: 0, ±15, ±30, …
-    """
-    if barrel_od is None:
-        barrel_od = ring_od
-    angles = [0]
-    step = 15
-    a = step
-    while len(angles) < num_flagnotes:
-        angles.append(a)
-        if len(angles) < num_flagnotes:
-            angles.append(-a)
-        a += step
-
-    children = {
-        "3d-mate": mate_csys_3d(overall_length),
-    }
-    for i, angle in enumerate(angles, start=1):
-        dest_dist = terminal_outline_distance(
-            angle, ring_od, overall_length, barrel_od=barrel_od, padding=padding,
-        )
-        children[f"flagnote-{i}"] = {
-            "angle": angle, "distance": label_distance, "rotation": 0,
-        }
-        children[f"flagnote-{i}-leader_dest"] = {
-            "angle": angle, "distance": round(dest_dist, 4), "rotation": 0,
-        }
-
-    return children
-
-# ---------------------------------------------------------------------------
-# Geometry helpers
-# ---------------------------------------------------------------------------
-
-def ring_od_from_stud(stud_id: float) -> float:
-    """Compute ring OD from stud hole diameter.
-
-    TODO: Replace with manufacturer-specific lookup if available.
-    """
-    return 0.2 * stud_id * stud_id + stud_id + 0.2
-
-
-def overall_length_from_wire(barrel_od: float, ring_od: float) -> float:
-    """Compute overall terminal length from wire OD and ring OD.
-
-    TODO: Replace with manufacturer-specific lookup if available.
-    """
-    return 2 * barrel_od + ring_od
-
-
-# ---------------------------------------------------------------------------
-# Attribute compilation
-# ---------------------------------------------------------------------------
-
-def compile_part_attributes(cfg: dict) -> dict:
-    """Build the attributes dict for a single ring terminal configuration."""
-    wire_gauge = cfg["wire_gauge"]
-    stud_size_label = cfg["stud_size"]
-    insulation = cfg["insulation"]
-
-    stud_id = STUD_SIZES[stud_size_label]
-    wire_od = AWG_OD[wire_gauge]
-    ring_od = ring_od_from_stud(stud_id)
-    barrel_od = wire_od + 0.15  # shank diameter
-    length = overall_length_from_wire(barrel_od, ring_od)
-
-    return {
-        # Identification
-        "wire_gauge_awg": wire_gauge,
-        "stud_size": stud_size_label,
-        "insulation_color": insulation,
-        "insulated": insulation is not None,
-
-        # Key dimensions (inches)
-        "stud_hole_id": round(stud_id, 4),
-        "ring_od": round(ring_od, 4),
-        "barrel_od": round(barrel_od, 4),
-        "overall_length": round(length, 4),
-
-        # Material defaults (override per-manufacturer as needed)
-        "barrel_material": "copper",
-        "plating": "tin",
-        "insulation_material": "vinyl" if insulation else None,
-
-        # Drawing / harnice metadata
-        "tools": None,
-        "build_notes": [],
-        "csys_children": build_csys_children(
-            ring_od=ring_od,
-            overall_length=length,
-            barrel_od=barrel_od,
-        )
-    }
-
-
-# ---------------------------------------------------------------------------
-# SVG generation
-# ---------------------------------------------------------------------------
-
-def ring_terminal_svg(
-    part_number: str,
-    stud_id: float,
-    ring_od: float,
-    barrel_od: float,
-    overall_length: float,
-    insulation: str | None = None,
-) -> str:
-    """Generate an SVG drawing of a ring terminal.
-
-    Origin is the barrel (cable) end; +X toward the ring tip.
-    All dimensions are in inches.
-
-    Args:
-        part_number: Part number used in group IDs.
-        stud_id: Stud hole inner diameter.
-        ring_od: Ring outer diameter.
-        barrel_od: Barrel / shank outer diameter.
-        overall_length: Overall length from barrel end to ring tip.
-        insulation: Hex colour string (e.g. "#e03030") or None for bare.
-
-    Returns:
-        SVG markup string.
-    """
-    ring_r = ring_od / 2
-    hole_r = stud_id / 2
-    barrel_r = barrel_od / 2
-    barrel_len = overall_length - ring_od
-
-    scale = 96   # pixels per inch
-
-    # Ring center
-    rcx = (overall_length - ring_r) * scale
-    rcy = 0
-
-    # Barrel rectangle
-    bx1 = 0
-    bx2 = barrel_len * scale
-    by1 = -barrel_r * scale
-    bh = barrel_od * scale
-
-    # Crimp bands
-    crimp_w = barrel_len * 0.15
-    c1x = barrel_len * scale * 0.1
-    c2x = bx2 - barrel_len * scale * 0.1 - crimp_w * scale
-
-    # Taper from barrel to ring
-    ang = math.atan2(barrel_r, ring_r)
-    taper_dx = ring_r * scale * math.cos(ang)
-    taper_dy = ring_r * scale * math.sin(ang)
-
-    svg_w = overall_length * scale
-    svg_h = max(ring_od, barrel_od) * scale
-
-    els: list[str] = []
-
-    # Barrel body
-    els.append(
-        f'<rect x="{bx1:.2f}" y="{by1:.2f}" '
-        f'width="{bx2 - bx1 + 2:.2f}" height="{bh:.2f}" '
-        f'fill="#898989" rx="2"/>'
-    )
-
-    # Taper transition
-    pts = (
-        f"{rcx - taper_dx:.2f},{rcy - taper_dy:.2f} "
-        f"{bx2:.2f},{by1:.2f} "
-        f"{bx2:.2f},{by1 + bh:.2f} "
-        f"{rcx - taper_dx:.2f},{rcy + taper_dy:.2f}"
-    )
-    els.append(f'<polygon points="{pts}" fill="#898989"/>')
-
-    # Ring outer disc
-    els.append(
-        f'<circle cx="{rcx:.2f}" cy="{rcy:.2f}" '
-        f'r="{ring_r * scale:.2f}" fill="#898989"/>'
-    )
-
-    # Insulation sleeve
-    if insulation is not None:
-        ins_pad = 0.15 * scale / 6
-        ins_x = bx1 - 4
-        ins_y = by1 - ins_pad
-        ins_h = bh + ins_pad * 2
-        ins_w = (c2x + crimp_w * scale / 2) - ins_x
-        els.append(
-            f'<rect x="{ins_x:.2f}" y="{ins_y:.2f}" '
-            f'width="{ins_w:.2f}" height="{ins_h:.2f}" '
-            f'fill="{insulation}"/>'
-        )
-
-    # Stud hole
-    els.append(
-        f'<circle cx="{rcx:.2f}" cy="{rcy:.2f}" '
-        f'r="{hole_r * scale:.2f}" fill="#ffffff" '
-        f'stroke="#666666" stroke-width="0.5"/>'
-    )
-
-    # Crimp bands (bare terminals only)
-    if insulation is None:
-        for cx in (c1x, c2x):
-            cw = crimp_w * scale
-            els.append(
-                f'<rect x="{cx:.2f}" y="{by1:.2f}" '
-                f'width="{cw:.2f}" height="{bh:.2f}" '
-                f'fill="rgba(0,0,0,0.15)" rx="1"/>'
-            )
-            for y in (by1, by1 + bh):
-                els.append(
-                    f'<line x1="{cx:.2f}" y1="{y:.2f}" '
-                    f'x2="{cx + cw:.2f}" y2="{y:.2f}" '
-                    f'stroke="#777777" stroke-width="0.8"/>'
-                )
-
-        # Barrel end opening (bare terminals only)
-        els.append(
-            f'<ellipse cx="{bx1:.2f}" cy="{rcy:.2f}" '
-            f'rx="2" ry="{barrel_r * scale:.2f}" '
-            f'fill="#6a6a6a" stroke="#777777" stroke-width="0.5"/>'
-        )
-
-    # Center crosshair
-    for dx, dy in [(3, 0), (0, 3)]:
-        els.append(
-            f'<line x1="{rcx - dx:.2f}" y1="{rcy - dy:.2f}" '
-            f'x2="{rcx + dx:.2f}" y2="{rcy + dy:.2f}" '
-            f'stroke="#bbbbbb" stroke-width="0.5"/>'
-        )
-
-    content = "\n    ".join(els)
-    return (
-        f'<?xml version="1.0" encoding="UTF-8"?>\n'
-        f'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"'
-        f' width="{svg_w:.0f}" height="{svg_h:.0f}">\n'
-        f'<g id="{part_number}-drawing-contents-start">\n'
-        f'    {content}\n'
-        f'</g>\n'
-        f'<g id="{part_number}-drawing-contents-end">\n'
-        f'</g>\n'
-        f'</svg>'
-    )
-
-
-# ---------------------------------------------------------------------------
-# Part-family generation matrix
-# ---------------------------------------------------------------------------
-
 # (wire gauges, stud sizes, insulation options)
 COMMON_COMBOS = [
     # Small insulated terminals (colour-coded red / blue / yellow)
@@ -420,124 +96,405 @@ COMMON_COMBOS = [
     (["4/0"],            ["3/8", "1/2", "5/8", "3/4", "1"],                [None]),
 ]
 
+_PN_RE = re.compile(
+    r"^RING[_-]?TERMINAL[-_]"
+    r"(?P<gauge>\d+(?:_\d+)?|\d+/\d+)"
+    r"[-_]"
+    r"(?P<stud>#?\d+(?:_\d+)?|#?\d+/\d+)"
+    r"(?:[-_](?P<ins>[0-9A-Fa-f]{6}))?$",
+    re.IGNORECASE,
+)
 
-def build_part_configurations() -> list[dict]:
-    """Expand the combo matrix into individual part configurations."""
-    configs = []
+_HEX_TO_COLOR = {
+    hex_code.lstrip("#").upper(): name
+    for name, hex_code in INSULATION_COLORS.items()
+}
+_COLOR_TO_HEX = {
+    name.upper(): hex_code.lstrip("#").upper()
+    for name, hex_code in INSULATION_COLORS.items()
+}
+
+
+def iter_part_configurations():
+    """Yield one dict per legal SKU."""
     for gauges, studs, insulations in COMMON_COMBOS:
         for gauge in gauges:
             for stud in studs:
                 for ins in insulations:
-                    configs.append({
+                    yield {
                         "wire_gauge": gauge,
                         "stud_size": stud,
                         "insulation": ins,
-                    })
-    return configs
+                    }
 
 
-def part_number_from_cfg(cfg: dict) -> str:
-    """Derive a part number string from a configuration dict."""
-    gauge = cfg["wire_gauge"].lstrip("#").replace("/", "_")
-    stud = cfg["stud_size"].lstrip("#").replace("/", "_")
-    ins = f"-{cfg['insulation'].lstrip('#')}" if cfg["insulation"] else ""
+def make_part_number(cfg):
+    """Filesystem-safe library PN, e.g. RING_TERMINAL-18-8-FF0000."""
+    gauge = str(cfg["wire_gauge"]).lstrip("#").replace("/", "_")
+    stud = str(cfg["stud_size"]).lstrip("#").replace("/", "_")
+    ins = ""
+    if cfg["insulation"]:
+        ins = f"-{cfg['insulation'].lstrip('#')}"
     return f"RING_TERMINAL-{gauge}-{stud}{ins}"
 
 
-def description_from_cfg(cfg: dict) -> str:
+def official_pin(cfg):
+    return make_part_number(cfg)
+
+
+def insulation_color_name(insulation):
+    if not insulation:
+        return None
+    key = str(insulation).lstrip("#").upper()
+    if key in _HEX_TO_COLOR:
+        return _HEX_TO_COLOR[key]
+    if key in _COLOR_TO_HEX:
+        return key.lower()
+    return None
+
+
+def description_from_cfg(cfg):
     """Short catalog description: gauge, stud, and insulation color."""
     stud = cfg["stud_size"]
     stud_text = "1 IN" if stud == "1" else stud
     desc = f"RING TERMINAL, {cfg['wire_gauge']} AWG, {stud_text} STUD"
     insulation = cfg.get("insulation")
     if insulation:
-        names = {color.upper(): name.upper() for name, color in INSULATION_COLORS.items()}
-        desc += f", {names.get(insulation.upper(), insulation.upper())}"
+        color = insulation_color_name(insulation)
+        desc += f", {(color or insulation).upper()}"
     return desc
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-def main(skip_render=False, attributes_only=False):
-    state.set_rev(REVISION)
-    state.set_project_type("part")
-
-    family_dir = os.path.dirname(os.path.abspath(__file__))
-    configs = build_part_configurations()
-    for cfg in configs:
-        pn = part_number_from_cfg(cfg)
-        print(f"Preparing part number: {pn}")
-
-        # ---- directory structure ----
-        part_dir = os.path.join(family_dir, pn)
-        os.makedirs(part_dir, exist_ok=True)
-
-        rev_dir = os.path.join(part_dir, f"rev{REVISION}")
-        if not attributes_only:
-            if os.path.exists(rev_dir):
-                for item in os.listdir(rev_dir):
-                    p = os.path.join(rev_dir, item)
-                    if os.path.isfile(p):
-                        os.remove(p)
-            else:
-                os.makedirs(rev_dir)
-
-            # ---- revision history ----
-            rev_history.part_family_append(
-                {
-                    "project_type": state.project_type,
-                    "mfg": "mil spec",
-                    "pn": pn,
-                    "rev": REVISION,
-                    "desc": description_from_cfg(cfg),
-                    "status": "",
-                    "datestarted": DATE_STARTED,
-                    "library_repo": "https://github.com/harnice/harnice-general-library",
-                    "library_subpath": "parts/generic_ring_terminals/",
-                },
-                os.path.join(part_dir, f"{pn}-revision_history.tsv"),
-            )
-        else:
-            os.makedirs(rev_dir, exist_ok=True)
-
-        # ---- attributes JSON ----
-        attributes = compile_part_attributes(cfg)
-        json_path = os.path.join(rev_dir, "attributes.json")
-        with open(json_path, "w") as f:
-            json.dump(attributes, f, indent=2)
-            f.write("\n")
-
-        if attributes_only:
-            continue
-
-        # ---- SVG drawing ----
-        svg_content = ring_terminal_svg(
-            part_number=pn,
-            stud_id=attributes["stud_hole_id"],
-            ring_od=attributes["ring_od"],
-            barrel_od=attributes["barrel_od"],
-            overall_length=attributes["overall_length"],
-            insulation=cfg["insulation"],
-        )
-        svg_path = os.path.join(rev_dir, "drawing.svg")
-        with open(svg_path, "w") as f:
-            f.write(svg_content)
-
-        # ---- render ----
-        if not skip_render:
-            subprocess.run(["harnice", "-r"], cwd=rev_dir, check=True)
-            for item in os.listdir(rev_dir):
-                if item.endswith(".png"):
-                    os.remove(os.path.join(rev_dir, item))
-
-    print("Finished rendering all parts in family.")
-
-
-if __name__ == "__main__":
-    import sys
-    main(
-        skip_render="--skip-render" in sys.argv,
-        attributes_only="--attributes-only" in sys.argv,
+def insulation_hex(insulation):
+    if insulation is None or insulation is False:
+        return None
+    text = str(insulation).strip()
+    if text.lower() in ("bare", "none", "uninsulated", ""):
+        return None
+    key = text.lstrip("#").upper()
+    if key in _HEX_TO_COLOR:
+        return f"#{key}"
+    if key in _COLOR_TO_HEX:
+        return f"#{_COLOR_TO_HEX[key]}"
+    raise ValueError(
+        f"Unknown insulation {insulation!r}. "
+        f"Expected bare/None or one of: {', '.join(INSULATION_COLORS)}."
     )
+
+
+def default_insulation_hex(gauge):
+    if "/0" in gauge:
+        n = 1 - int(gauge.split("/")[0])
+    else:
+        n = int(gauge)
+    if 18 <= n <= 22:
+        return "#FF0000"
+    if 14 <= n <= 16:
+        return "#0000FF"
+    if 10 <= n <= 12:
+        return "#FFFF00"
+    return None
+
+
+def list_gauges():
+    seen = []
+    for cfg in iter_part_configurations():
+        if cfg["wire_gauge"] not in seen:
+            seen.append(cfg["wire_gauge"])
+    return seen
+
+
+def list_stud_sizes():
+    seen = []
+    for cfg in iter_part_configurations():
+        if cfg["stud_size"] not in seen:
+            seen.append(cfg["stud_size"])
+    return seen
+
+
+def _normalize_gauge(value):
+    text = str(value).strip().upper().replace("_", "/")
+    if text.endswith("AWG"):
+        text = text[:-3].strip()
+    if text not in AWG_OD:
+        raise ValueError(
+            f"Unknown wire gauge {value!r}. This library has: {', '.join(list_gauges())}."
+        )
+    if "/0" in text:
+        return text
+    if text.isdigit():
+        return str(int(text))
+    return text
+
+
+def _normalize_stud(value):
+    text = str(value).strip().replace("_", "/")
+    if text.upper().startswith("NO"):
+        text = "#" + text[2:].lstrip(". ")
+    if not text.startswith("#") and "/" not in text and text.isdigit():
+        number = str(int(text))
+        machine = f"#{number}"
+        sold = set(list_stud_sizes())
+        if machine in sold and number not in sold:
+            text = machine
+        elif number in sold and machine not in sold:
+            text = number
+        elif machine in STUD_SIZES:
+            text = machine
+        else:
+            text = number
+    if text.startswith("#"):
+        rest = text[1:]
+        if rest.isdigit():
+            text = f"#{int(rest)}"
+    aliases = {
+        "1/4IN": "1/4",
+        "5/16IN": "5/16",
+        "3/8IN": "3/8",
+        "7/16IN": "7/16",
+        "1/2IN": "1/2",
+        "5/8IN": "5/8",
+        "3/4IN": "3/4",
+        "7/8IN": "7/8",
+        "1IN": "1",
+    }
+    compact = text.upper().replace(" ", "")
+    text = aliases.get(compact, text)
+    if text not in STUD_SIZES:
+        raise ValueError(
+            f"Unknown stud size {value!r}. This library has: {', '.join(list_stud_sizes())}."
+        )
+    return text
+
+
+def list_parts(gauge=None, stud_size=None):
+    """Library PNs, optionally filtered."""
+    out = []
+    for cfg in iter_part_configurations():
+        if gauge is not None and cfg["wire_gauge"] != _normalize_gauge(gauge):
+            continue
+        if stud_size is not None and cfg["stud_size"] != _normalize_stud(stud_size):
+            continue
+        out.append(make_part_number(cfg))
+    return out
+
+
+def choose_part(wire_gauge, stud_size, insulation=None):
+    """Choose a ring terminal that exists in this library.
+
+    wire_gauge is an AWG such as 18, "18", "1/0", or "1_0". stud_size is
+    #8, 8, 1/4, 1_4, or 5/16. insulation is None or bare for uninsulated,
+    True for the default vinyl colour of that AWG band, or a colour name
+    or hex such as red or #FF0000.
+
+    Returns the library PN. Raises ValueError when that combination is not
+    in this library.
+    """
+    gauge = _normalize_gauge(wire_gauge)
+    stud = _normalize_stud(stud_size)
+    if insulation is True:
+        hex_code = default_insulation_hex(gauge)
+    else:
+        hex_code = insulation_hex(insulation)
+    cfg = {"wire_gauge": gauge, "stud_size": stud, "insulation": hex_code}
+    pn = make_part_number(cfg)
+    if pn not in _CATALOG:
+        legal = list_parts(gauge=gauge)
+        preview = ", ".join(legal[:12])
+        if len(legal) > 12:
+            preview += "…"
+        if hex_code:
+            kind = f"insulated {insulation_color_name(hex_code) or 'vinyl'}"
+        else:
+            kind = "bare"
+        raise ValueError(
+            f"No ring terminal for {gauge} AWG / {stud} stud / {kind} in this library. "
+            f"Examples for {gauge} AWG: {preview}."
+        )
+    return pn
+
+
+def parse_ring_terminal(part_number):
+    """Parse a library PN into wire_gauge, stud_size, and insulation hex."""
+    text = str(part_number).strip()
+    match = _PN_RE.match(text.replace(" ", ""))
+    if not match:
+        raise ValueError(
+            f"Could not parse {part_number!r} as a ring terminal. "
+            "Expected RING_TERMINAL-18-8 or RING_TERMINAL-18-8-FF0000."
+        )
+    gauge = _normalize_gauge(match.group("gauge"))
+    stud = _normalize_stud(match.group("stud"))
+    raw_ins = match.group("ins")
+    insulation = f"#{raw_ins.upper()}" if raw_ins else None
+    cfg = {"wire_gauge": gauge, "stud_size": stud, "insulation": insulation}
+    pn = make_part_number(cfg)
+    if pn not in _CATALOG:
+        raise ValueError(
+            f"{part_number!r} is not a SKU in this library."
+        )
+    return dict(_CATALOG[pn])
+
+
+def _commercial_band(wire_gauge):
+    """Gauge band commercial ring terminals are sold in."""
+    gauge = str(wire_gauge)
+    if gauge in ("22", "20", "18"):
+        return "22-18"
+    if gauge in ("16", "14"):
+        return "16-14"
+    if gauge in ("12", "10"):
+        return "12-10"
+    return gauge
+
+
+# Molex InsulKrimp 19070, PVC, tin-plated copper, loose piece. When several
+# lengths exist, this is the shorter carton/bag number.
+# https://www.molex.com/en-us/products/series-chart/19070
+MOLEX_INSULATED = {
+    ("22-18", "#4"): "19070-0007",
+    ("22-18", "#6"): "19070-0009",
+    ("22-18", "#8"): "19070-0013",
+    ("22-18", "#10"): "19070-0015",
+    ("22-18", "1/4"): "19070-0023",
+    ("22-18", "5/16"): "19070-0026",
+    ("22-18", "3/8"): "19070-0033",
+    ("16-14", "#6"): "19070-0083",
+    ("16-14", "#8"): "19070-0086",
+    ("16-14", "#10"): "19070-0090",
+    ("16-14", "1/4"): "19070-0075",
+    ("16-14", "5/16"): "19070-0078",
+    ("12-10", "#6"): "19070-0119",
+    ("12-10", "#8"): "19070-0121",
+    ("12-10", "#10"): "19070-0123",
+    ("12-10", "1/4"): "19070-0132",
+    ("12-10", "1/2"): "19070-0109",
+}
+
+# Molex VersaKrimp 19193, noninsulated tin-plated copper, carton.
+# https://www.molex.com/en-us/products/series-chart/19193
+MOLEX_BARE = {
+    ("22-18", "#4"): "19193-0007",
+    ("22-18", "#6"): "19193-0009",
+    ("22-18", "#8"): "19193-0014",
+    ("22-18", "#10"): "19193-0016",
+    ("22-18", "5/16"): "19193-0023",
+    ("16-14", "#6"): "19193-0078",
+    ("16-14", "#8"): "19193-0080",
+    ("16-14", "#10"): "19193-0082",
+    ("16-14", "1/4"): "19193-0055",
+    ("16-14", "5/16"): "19193-0074",
+    ("16-14", "3/8"): "19193-0057",
+}
+
+# McMaster-Carr vinyl, tin-plated copper. #4 and the two 12-10 studs that
+# are missing from the basic vinyl table are the vinyl-with-brass-sleeve
+# parts. https://www.mcmaster.com/products/ring-terminals/
+MCMASTER_INSULATED = {
+    ("22-18", "#4"): "7113K201",
+    ("22-18", "#6"): "7113K35",
+    ("22-18", "#8"): "7113K611",
+    ("22-18", "#10"): "7113K98",
+    ("22-18", "1/4"): "7113K612",
+    ("22-18", "5/16"): "7113K613",
+    ("22-18", "3/8"): "7113K614",
+    ("16-14", "#4"): "7113K202",
+    ("16-14", "#6"): "7113K23",
+    ("16-14", "#8"): "7113K49",
+    ("16-14", "#10"): "7113K24",
+    ("16-14", "1/4"): "7113K25",
+    ("16-14", "5/16"): "7113K92",
+    ("16-14", "3/8"): "7113K95",
+    ("12-10", "#6"): "7113K203",
+    ("12-10", "#8"): "7113K48",
+    ("12-10", "#10"): "7113K29",
+    ("12-10", "1/4"): "7113K31",
+    ("12-10", "5/16"): "7113K204",
+    ("12-10", "3/8"): "7113K32",
+    ("12-10", "1/2"): "7113K82",
+}
+
+# McMaster-Carr noninsulated tin-plated copper. Steel and nickel rows for
+# the same gauge and stud are not used.
+MCMASTER_BARE = {
+    ("22-18", "#4"): "7113K148",
+    ("22-18", "#6"): "7113K11",
+    ("22-18", "#8"): "7113K551",
+    ("22-18", "#10"): "7113K97",
+    ("22-18", "1/4"): "7113K552",
+    ("22-18", "5/16"): "7113K553",
+    ("22-18", "3/8"): "7113K554",
+    ("16-14", "#4"): "7113K142",
+    ("16-14", "#6"): "7113K34",
+    ("16-14", "#8"): "7113K38",
+    ("16-14", "#10"): "7113K12",
+    ("16-14", "1/4"): "7113K13",
+    ("16-14", "5/16"): "7113K91",
+    ("16-14", "3/8"): "7113K94",
+    ("12-10", "#6"): "7113K141",
+    ("12-10", "#8"): "7113K37",
+    ("12-10", "#10"): "7113K17",
+    ("12-10", "1/4"): "7113K18",
+    ("12-10", "3/8"): "7113K19",
+    ("12-10", "1/2"): "7113K81",
+    ("8", "#10"): "7113K241",
+    ("8", "1/4"): "7113K242",
+    ("8", "5/16"): "7113K243",
+    ("8", "3/8"): "7113K244",
+    ("8", "1/2"): "7113K271",
+    ("6", "#10"): "7113K445",
+    ("6", "1/4"): "7113K446",
+    ("6", "5/16"): "7113K447",
+    ("6", "3/8"): "7113K448",
+    ("6", "1/2"): "7113K273",
+    ("4", "1/4"): "7113K249",
+    ("4", "5/16"): "7113K251",
+    ("4", "3/8"): "7113K252",
+    ("4", "1/2"): "7113K253",
+    ("4", "5/8"): "7113K563",
+}
+
+
+def molex_part(wire_gauge, stud_size, insulation=None):
+    """Molex part number for this gauge, stud, and insulation, or None."""
+    table = MOLEX_INSULATED if insulation else MOLEX_BARE
+    return table.get((_commercial_band(wire_gauge), stud_size))
+
+
+def mcmaster_part(wire_gauge, stud_size, insulation=None):
+    """McMaster-Carr part number for this gauge, stud, and insulation, or None."""
+    table = MCMASTER_INSULATED if insulation else MCMASTER_BARE
+    return table.get((_commercial_band(wire_gauge), stud_size))
+
+
+CSV_COLUMNS = (
+    "library_pn",
+    "wire_gauge_awg",
+    "stud_size",
+    "insulated",
+    "insulation_color",
+    "insulation_hex",
+    "stud_hole_id_in",
+    "molex_pn",
+    "mcmaster_pn",
+    "library_subpath",
+)
+
+
+def catalog_row(cfg):
+    hex_code = cfg["insulation"]
+    return {
+        "library_pn": make_part_number(cfg),
+        "wire_gauge_awg": cfg["wire_gauge"],
+        "stud_size": cfg["stud_size"],
+        "insulated": hex_code is not None,
+        "insulation_color": insulation_color_name(hex_code) or "",
+        "insulation_hex": hex_code.lstrip("#") if hex_code else "",
+        "stud_hole_id_in": STUD_SIZES[cfg["stud_size"]],
+        "molex_pn": molex_part(cfg["wire_gauge"], cfg["stud_size"], hex_code) or "",
+        "mcmaster_pn": mcmaster_part(cfg["wire_gauge"], cfg["stud_size"], hex_code) or "",
+        "library_subpath": LIBRARY_SUBPATH,
+    }
+
+
+_CATALOG = {make_part_number(cfg): cfg for cfg in iter_part_configurations()}

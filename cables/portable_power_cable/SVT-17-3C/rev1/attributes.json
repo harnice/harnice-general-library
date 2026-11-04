@@ -1,14 +1,10 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "300 V AC",
-            "usage": "Light Usage Indoors",
-            "type": "SVT",
-            "jacketed": true,
             "material": "pvc",
             "color": "gray",
-            "thickness": "0.015in"
+            "diameter": "0.015in"
         },
         "black": {
             "conductor": true,

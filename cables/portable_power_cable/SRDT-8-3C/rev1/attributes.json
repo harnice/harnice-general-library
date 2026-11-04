@@ -1,14 +1,10 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "600 V AC",
-            "usage": "Electric Range and Dryer Cords",
-            "type": "SRDT",
-            "jacketed": true,
             "material": "pvc",
             "color": "gray",
-            "thickness": "0.125in"
+            "diameter": "0.125in"
         },
         "black": {
             "conductor": true,

@@ -1,15 +1,10 @@
 {
     "jacket": {
         "properties": {
-            "construction": "round",
             "voltage": "2000 V AC",
-            "usage": "Extra Hard Usage Outdoors",
-            "type": "W",
-            "jacketed": true,
             "material": "super vu-tron",
             "color": "yellow",
-            "thickness": "0.185in",
-            "weather resistant": true
+            "diameter": "0.185in"
         },
         "black": {
             "conductor": true,

@@ -1,11 +1,7 @@
 {
     "jacket": {
         "properties": {
-            "construction": "parallel",
-            "voltage": "300 V AC",
-            "usage": "Indoor Use Only",
-            "type": "SPT-1",
-            "jacketed": false
+            "voltage": "300 V AC"
         },
         "black": {
             "conductor": true,

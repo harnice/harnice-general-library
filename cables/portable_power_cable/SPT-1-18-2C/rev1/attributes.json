@@ -1,11 +1,8 @@
 {
     "jacket": {
         "properties": {
-            "construction": "parallel",
             "voltage": "300 V AC",
-            "usage": "Indoor Use Only",
-            "type": "SPT-1",
-            "jacketed": false
+            "mcmaster pn": "7870T21"
         },
         "black": {
             "conductor": true,

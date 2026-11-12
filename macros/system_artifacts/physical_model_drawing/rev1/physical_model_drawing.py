@@ -15,9 +15,12 @@ from harnice.utils import physical_drawing
 #
 # Face photos are <image> links to the PNG, relative to the revision.
 # pdf_generator embeds those links as raster images in the PDF.
-# Each device refdes is drawn at the body center. Devices are painted from
-# back to front, photos then the refdes, so a closer photo covers a refdes
-# behind it. A face with no PNG is filled white.
+# Each device refdes is drawn at the body center. A face photo is drawn when
+# any part of that face can be seen, even if its center is covered. Where
+# photos overlap, the body you would actually see there is painted on top,
+# so gear seen through an open rack frame covers the frame's face. A refdes
+# sits on its own photo and under any closer body. A face with no PNG is
+# filled white.
 #
 # build_utils.run_macro(
 #     "physical_model_drawing",

@@ -123,7 +123,35 @@ for instance in instances:
                 "node_at_end_a": node_a,
                 "node_at_end_b": node_b,
                 "diameter": float(instance.get("diameter") or 1),
+                "instance": instance,
             }
+
+# Follow each segment's formboard bends (subdivisions) the same way
+# standard_harnice_formboard does: interior stations become waypoints.
+# The flattened network row is the source of truth; the segment instance
+# carries the same angle/length/subdivisions as a fallback.
+flat_rows = {}
+try:
+    for row in flattened_network.read_rows():
+        flat_rows[row.get("segment_id") or ""] = row
+except Exception:
+    flat_rows = {}
+for seg_id, seg in network_segments.items():
+    segment_instance = seg.pop("instance")
+    node_a = seg.get("node_at_end_a")
+    if node_a not in network_nodes:
+        continue
+    row = flat_rows.get(seg_id) or {
+        "angle": segment_instance.get("absolute_rotation") or 0,
+        "length": segment_instance.get("length"),
+        "subdivisions": segment_instance.get("subdivisions") or "",
+    }
+    origin_x = network_nodes[node_a]["x"] / PX_PER_INCH
+    origin_y = -network_nodes[node_a]["y"] / PX_PER_INCH
+    poly = flattened_network.polyline_points(origin_x, origin_y, row)
+    seg["waypoints"] = [
+        {"x": px * PX_PER_INCH, "y": -py * PX_PER_INCH} for px, py in poly[1:-1]
+    ]
 
 network_2D = {"nodes": network_nodes, "segments": network_segments}
 

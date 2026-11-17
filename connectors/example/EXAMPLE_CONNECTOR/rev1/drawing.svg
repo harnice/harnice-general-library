@@ -8,11 +8,11 @@
   </g>
   <g id="output csys locations">
     <g id="3d-mate">
-      <circle cx="117.17" cy="-0.00" r="4" fill="black"/>
-      <line x1="117.17" y1="-0.00" x2="141.17" y2="-0.00" stroke="red" stroke-width="2"/>
-      <polygon points="141.17,-0.00 135.17,-3.00 135.17,3.00" fill="red"/>
-      <line x1="117.17" y1="-0.00" x2="117.17" y2="-24.00" stroke="green" stroke-width="2"/>
-      <polygon points="117.17,-24.00 114.17,-18.00 120.17,-18.00" fill="green"/>
+      <circle cx="0.00" cy="-0.00" r="4" fill="black"/>
+      <line x1="0.00" y1="-0.00" x2="24.00" y2="-0.00" stroke="red" stroke-width="2"/>
+      <polygon points="24.00,-0.00 18.00,-3.00 18.00,3.00" fill="red"/>
+      <line x1="0.00" y1="-0.00" x2="0.00" y2="-24.00" stroke="green" stroke-width="2"/>
+      <polygon points="0.00,-24.00 -3.00,-18.00 3.00,-18.00" fill="green"/>
     </g>
     <g id="flagnote-1">
       <circle cx="288.00" cy="-0.00" r="4" fill="black"/>

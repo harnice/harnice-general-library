@@ -4,7 +4,7 @@ import math
 from collections import defaultdict
 from harnice import fileio
 from harnice.utils import library_utils, svg_utils, build_utils
-from harnice.lists import flattened_network
+from harnice.lists import flattened_network, instances_list
 
 artifact_mpn = "standard_harnice_formboard"
 
@@ -16,6 +16,11 @@ scale : scale factor for the drawing
 rotation : (optional) rotation of the drawing in degrees
 trace_path_item_types: (optional) item_type that should not be plotted but instead paths should be drawn along the bundles
 - dimension: int, 0 to 100. (optional) 0 the dimension is fully transparent (invisible), 100 is fully opaque
+flying_lead_splay_angle: (optional) degrees between neighboring conductors, passed to flying_lead_generator as
+    splay_angle. default 10. a segment is drawn with flying_lead_generator if and only if one of its end nodes has a
+    harness_connector whose mpn is "flying leads"; every other segment uses basic_segment_generator. "flying leads"
+    connectors have no drawing of their own, so they are not plotted. those segments are drawn before anything is
+    placed, so terminal instances parented to a flying_lead_end csys can be placed.
 """
 
 try:
@@ -27,6 +32,13 @@ try:
     dimension
 except NameError:
     dimension = 100
+
+try:
+    flying_lead_splay_angle
+except NameError:
+    flying_lead_splay_angle = 10
+
+FLYING_LEADS_MPN = "flying leads"
 
 # ==================================================================================================
 #               PATHS
@@ -97,14 +109,44 @@ def make_new_flagnote_drawing(instance, location):
         f.write(svg)
 
 
+def is_flying_leads_connector(instance):
+    return (
+        instance.get("item_type") == "harness_connector"
+        and (instance.get("mpn") or "").strip().lower() == FLYING_LEADS_MPN
+    )
+
+
+def flying_lead_connectors_at(segment):
+    """Names of the "flying leads" connectors at either end node of this segment, in end order."""
+    names = []
+    all_instances = instances_list.read()
+    by_name = {row.get("instance_name"): row for row in all_instances}
+    for node_name in (segment.get("node_at_end_a"), segment.get("node_at_end_b")):
+        group = (by_name.get(node_name) or {}).get("connector_group") or ""
+        for row in all_instances:
+            if not is_flying_leads_connector(row):
+                continue
+            if row.get("parent_csys_instance_name") == node_name or (
+                group and row.get("connector_group") == group
+            ):
+                names.append(row.get("instance_name"))
+    return names
+
+
 def make_new_segment_drawing(instance, location, dimension, dimension_units):
     if instance.get("item_type") != "segment":
         raise ValueError(
             f"you just tried to make a segment drawing out of a non-segment instance '{instance.get('instance_name')}'"
         )
 
+    segment_macro = "basic_segment_generator"
+    segment_macro_args = {}
+    if flying_lead_connectors_at(instance):
+        segment_macro = "flying_lead_generator"
+        segment_macro_args["splay_angle"] = flying_lead_splay_angle
+
     build_utils.run_macro(
-        "basic_segment_generator",
+        segment_macro,
         "macros/harness_artifacts",
         "https://github.com/harnice/harnice-general-library",
         scale=scale,
@@ -113,6 +155,7 @@ def make_new_segment_drawing(instance, location, dimension, dimension_units):
         artifact_id=f"{artifact_id}-{instance.get('instance_name')}",
         instance=instance,
         base_directory=location,
+        **segment_macro_args,
     )
 
 
@@ -390,7 +433,43 @@ unprintable_item_types = {
 # Group instances by item_type
 grouped_instances = defaultdict(list)
 trace_path_instances = []
+# make_bom_flagnote returns None for parts kept off the BOM; build scripts may append it as-is.
+input_instances = [instance for instance in input_instances if instance is not None]
+
+
+def segment_drawing_location(instance):
+    return os.path.join(
+        dirpath(None),
+        "instance_data",
+        "macro",
+        f"{artifact_id}-{instance.get('instance_name')}",
+    )
+
+
+# Flying-lead segments write each conductor's flying_lead_end csys, which terminals
+# are placed on, so draw them before anything is placed.
+pre_drawn_segments = set()
 for instance in input_instances:
+    if instance.get("item_type") == "segment" and flying_lead_connectors_at(instance):
+        make_new_segment_drawing(
+            instance,
+            segment_drawing_location(instance),
+            dimension=dimension,
+            dimension_units="in",
+        )
+        pre_drawn_segments.add(instance.get("instance_name"))
+
+# Placement walks each instance's csys chain to the origin. A terminal's chain runs
+# through its conductor-segment row, which is not plotted, so resolve chains against
+# the full instances list (read after the flying-lead csys were written).
+_plotted_names = {instance.get("instance_name") for instance in input_instances}
+location_instances = list(input_instances) + [
+    row for row in instances_list.read() if row.get("instance_name") not in _plotted_names
+]
+
+for instance in input_instances:
+    if is_flying_leads_connector(instance):
+        continue  # no drawing of its own; flying_lead_generator draws the leads
     if instance.get("item_type") not in unprintable_item_types:
         if instance.get("item_type") not in trace_path_item_types:
             grouped_instances[instance.get("item_type")].append(instance)
@@ -428,7 +507,7 @@ for item_type, items in grouped_instances.items():
         instance_name = instance.get("instance_name")
         printable_instances.add(instance_name)
 
-        x, y, angle = flattened_network.calculate_location(instance, input_instances)
+        x, y, angle = flattened_network.calculate_location(instance, location_instances)
         svg_px_x = x * 96
         svg_px_y = y * -96
 
@@ -439,7 +518,7 @@ for item_type, items in grouped_instances.items():
             )
             x_leader_dest, y_leader_dest, angle_leader_dest = (
                 flattened_network.calculate_location(
-                    leader_dest_temp_instance, input_instances
+                    leader_dest_temp_instance, location_instances
                 )
             )
 
@@ -619,13 +698,11 @@ for instance in input_instances:
         # === handle segments ===
         elif instance.get("item_type") in ["segment", "flagnote"]:
             # make as needed, edit this section to reference other segment drawings
-            generated_instance_location = os.path.join(
-                dirpath(None),
-                "instance_data",
-                "macro",
-                f"{artifact_id}-{instance.get('instance_name')}",
-            )
-            if instance.get("item_type") == "segment":
+            generated_instance_location = segment_drawing_location(instance)
+            if (
+                instance.get("item_type") == "segment"
+                and instance.get("instance_name") not in pre_drawn_segments
+            ):
                 make_new_segment_drawing(
                     instance,
                     generated_instance_location,

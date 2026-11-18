@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	source_part_number	source_revision	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	harnice_version	drawnby	checkedby	revisionupdates	affectedinstances	last_build
+part		flying leads	FLYING LEADS (NO CONNECTOR, NOT ON BOM)	1			https://github.com/harnice/harnice-general-library	parts/flying_leads/						11/17/26	11/17/26		2b89812185668f9266e6a69a400d24ff873fc9e6	K SHUTT		INITIAL RELEASE		succeeded

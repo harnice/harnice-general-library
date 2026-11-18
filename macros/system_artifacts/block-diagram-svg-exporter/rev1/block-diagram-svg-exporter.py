@@ -124,8 +124,10 @@ def export_block_diagram_master_svg(svg_text, master_name, scale, show):
             tag = re.sub(
                 r'\bdisplay\s*=\s*"[^"]*"', 'display="none"', tag, count=1
             )
+        elif tag.endswith("/>"):
+            tag = tag[:-2].rstrip() + ' display="none"/>'
         else:
-            tag = tag[:-1] + ' display="none">'
+            tag = tag[:-1].rstrip() + ' display="none">'
         return text[:start] + tag + text[gt + 1 :]
 
     def hide_placed(text, show_devices, show_subsystems):

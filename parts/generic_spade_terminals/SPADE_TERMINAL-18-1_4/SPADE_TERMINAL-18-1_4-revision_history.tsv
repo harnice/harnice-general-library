@@ -1,0 +1,2 @@
+project_type	mfg	pn	desc	rev	status	releaseticket	library_repo	library_subpath	source_part_number	source_revision	source_lib_repo	source_subpath	source_refdes	datestarted	datemodified	datereleased	harnice_version	drawnby	checkedby	revisionupdates	affectedinstances	last_build
+part		SPADE_TERMINAL-18-1_4	SPADE TERMINAL, 18 AWG, 1/4 STUD	1										11/19/26	11/19/26		a881af672df0bee65fd2371dfd39fb726dd495e3	K SHUTT				succeeded

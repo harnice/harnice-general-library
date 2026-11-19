@@ -171,6 +171,55 @@ def export_block_diagram_master_svg(svg_text, master_name, scale, show):
             text = hide_by_id(text, placed_id)
         return text
 
+    def take_element(text, element_id):
+        """Remove the whole element with ``id`` from text.
+
+        Returns (text without it, the element's markup). The markup is ""
+        when the id is not there.
+        """
+        bounds = element_bounds(text, element_id)
+        if bounds is None:
+            return text, ""
+        inner_start, inner_end, _tag = bounds
+        start = text.rfind("<", 0, text.find(f'id="{element_id}"'))
+        if inner_start == inner_end and text[start:inner_start].rstrip().endswith(
+            "/>"
+        ):
+            end = inner_start
+        else:
+            end = text.find(">", inner_end) + 1
+        return text[:start] + text[end:], text[start:end]
+
+    def stack_layers(inner, traces):
+        """Paint order, bottom to top.
+
+        Devices and subsystems (and anything else, like the boundary) first,
+        then circuit traces, channel traces, harnesses, external interface
+        flags, and mating connectors last so they are always on top.
+        """
+        rest = inner
+        if not traces:
+            rest, traces = take_element(rest, "applied-traces")
+        if traces:
+            traces, channel = take_element(traces, "channel_traces")
+            traces, circuit = take_element(traces, "circuit_traces")
+            open_end = traces.find(">") + 1
+            close_start = traces.rfind("</")
+            traces = (
+                traces[:open_end]
+                + traces[open_end:close_start].rstrip()
+                + "\n"
+                + "\n".join(part for part in (circuit, channel) if part)
+                + "\n"
+                + traces[close_start:]
+            )
+        rest, harnesses = take_element(rest, "harnesses")
+        rest, flags = take_element(rest, "external-interface-flags")
+        rest, omissions = take_element(rest, "mating-connector-omissions")
+        rest, mating = take_element(rest, "mating-connectors")
+        layers = (rest.rstrip(), traces, harnesses, flags, omissions, mating)
+        return "\n".join(layer for layer in layers if layer.strip())
+
     def contents_name(text):
         match = re.search(r'id="([^"]+)-contents-start"', text)
         if not match:
@@ -220,9 +269,7 @@ def export_block_diagram_master_svg(svg_text, master_name, scale, show):
                 traces = text[trace_open : trace_close + 1]
 
     scale_text = str(int(scale)) if scale == int(scale) else format(scale, "g")
-    body = inner
-    if traces:
-        body += "\n" + traces
+    body = stack_layers(inner, traces)
     body = f'<g transform="scale({scale_text})">\n{body}\n</g>'
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'

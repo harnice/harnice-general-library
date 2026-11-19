@@ -15,8 +15,11 @@ from harnice.utils import cad
 # height are centered on the origin.
 #
 # extrude also adds the far face "front-end" (y = depth) and one side per
-# edge: "front-a-b", "front-b-c", "front-c-d", "front-d-a". images maps one of
-# those surface uuids to a file. The orientation is degrees.
+# edge: "front-a-b", "front-b-c", "front-c-d", "front-d-a". Those are
+# renamed to the faces the viewer paints: "back" (y = depth), "left"
+# (x = -width / 2), "top" (z = height / 2), "right" (x = width / 2), and
+# "bottom" (z = -height / 2). "front" is the sketch face. images maps one
+# of those six names to a file. The orientation is degrees.
 
 if "params" not in globals() or not isinstance(params, dict):
     raise ValueError("params is required")
@@ -50,6 +53,14 @@ cad.sketch(
     [("a", "b"), ("b", "c"), ("c", "d"), ("d", "a")],
 )
 cad.extrude(model, "front", depth)
+for name, source in (
+    ("back", "front-end"),
+    ("left", "front-a-b"),
+    ("top", "front-b-c"),
+    ("right", "front-c-d"),
+    ("bottom", "front-d-a"),
+):
+    model.surfaces[name] = model.surfaces.pop(source)
 for surface, image_path in images.items():
     cad.attach_png(model, surface, image_path, 0)
 cad.save_step(model, fileio.path("body"))

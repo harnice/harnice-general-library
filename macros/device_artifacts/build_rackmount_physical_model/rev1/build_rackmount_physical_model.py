@@ -20,10 +20,13 @@ from harnice.utils import cad
 # behind them is 17 inches wide. A depth shallower than the ear is just that
 # plate.
 #
-# images maps a surface name to a file. "front" is the faceplate, and the
-# viewer paints that y = 0 face under the same name. "back" is the face at
-# y = depth. "bottom" stays the sketch face at z = 0. The orientation passed
-# to attach_png is degrees.
+# images maps a surface name to a file. The six names the viewer paints are
+# front, back, left, right, top, and bottom. "front" is the faceplate at
+# y = 0. "back" is the face at y = depth. "left" and "right" are the chassis
+# sides at x = -8.5 and x = 8.5, or the ear ends at x = -9.5 and x = 9.5 when
+# the model is only the plate. "top" is the face at z = height. "bottom"
+# stays the sketch face at z = 0. The orientation passed to attach_png is
+# degrees.
 #
 # Each rack unit gets a mate connector on the faceplate, centered on that
 # unit. F1 is the bottom unit. x is 0, y is 0, and z is the middle of that
@@ -64,6 +67,8 @@ if depth <= ear:
     }
     edges = [("a", "b"), ("b", "c"), ("c", "d"), ("d", "a")]
     back_edge = "bottom-c-d"
+    left_edge = "bottom-d-a"
+    right_edge = "bottom-b-c"
 else:
     vertices = {
         "a": (-half_ear, 0.0),
@@ -80,24 +85,26 @@ else:
         ("e", "f"), ("f", "g"), ("g", "h"), ("h", "a"),
     ]
     back_edge = "bottom-e-f"
+    left_edge = "bottom-f-g"
+    right_edge = "bottom-d-e"
 
 model = cad.new()
 cad.sketch(model, "bottom", "right", vertices, edges)
 cad.extrude(model, "bottom", height)
 # Edge a-b is the faceplate: y = 0, the ears, the full 19 inch width.
-# The viewer calls this minimum-Y face "front".
-faceplate = model.surfaces["bottom-a-b"]
-model.surfaces["front"] = {
-    "plane": faceplate["plane"],
-    "png": None,
-    "orientation": None,
-}
-back = model.surfaces[back_edge]
-model.surfaces["back"] = {
-    "plane": back["plane"],
-    "png": None,
-    "orientation": None,
-}
+# "bottom-end" is the far face of the extrude, z = height.
+for name, source in (
+    ("front", "bottom-a-b"),
+    ("back", back_edge),
+    ("left", left_edge),
+    ("right", right_edge),
+    ("top", "bottom-end"),
+):
+    model.surfaces[name] = {
+        "plane": model.surfaces[source]["plane"],
+        "png": None,
+        "orientation": None,
+    }
 for surface, image_path in images.items():
     cad.attach_png(model, surface, image_path, 0)
 cad.save_step(model, fileio.path("body"))

@@ -1,0 +1,161 @@
+{
+  "datasheet": "(https://github.com/harnice/harnice-general-library)/parts/generic_ferrules/5131_card_02_ORIG_2021_10.pdf",
+  "wire_gauge_awg": "7",
+  "wire_size_mm2": "10",
+  "insulation_color": "#FF0000",
+  "insulated": true,
+  "overall_length": 0.8268,
+  "width": 0.3031,
+  "tube_length": 0.4724,
+  "tube_od": 0.1693,
+  "collar_od": 0.3031,
+  "tools": [
+    "generic ferrule crimp tool 22awg-7awg"
+  ],
+  "build_notes": [],
+  "csys_children": {
+    "3d-mate": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "rx": 0.0,
+      "ry": 0.0,
+      "rz": 0.0
+    },
+    "leader_center": {
+      "x": -0.4134,
+      "y": 0.0,
+      "rotation": 0
+    },
+    "flagnote-1": {
+      "x": 2.5866,
+      "y": 0.0,
+      "rotation": 0
+    },
+    "flagnote-1-leader_dest": {
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 0
+    },
+    "flagnote-2": {
+      "x": 2.4844,
+      "y": 0.7765,
+      "rotation": 0
+    },
+    "flagnote-2-leader_dest": {
+      "x": -0.0975,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-3": {
+      "x": 2.4844,
+      "y": -0.7765,
+      "rotation": 0
+    },
+    "flagnote-3-leader_dest": {
+      "x": -0.0975,
+      "y": -0.0846,
+      "rotation": 0
+    },
+    "flagnote-4": {
+      "x": 2.1847,
+      "y": 1.5,
+      "rotation": 0
+    },
+    "flagnote-4-leader_dest": {
+      "x": -0.2668,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-5": {
+      "x": 2.1847,
+      "y": -1.5,
+      "rotation": 0
+    },
+    "flagnote-5-leader_dest": {
+      "x": -0.2668,
+      "y": -0.0846,
+      "rotation": 0
+    },
+    "flagnote-6": {
+      "x": 1.7079,
+      "y": 2.1213,
+      "rotation": 0
+    },
+    "flagnote-6-leader_dest": {
+      "x": -0.3287,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-7": {
+      "x": 1.7079,
+      "y": -2.1213,
+      "rotation": 0
+    },
+    "flagnote-7-leader_dest": {
+      "x": -0.3287,
+      "y": -0.0846,
+      "rotation": 0
+    },
+    "flagnote-8": {
+      "x": 1.0866,
+      "y": 2.5981,
+      "rotation": 0
+    },
+    "flagnote-8-leader_dest": {
+      "x": -0.3645,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-9": {
+      "x": 1.0866,
+      "y": -2.5981,
+      "rotation": 0
+    },
+    "flagnote-9-leader_dest": {
+      "x": -0.3645,
+      "y": -0.0846,
+      "rotation": 0
+    },
+    "flagnote-10": {
+      "x": 0.3631,
+      "y": 2.8978,
+      "rotation": 0
+    },
+    "flagnote-10-leader_dest": {
+      "x": -0.3907,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-11": {
+      "x": 0.3631,
+      "y": -2.8978,
+      "rotation": 0
+    },
+    "flagnote-11-leader_dest": {
+      "x": -0.3907,
+      "y": -0.0846,
+      "rotation": 0
+    },
+    "flagnote-12": {
+      "x": -0.4134,
+      "y": 3.0,
+      "rotation": 0
+    },
+    "flagnote-12-leader_dest": {
+      "x": -0.4134,
+      "y": 0.0846,
+      "rotation": 0
+    },
+    "flagnote-13": {
+      "x": -0.4134,
+      "y": -3.0,
+      "rotation": 0
+    },
+    "flagnote-13-leader_dest": {
+      "x": -0.4134,
+      "y": -0.0846,
+      "rotation": 0
+    }
+  }
+}
